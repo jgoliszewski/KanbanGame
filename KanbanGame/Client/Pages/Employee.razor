@@ -1,0 +1,94 @@
+@page "/employee"
+@page "/employee/{id:int}"
+@inject IEmployeeService EmployeeService
+@inject NavigationManager NavigationManager
+
+@if (Id is null)
+{
+    <PageTitle>Create a new Employee</PageTitle>
+    <h3>Create a new Employee</h3>
+}
+else
+{
+    <PageTitle>Edit @employee.Name</PageTitle>
+    <h3>Edit @employee.Name</h3>
+}
+
+<EditForm Model="employee" OnSubmit="HandleSubmit">
+    <div>
+        <label for="name">Name</label>
+        <InputText id="name" @bind-Value="employee.Name" class="form-control" />
+    </div>
+    <div>
+        <label for="seniority">Seniority</label>
+        <InputSelect id="seniority" @bind-Value="employee.Seniority" class="form-control">
+            @foreach (var seniority in Enum.GetValues(typeof(KanbanGame.Shared.Employee.EmployeeSeniority)))
+            {
+                <option value="@seniority">@seniority</option>
+            }
+        </InputSelect>
+    </div>
+    <div>
+        <label for="status">Status</label>
+        <InputSelect id="status" @bind-Value="employee.Status" class="form-control">
+            @foreach (var status in Enum.GetValues(typeof(KanbanGame.Shared.Employee.EmployeeStatus)))
+            {
+                <option value="@status">@status</option>
+            }
+        </InputSelect>
+    </div>
+    <br />
+    <button type="submit" class="btn btn-primary">@btnText</button>
+    <button type="button" class="btn btn-danger"
+            @onclick="DeleteEmployee">
+        Delete Employee
+    </button>
+</EditForm>
+
+@code {
+    
+    [Parameter]
+    public int? Id { get; set; }
+    string btnText = string.Empty;
+    private HubConnection? hubConnection;
+
+    KanbanGame.Shared.Employee employee =
+        new KanbanGame.Shared.Employee(0,"", KanbanGame.Shared.Employee.EmployeeSeniority.Junior, KanbanGame.Shared.Employee.EmployeeStatus.Working);
+
+    protected override async Task OnInitializedAsync()
+    {
+        btnText = Id == null ? "Save New Task" : "Update Emplyee";
+    }
+    protected override async Task OnParametersSetAsync()
+    {
+        if (Id is not null)
+        {
+            var result = await EmployeeService.GetEmployeeById((int)Id);
+            if (result is not null)
+                employee = result;
+            else
+                NavigationManager.NavigateTo("/employee");
+        }
+    }
+
+    async Task HandleSubmit()
+    {
+        if (Id is null)
+        {
+            await EmployeeService.CreateEmployee(employee);
+        }
+        else
+        {
+            await EmployeeService.UpdateEmployee((int)Id, employee);
+        }
+        if(hubConnection is not null)
+        {
+            await hubConnection.SendAsync("UpdateEmployeeList", 0);
+        }
+    }
+
+    async Task DeleteEmployee()
+    {
+        await EmployeeService.DeleteEmployee(employee.Id);
+    }
+}

@@ -1,0 +1,72 @@
+@page "/employees"
+@inject IEmployeeService EmployeeService
+@inject NavigationManager NavigationManager
+
+<h3>Employees</h3>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Id</th>
+            <th>Name</th>
+            <th>Seniority</th>
+            <th>Status</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var employee in EmployeeService.Employees)
+        {
+            <tr>
+                <td>@employee.Id</td>
+                <td>@employee.Name</td>
+                <td>@employee.Seniority</td>
+                <td>@employee.Status</td>
+                <td>
+                    <button class="btn btn-primary"
+                        @onclick="(() => ShowEmployee(employee.Id))">
+                        <i class="oi oi-pencil"></i>
+                    </button>
+                    <button class="btn btn-danger"
+                        @onclick="(() => DeleteEmployee(employee.Id))">
+                        <i class="oi oi-trash"></i>
+                    </button>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+<button class="btn btn-primary"
+        @onclick="CreateNewEmployee">
+    Create New Employee
+</button>
+
+@code {
+    private HubConnection? hubConnection;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await EmployeeService.GetEmployees();
+    }
+
+    void ShowEmployee(int id)
+    {
+        NavigationManager.NavigateTo($"/Employee/{id}");
+    }
+
+    void CreateNewEmployee()
+    {
+        NavigationManager.NavigateTo("/Employee");
+    }
+    async Task DeleteEmployee(int EmployeeId)
+    {
+        await EmployeeService.DeleteEmployee(EmployeeId);
+
+        // opt1: faster - manualy remove element from list - no reload but problems
+        EmployeeService.Employees.RemoveAll(t => t.Id == EmployeeId);
+
+        // opt2: slow - remove only using service, but page needs force reload
+        // NavigationManager.NavigateTo("/Employees", true); 
+
+    }
+}
