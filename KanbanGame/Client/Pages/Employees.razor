@@ -1,6 +1,7 @@
 @page "/employees"
 @inject IEmployeeService EmployeeService
 @inject NavigationManager NavigationManager
+@implements IAsyncDisposable
 
 <h3>Employees</h3>
 
@@ -47,8 +48,25 @@
     protected override async Task OnInitializedAsync()
     {
         await EmployeeService.GetEmployees();
+        await Connect();
     }
 
+    private async Task Connect()
+    {
+        hubConnection = new HubConnectionBuilder()
+            .WithUrl(NavigationManager.ToAbsoluteUri("/EmployeeHub"))
+            .Build();
+    
+        await hubConnection.StartAsync();
+
+        hubConnection.On<int>("EmployeeListUpdated", async (EmployeeId) => 
+            {
+                // reload data
+                await EmployeeService.GetEmployees();
+                StateHasChanged();
+            });
+    }
+    
     void ShowEmployee(int id)
     {
         NavigationManager.NavigateTo($"/Employee/{id}");
@@ -68,5 +86,16 @@
         // opt2: slow - remove only using service, but page needs force reload
         // NavigationManager.NavigateTo("/Employees", true); 
 
+        if(hubConnection is not null)
+        {
+            await hubConnection.SendAsync("UpdateEmployeeList", 0);
+        }
+    }
+    public async ValueTask DisposeAsync()
+    {
+        if (hubConnection != null)
+        {
+            await hubConnection.DisposeAsync();
+        }
     }
 }

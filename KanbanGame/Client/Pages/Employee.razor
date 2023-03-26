@@ -53,11 +53,25 @@ else
     private HubConnection? hubConnection;
 
     KanbanGame.Shared.Employee employee =
-        new KanbanGame.Shared.Employee(0,"", KanbanGame.Shared.Employee.EmployeeSeniority.Junior, KanbanGame.Shared.Employee.EmployeeStatus.Working);
+        new KanbanGame.Shared.Employee(
+            0,
+            "Name",
+            KanbanGame.Shared.Employee.EmployeeSeniority.Junior, 
+            KanbanGame.Shared.Employee.EmployeeStatus.Working
+            );
 
     protected override async Task OnInitializedAsync()
     {
-        btnText = Id == null ? "Save New Task" : "Update Emplyee";
+        btnText = Id == null ? "Save New Employee" : "Update Emplyee";
+        await Connect();
+    }
+    private async Task Connect()
+    {
+        hubConnection = new HubConnectionBuilder()
+            .WithUrl(NavigationManager.ToAbsoluteUri("/employeeHub"))
+            .Build();
+    
+        await hubConnection.StartAsync();
     }
     protected override async Task OnParametersSetAsync()
     {
@@ -90,5 +104,9 @@ else
     async Task DeleteEmployee()
     {
         await EmployeeService.DeleteEmployee(employee.Id);
+        if(hubConnection is not null)
+        {
+            await hubConnection.SendAsync("UpdateEmployeeList", 0);
+        }
     }
 }
