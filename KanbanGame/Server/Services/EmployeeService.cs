@@ -9,6 +9,7 @@ public class EmployeeService : IEmployeeService
         new Employee(2, "Jacob", Employee.EmployeeSeniority.Junior, Employee.EmployeeStatus.Learning),
         new Employee(3, "Tom", Employee.EmployeeSeniority.Mid, Employee.EmployeeStatus.NotWorking),
     };
+    private int _lastId = 3;
     public async Task<List<Employee>> GetEmployees()
     {
         return Employees;
@@ -22,6 +23,8 @@ public class EmployeeService : IEmployeeService
 
     public async Task<Employee> CreateEmployee(Employee employee)
     {
+        //todo: better unique id method
+        employee.Id = ++_lastId;
         Employees.Add(employee);
         return employee;
     }
