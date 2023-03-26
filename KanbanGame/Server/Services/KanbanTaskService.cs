@@ -11,6 +11,7 @@ public class KanbanTaskService : IKanbanTaskService
         new KanbanTask(2, "Task_2", null, KanbanTask.TaskStatus.Waiting),
         new KanbanTask(3, "Task_3", null, KanbanTask.TaskStatus.Waiting),
     };
+    private int _lastId = 3;
     public async Task<List<KanbanTask>> GetKanbanTasks()
     {
         return KanbanTasks;
@@ -22,6 +23,8 @@ public class KanbanTaskService : IKanbanTaskService
     }
     public async Task<KanbanTask> CreateKanbanTask(KanbanTask kanbanTask)
     {
+        //todo: better unique id method
+        kanbanTask.Id = ++_lastId;
         KanbanTasks.Add(kanbanTask);
         return kanbanTask;
     }
