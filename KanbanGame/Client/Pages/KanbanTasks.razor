@@ -1,0 +1,68 @@
+@page "/kanbanTasks"
+@inject IKanbanTaskService KanbanTaskService
+@inject NavigationManager NavigationManager
+
+<h3>Tasks</h3>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Id</th>
+            <th>Title</th>
+            <th>Description</th>
+            <th>Status</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var task in KanbanTaskService.KanbanTasks)
+        {
+            <tr>
+                <td>@task.Id</td>
+                <td>@task.Title</td>
+                <td>@task.Description</td>
+                <td>@task.Status</td>
+                <td>
+                    <button class="btn btn-primary"
+                        @onclick="(() => ShowKanbanTask(task.Id))">
+                        <i class="oi oi-pencil"></i>
+                    </button>
+                    <button class="btn btn-danger"
+                        @onclick="(() => DeleteKanbanTask(task.Id))">
+                        <i class="oi oi-trash"></i>
+                    </button>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+<button class="btn btn-primary"
+        @onclick="CreateNewKanbanTask">
+    Create New Product
+</button>
+
+@code {
+    protected override async Task OnInitializedAsync()
+    {
+        await KanbanTaskService.GetKanbanTasks();
+    }
+
+    void ShowKanbanTask(int id)
+    {
+        NavigationManager.NavigateTo($"kanbanTask/{id}");
+    }
+
+    void CreateNewKanbanTask()
+    {
+        NavigationManager.NavigateTo("/kanbanTask");
+    }
+    async Task DeleteKanbanTask(int kanbanTaskId)
+    {
+        await KanbanTaskService.DeleteKanbanTask(kanbanTaskId);
+        // opt1: faster - manualy remove element from list - no reload but problems
+        KanbanTaskService.KanbanTasks.RemoveAll(t => t.Id == kanbanTaskId);
+
+        // opt2: slow - remove only using service, but page needs force reload
+        // NavigationManager.NavigateTo("/kanbanTasks", true); 
+    }
+}

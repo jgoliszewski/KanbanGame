@@ -1,0 +1,85 @@
+@page "/kanbanTask"
+@page "/kanbanTask/{id:int}"
+@inject IKanbanTaskService KanbanTaskService
+@inject NavigationManager NavigationManager
+
+@if (Id is null)
+{
+    <PageTitle>Create a new Task</PageTitle>
+    <h3>Create a new Task</h3>
+}
+else
+{
+    <PageTitle>Edit @kanbanTask.Title</PageTitle>
+    <h3>Edit @kanbanTask.Title</h3>
+}
+
+<EditForm Model="kanbanTask" OnSubmit="HandleSubmit">
+    <div>
+        <label for="title">Title</label>
+        <InputText id="title" @bind-Value="kanbanTask.Title" class="form-control" />
+    </div>
+    <div>
+        <label for="description">Description</label>
+        <InputText id="category" @bind-Value="kanbanTask.Description" class="form-control" />
+    </div>
+    <div>
+        <label for="status">Status</label>
+        <InputSelect id="status" @bind-Value="kanbanTask.Status" class="form-control">
+            @foreach (var status in Enum.GetValues(typeof(KanbanGame.Shared.KanbanTask.TaskStatus)))
+            {
+                <option value="@status">@status</option>
+            }
+        </InputSelect>
+    </div>
+    <br />
+    <button type="submit" class="btn btn-primary">@btnText</button>
+    <button type="button" class="btn btn-danger"
+            @onclick="DeleteKanbanTask">
+        Delete Task
+    </button>
+</EditForm>
+
+@code {
+    
+    [Parameter]
+    public int? Id { get; set; }
+    string btnText = string.Empty;
+
+    KanbanGame.Shared.KanbanTask kanbanTask =
+        new KanbanGame.Shared.KanbanTask(0,"New Task", "Description", KanbanGame.Shared.KanbanTask.TaskStatus.Waiting);
+
+    protected override void OnInitialized()
+    {
+        btnText = Id == null ? "Save New Task" : "Update Task";
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (Id is not null)
+        {
+            var result = await KanbanTaskService.GetKanbanTaskById((int)Id);
+            if (result is not null)
+                kanbanTask = result;
+            else
+                NavigationManager.NavigateTo("/kanbanTask");
+        }
+    }
+
+    async Task HandleSubmit()
+    {
+        if (Id is null)
+        {
+            await KanbanTaskService.CreateKanbanTask(kanbanTask);
+        }
+        else
+        {
+            await KanbanTaskService.UpdateKanbanTask((int)Id, kanbanTask);
+        }
+    }
+
+    async Task DeleteKanbanTask()
+    {
+        await KanbanTaskService.DeleteKanbanTask(kanbanTask.Id);
+    }
+}
