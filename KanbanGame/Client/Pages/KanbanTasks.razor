@@ -1,6 +1,7 @@
 @page "/kanbanTasks"
 @inject IKanbanTaskService KanbanTaskService
 @inject NavigationManager NavigationManager
+@implements IAsyncDisposable
 
 <h3>Tasks</h3>
 
@@ -42,14 +43,33 @@
 </button>
 
 @code {
+    private HubConnection? hubConnection;
+
     protected override async Task OnInitializedAsync()
     {
         await KanbanTaskService.GetKanbanTasks();
+        await Connect();
     }
 
+    private async Task Connect()
+    {
+        hubConnection = new HubConnectionBuilder()
+            .WithUrl(NavigationManager.ToAbsoluteUri("/kanbanTaskHub"))
+            .Build();
+    
+        await hubConnection.StartAsync();
+
+        hubConnection.On<int>("KanbanTaskListUpdated", async (kanbanTaskId) => 
+            {
+                // reload data
+                await KanbanTaskService.GetKanbanTasks();
+                StateHasChanged();
+            });
+    }
+    
     void ShowKanbanTask(int id)
     {
-        NavigationManager.NavigateTo($"kanbanTask/{id}");
+        NavigationManager.NavigateTo($"/kanbanTask/{id}");
     }
 
     void CreateNewKanbanTask()
@@ -59,10 +79,24 @@
     async Task DeleteKanbanTask(int kanbanTaskId)
     {
         await KanbanTaskService.DeleteKanbanTask(kanbanTaskId);
+
         // opt1: faster - manualy remove element from list - no reload but problems
         KanbanTaskService.KanbanTasks.RemoveAll(t => t.Id == kanbanTaskId);
 
         // opt2: slow - remove only using service, but page needs force reload
         // NavigationManager.NavigateTo("/kanbanTasks", true); 
+
+        if(hubConnection is not null)
+        {
+            await hubConnection.SendAsync("UpdateKanbanTaskList", 0);
+        }
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        if (hubConnection != null)
+        {
+            await hubConnection.DisposeAsync();
+        }
     }
 }

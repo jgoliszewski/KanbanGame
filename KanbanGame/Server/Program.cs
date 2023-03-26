@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.ResponseCompression;
 using KanbanGame.Server.Services;
+using KanbanGame.Server.Hubs;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -9,9 +10,16 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
 builder.Services.AddSingleton<IKanbanTaskService, KanbanTaskService>();
 builder.Services.AddSingleton<IEmployeeService, EmployeeService>();
-
+builder.Services.AddSignalR();
+// builder.Services.AddResponseCompression(options =>
+//     options.MimeTypes = ResponseCompressionDefaults
+//     .MimeTypes
+//     .Concat(new[] { "application/octet-stream" })
+// );
 
 var app = builder.Build();
+
+// app.UseResponseCompression();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -35,6 +43,7 @@ app.UseRouting();
 
 app.MapRazorPages();
 app.MapControllers();
+app.MapHub<KanbanTaskHub>("/kanbanTaskHub");
 app.MapFallbackToFile("index.html");
 
 app.Run();

@@ -45,15 +45,24 @@ else
     [Parameter]
     public int? Id { get; set; }
     string btnText = string.Empty;
+    private HubConnection? hubConnection;
 
     KanbanGame.Shared.KanbanTask kanbanTask =
         new KanbanGame.Shared.KanbanTask(0,"New Task", "Description", KanbanGame.Shared.KanbanTask.TaskStatus.Waiting);
 
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
         btnText = Id == null ? "Save New Task" : "Update Task";
+        await Connect();
     }
-
+    private async Task Connect()
+    {
+        hubConnection = new HubConnectionBuilder()
+            .WithUrl(NavigationManager.ToAbsoluteUri("/kanbanTaskHub"))
+            .Build();
+    
+        await hubConnection.StartAsync();
+    }
     protected override async Task OnParametersSetAsync()
     {
         if (Id is not null)
@@ -76,10 +85,18 @@ else
         {
             await KanbanTaskService.UpdateKanbanTask((int)Id, kanbanTask);
         }
+        if(hubConnection is not null)
+        {
+            await hubConnection.SendAsync("UpdateKanbanTaskList", 0);
+        }
     }
 
     async Task DeleteKanbanTask()
     {
         await KanbanTaskService.DeleteKanbanTask(kanbanTask.Id);
+        if(hubConnection is not null)
+        {
+            await hubConnection.SendAsync("UpdateKanbanTaskList", 0);
+        }
     }
 }
