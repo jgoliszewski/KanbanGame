@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.ResponseCompression;
+using KanbanGame.Server.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -6,6 +7,9 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
+builder.Services.AddSingleton<IKanbanTaskService, KanbanTaskService>();
+builder.Services.AddSingleton<IEmployeeService, EmployeeService>();
+
 
 var app = builder.Build();
 
