@@ -5,13 +5,9 @@ namespace KanbanGame.Server.Services;
 public class KanbanTaskService : IKanbanTaskService
 {
     //todo: extract list to repository class
-    public List<KanbanTask> KanbanTasks = new List<KanbanTask>{
-        new KanbanTask(0, "Task_0", null, KanbanTask.TaskStatus.Waiting),
-        new KanbanTask(1, "Task_1", null, KanbanTask.TaskStatus.Waiting),
-        new KanbanTask(2, "Task_2", null, KanbanTask.TaskStatus.Waiting),
-        new KanbanTask(3, "Task_3", null, KanbanTask.TaskStatus.Waiting),
-    };
-    private int _lastId = 3;
+    public List<KanbanTask> KanbanTasks = new List<KanbanTask>();
+
+    private int _lastId = 0;
     public async Task<List<KanbanTask>> GetKanbanTasks()
     {
         return KanbanTasks;
@@ -24,7 +20,7 @@ public class KanbanTaskService : IKanbanTaskService
     public async Task<KanbanTask> CreateKanbanTask(KanbanTask kanbanTask)
     {
         //todo: better unique id method
-        kanbanTask.Id = ++_lastId;
+        kanbanTask.Id = _lastId++;
         KanbanTasks.Add(kanbanTask);
         return kanbanTask;
     }

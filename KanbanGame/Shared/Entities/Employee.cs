@@ -7,14 +7,6 @@ public class Employee
     public EmployeeSeniority Seniority { get; set; } = EmployeeSeniority.Junior;
     public EmployeeStatus Status { get; set; } = EmployeeStatus.NotWorking;
 
-    public Employee(int id, string name, EmployeeSeniority seniority, EmployeeStatus status)
-    {
-        Id = id;
-        Name = name;
-        Seniority = seniority;
-        Status = status;
-    }
-
     //todod: extract seniority to separate class
     public enum EmployeeSeniority
     {

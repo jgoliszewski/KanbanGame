@@ -20,14 +20,6 @@ public class KanbanTask
         Doing,
         Done
     }
-
-    public KanbanTask(int id, string title, string description, TaskStatus status)
-    {
-        Id = id;
-        Title = title;
-        Description = description;
-        Status = status;
-    }
     public void AddAssignee(int employeeId, Employee employee)
     {
         this.EmployeeId = employeeId;

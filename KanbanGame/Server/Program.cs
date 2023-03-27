@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.ResponseCompression;
 using KanbanGame.Server.Services;
 using KanbanGame.Server.Hubs;
+using KanbanGame.Server.Seeder;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,6 +17,7 @@ builder.Services.AddResponseCompression(options =>
     .MimeTypes
     .Concat(new[] { "application/octet-stream" })
 );
+builder.Services.AddScoped<DbSeeder>();
 
 var app = builder.Build();
 
@@ -32,6 +34,14 @@ else
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
+
+var scopedFactory = app.Services.GetService<IServiceScopeFactory>();
+using (var scope = scopedFactory.CreateScope())
+{
+    var service = scope.ServiceProvider.GetService<DbSeeder>();
+    service.Seed();
+}
+
 
 app.UseHttpsRedirection();
 

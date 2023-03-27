@@ -59,7 +59,12 @@ else
     private HubConnection? hubConnection;
 
     KanbanGame.Shared.KanbanTask kanbanTask =
-        new KanbanGame.Shared.KanbanTask(0, "New Task", "Description", KanbanGame.Shared.KanbanTask.TaskStatus.Waiting);
+        new KanbanGame.Shared.KanbanTask{
+            Id = 0,
+            Title = "New Task",
+            Description = "Description",
+            Status = KanbanGame.Shared.KanbanTask.TaskStatus.Waiting
+        };
 
     protected override async Task OnInitializedAsync()
     {
