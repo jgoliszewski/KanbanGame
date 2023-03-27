@@ -8,10 +8,12 @@
 <table class="table">
     <thead>
         <tr>
-            <th>Id</th>
+            <th>Task Id</th>
             <th>Title</th>
             <th>Description</th>
             <th>Status</th>
+            <th>Assignee Id</th>
+            <th>Assignee</th>
             <th></th>
         </tr>
     </thead>
@@ -23,6 +25,8 @@
                 <td>@task.Title</td>
                 <td>@task.Description</td>
                 <td>@task.Status</td>
+                <td>@task.EmployeeId</td>
+                <td>@(@task.Employee is null ? "" : @task.Employee.Name)</td>
                 <td>
                     <button class="btn btn-primary"
                         @onclick="(() => ShowKanbanTask(task.Id))">

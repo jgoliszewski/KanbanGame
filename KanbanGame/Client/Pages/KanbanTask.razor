@@ -1,17 +1,18 @@
 @page "/kanbanTask"
 @page "/kanbanTask/{id:int}"
 @inject IKanbanTaskService KanbanTaskService
+@inject IEmployeeService EmployeeService
 @inject NavigationManager NavigationManager
 
 @if (Id is null)
 {
-    <PageTitle>Create a new Task</PageTitle>
-    <h3>Create a new Task</h3>
+        <PageTitle>Create a new Task</PageTitle>
+        <h3>Create a new Task</h3>
 }
 else
 {
-    <PageTitle>Edit @kanbanTask.Title</PageTitle>
-    <h3>Edit @kanbanTask.Title</h3>
+        <PageTitle>Edit @kanbanTask.Title</PageTitle>
+        <h3>Edit @kanbanTask.Title</h3>
 }
 
 <EditForm Model="kanbanTask" OnSubmit="HandleSubmit">
@@ -28,7 +29,17 @@ else
         <InputSelect id="status" @bind-Value="kanbanTask.Status" class="form-control">
             @foreach (var status in Enum.GetValues(typeof(KanbanGame.Shared.KanbanTask.TaskStatus)))
             {
-                <option value="@status">@status</option>
+                    <option value="@status">@status</option>
+            }
+        </InputSelect>
+    </div>
+    <div>
+        <label for="employee">Employee</label>
+        <InputSelect id="employee" @bind-Value="kanbanTask.EmployeeId" class="form-control">
+            <option value="-1"></option>
+            @foreach (var employee in EmployeeService.Employees)
+            {
+                    <option value="@employee.Id">@employee.Name</option>
             }
         </InputSelect>
     </div>
@@ -41,17 +52,18 @@ else
 </EditForm>
 
 @code {
-    
+
     [Parameter]
     public int? Id { get; set; }
     string btnText = string.Empty;
     private HubConnection? hubConnection;
 
     KanbanGame.Shared.KanbanTask kanbanTask =
-        new KanbanGame.Shared.KanbanTask(0,"New Task", "Description", KanbanGame.Shared.KanbanTask.TaskStatus.Waiting);
+        new KanbanGame.Shared.KanbanTask(0, "New Task", "Description", KanbanGame.Shared.KanbanTask.TaskStatus.Waiting);
 
     protected override async Task OnInitializedAsync()
     {
+        await EmployeeService.GetEmployees();
         btnText = Id == null ? "Save New Task" : "Update Task";
         await Connect();
     }
@@ -60,7 +72,7 @@ else
         hubConnection = new HubConnectionBuilder()
             .WithUrl(NavigationManager.ToAbsoluteUri("/kanbanTaskHub"))
             .Build();
-    
+
         await hubConnection.StartAsync();
     }
     protected override async Task OnParametersSetAsync()
@@ -77,6 +89,16 @@ else
 
     async Task HandleSubmit()
     {
+        if(kanbanTask.EmployeeId != -1) // check if Employee is selectd
+        {
+            kanbanTask.Employee = EmployeeService.Employees.Where(e => e.Id == kanbanTask.EmployeeId).FirstOrDefault();
+        }
+        else
+        {
+            kanbanTask.Employee = null;
+            kanbanTask.EmployeeId = null;
+        }
+
         if (Id is null)
         {
             await KanbanTaskService.CreateKanbanTask(kanbanTask);
@@ -85,7 +107,7 @@ else
         {
             await KanbanTaskService.UpdateKanbanTask((int)Id, kanbanTask);
         }
-        if(hubConnection is not null)
+        if (hubConnection is not null)
         {
             await hubConnection.SendAsync("UpdateKanbanTaskList", 0);
         }
@@ -94,7 +116,7 @@ else
     async Task DeleteKanbanTask()
     {
         await KanbanTaskService.DeleteKanbanTask(kanbanTask.Id);
-        if(hubConnection is not null)
+        if (hubConnection is not null)
         {
             await hubConnection.SendAsync("UpdateKanbanTaskList", 0);
         }
