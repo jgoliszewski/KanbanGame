@@ -1,9 +1,19 @@
 @page "/board"
+@inject IKanbanTaskService KanbanTaskService
+@inject NavigationManager NavigationManager
 
-<h3>Tasks</h3>
-
-
+<SfKanban TValue="KanbanGame.Shared.KanbanTask" KeyField="StatusString" DataSource="KanbanTaskService.KanbanTasks">
+    <KanbanColumns>
+        <KanbanColumn HeaderText="Waiting" KeyField="@(new List<string>() {"Waiting"})"></KanbanColumn>
+        <KanbanColumn HeaderText="Doing" KeyField="@(new List<string>() {"Doing"})"></KanbanColumn>
+        <KanbanColumn HeaderText="Done" KeyField="@(new List<string>() {"Done"})"></KanbanColumn>
+    </KanbanColumns>
+    <KanbanCardSettings HeaderField="Title" ContentField="Summary"></KanbanCardSettings>
+</SfKanban>
 
 @code {
-
+    protected override async Task OnInitializedAsync()
+    {
+        await KanbanTaskService.GetKanbanTasks();
+    }
 }
