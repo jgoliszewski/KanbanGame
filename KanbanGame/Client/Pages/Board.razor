@@ -1,19 +1,96 @@
 @page "/board"
 @inject IKanbanTaskService KanbanTaskService
 @inject NavigationManager NavigationManager
+@implements IAsyncDisposable
 
-<SfKanban TValue="KanbanGame.Shared.KanbanTask" KeyField="StatusString" DataSource="KanbanTaskService.KanbanTasks">
+<SfKanban TValue="KanbanGame.Shared.KanbanTask" KeyField="StatusString" DataSource="KanbanTaskService.KanbanTasks" EnableTooltip="@IsEnableTooltip"> 
     <KanbanColumns>
         <KanbanColumn HeaderText="Waiting" KeyField="@(new List<string>() {"Waiting"})"></KanbanColumn>
         <KanbanColumn HeaderText="Doing" KeyField="@(new List<string>() {"Doing"})"></KanbanColumn>
         <KanbanColumn HeaderText="Done" KeyField="@(new List<string>() {"Done"})"></KanbanColumn>
     </KanbanColumns>
     <KanbanCardSettings HeaderField="Title" ContentField="Summary"></KanbanCardSettings>
+    <KanbanTemplates>
+            <TooltipTemplate>
+                @{
+                    KanbanGame.Shared.KanbanTask card = (KanbanGame.Shared.KanbanTask)context;
+                    <div class='e-kanbantooltiptemp'>
+                        <table>
+                            <tr>
+                                <td class="details">
+                                    <table>
+                                        <colgroup>
+                                            <col style="width:40%">
+                                            <col style="width:60%">
+                                        </colgroup>
+                                        <tbody>
+                                            <tr>
+                                                <td class="CardHeader">Id:</td>
+                                                <td>@card.Id</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="CardHeader">Title:</td>
+                                                <td>@card.Title</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="CardHeader">Desc:</td>
+                                                <td>@card.Description</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="CardHeader">Status:</td>
+                                                <td>@card.Status</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="CardHeader">Assignee Id:</td>
+                                                <td>@card.EmployeeId</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="CardHeader">Assignee:</td>
+                                                <td>@card.Employee.Name</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                }
+            </TooltipTemplate>
+        </KanbanTemplates>
 </SfKanban>
 
 @code {
+    private bool IsEnableTooltip = true;
+    private HubConnection? hubConnection;
+
     protected override async Task OnInitializedAsync()
     {
         await KanbanTaskService.GetKanbanTasks();
+        await Connect();
+    }
+
+    private async Task Connect()
+    {
+        hubConnection = new HubConnectionBuilder()
+            .WithUrl(NavigationManager.ToAbsoluteUri("/kanbanTaskHub"))
+            .Build();
+    
+        await hubConnection.StartAsync();
+
+        hubConnection.On<int>("KanbanTaskListUpdated", async (kanbanTaskId) => 
+            {
+                // reload data
+                await KanbanTaskService.GetKanbanTasks();
+                StateHasChanged();
+            });
+    }
+
+
+    public async ValueTask DisposeAsync()
+    {
+        if (hubConnection != null)
+        {
+            await hubConnection.DisposeAsync();
+        }
     }
 }
