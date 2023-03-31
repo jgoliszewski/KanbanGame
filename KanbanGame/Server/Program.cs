@@ -27,6 +27,7 @@ app.UseResponseCompression();
 if (app.Environment.IsDevelopment())
 {
     app.UseWebAssemblyDebugging();
+    // app.UseStaticFiles();
 }
 else
 {

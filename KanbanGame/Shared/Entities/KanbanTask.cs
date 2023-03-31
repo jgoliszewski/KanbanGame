@@ -6,6 +6,7 @@ public class KanbanTask
     public string Title { get; set; }
     public string? Description { get; set; }
     public TaskStatus Status { get; set; }
+    public string StatusString { get => Status.ToString(); } // for Syncfunction
     public int? EmployeeId { get; set; }
     public Employee? Employee { get; set; }
 
