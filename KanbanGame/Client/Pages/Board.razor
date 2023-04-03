@@ -9,6 +9,7 @@
         <KanbanColumn HeaderText="Doing" KeyField="@(new List<string>() {"Doing"})"></KanbanColumn>
         <KanbanColumn HeaderText="Done" KeyField="@(new List<string>() {"Done"})"></KanbanColumn>
     </KanbanColumns>
+    <KanbanEvents TValue="KanbanGame.Shared.KanbanTask" DragStop="@DragStopHandler"></KanbanEvents>
     <KanbanCardSettings HeaderField="Title" ContentField="Summary">
         <Template>
             @{
@@ -128,6 +129,16 @@
                 });
     }
 
+    async Task DragStopHandler(DragEventArgs<KanbanGame.Shared.KanbanTask> args)
+    {
+        KanbanGame.Shared.KanbanTask draggedTask = args.Data[0];
+        
+        await KanbanTaskService.UpdateKanbanTask(draggedTask.Id, draggedTask);
+        if (hubConnection is not null)
+        {
+            await hubConnection.SendAsync("UpdateKanbanTaskList", 0);
+        }
+    }
 
     public async ValueTask DisposeAsync()
     {
