@@ -21,7 +21,7 @@
         {
             <tr>
                 <td>@employee.Id</td>
-                <td><img src="@($"Avatars/{employee.Name}.png")" onerror="@($"this.src='Avatars/Default.png';")" style="width:32px"></td> @*todo: find better solution for default image*@
+                <td><img src=@(employee.AvatarPath == null ? "Avatars/Default.png" : employee.AvatarPath) style="width:32px"></td>
                 <td>@employee.Name</td>
                 <td>@employee.Seniority</td>
                 <td>@employee.Status</td>

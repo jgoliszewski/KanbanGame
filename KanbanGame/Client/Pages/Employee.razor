@@ -11,7 +11,7 @@
 else
 {
     <PageTitle>Edit @employee.Name</PageTitle>
-    <h3>Edit @employee.Name <img src="@($"Avatars/{employee.Name}.png")" onerror="@($"this.src='Avatars/Default.png';")" style="height:64px; padding-left: 32px"></h3> @*todo: find better solution for default image*@
+    <h3>Edit @employee.Name <img src=@(employee.AvatarPath == null ? "Avatars/Default.png" : employee.AvatarPath) style="height:64px; padding-left: 32px"></h3>
 }
 
 <EditForm Model="employee" OnSubmit="HandleSubmit">

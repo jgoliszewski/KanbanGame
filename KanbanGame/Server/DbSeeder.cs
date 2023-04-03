@@ -17,33 +17,38 @@ public class DbSeeder
     private List<Employee> Employees = new List<Employee>(){
         new Employee(){
             Id = 0,
-            Name = "Cthulhu",
+            Name = "Tom",
             Seniority = Employee.EmployeeSeniority.Junior,
-            Status = Employee.EmployeeStatus.Working
+            Status = Employee.EmployeeStatus.Working,
+            AvatarPath = "Avatars/Cthulhu.png"
         },
         new Employee(){
             Id = 1,
-            Name = "Witch",
+            Name = "Olivia",
             Seniority = Employee.EmployeeSeniority.Senior,
-            Status = Employee.EmployeeStatus.Working
+            Status = Employee.EmployeeStatus.Working,
+            AvatarPath = "Avatars/Witch.png"
         },
         new Employee(){
             Id = 2,
-            Name = "Yeti",
+            Name = "John",
             Seniority = Employee.EmployeeSeniority.Junior,
-            Status = Employee.EmployeeStatus.Learning
+            Status = Employee.EmployeeStatus.Learning,
+            AvatarPath = "Avatars/Yeti.png"
         },
         new Employee(){
             Id = 3,
-            Name = "Medusa",
+            Name = "Emma",
             Seniority = Employee.EmployeeSeniority.Mid,
-            Status = Employee.EmployeeStatus.Working
+            Status = Employee.EmployeeStatus.Working,
+            AvatarPath = "Avatars/Medusa.png"
         },
         new Employee(){
             Id = 4,
-            Name = "Mummy",
+            Name = "Arthur",
             Seniority = Employee.EmployeeSeniority.Junior,
-            Status = Employee.EmployeeStatus.NotWorking
+            Status = Employee.EmployeeStatus.NotWorking,
+            AvatarPath = "Avatars/Mummy.png"
         },
     };
     private List<KanbanTask> KanbanTasks = new List<KanbanTask>(){
