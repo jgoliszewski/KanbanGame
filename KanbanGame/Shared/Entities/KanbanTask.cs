@@ -6,7 +6,14 @@ public class KanbanTask
     public string Title { get; set; }
     public string? Description { get; set; }
     public TaskStatus Status { get; set; }
-    public string StatusString { get => Status.ToString(); } // for Syncfunction
+    public string StatusString
+    {
+        get => Status.ToString();
+        set
+        {
+            Status = (TaskStatus)Enum.Parse(typeof(TaskStatus), value);
+        }
+    } // for Syncfunction
     public int? EmployeeId { get; set; }
     public Employee? Employee { get; set; }
 
