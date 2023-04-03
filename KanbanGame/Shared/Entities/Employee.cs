@@ -6,6 +6,7 @@ public class Employee
     public string Name { get; set; }
     public EmployeeSeniority Seniority { get; set; } = EmployeeSeniority.Junior;
     public EmployeeStatus Status { get; set; } = EmployeeStatus.NotWorking;
+    public string AvatarPath { get; set; }
 
     //todod: extract seniority to separate class
     public enum EmployeeSeniority
