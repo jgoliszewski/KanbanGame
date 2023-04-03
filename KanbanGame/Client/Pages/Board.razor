@@ -9,55 +9,98 @@
         <KanbanColumn HeaderText="Doing" KeyField="@(new List<string>() {"Doing"})"></KanbanColumn>
         <KanbanColumn HeaderText="Done" KeyField="@(new List<string>() {"Done"})"></KanbanColumn>
     </KanbanColumns>
-    <KanbanCardSettings HeaderField="Title" ContentField="Summary"></KanbanCardSettings>
-    <KanbanTemplates>
-            <TooltipTemplate>
-                @{
-                    KanbanGame.Shared.KanbanTask card = (KanbanGame.Shared.KanbanTask)context;
-                    <div class='e-kanbantooltiptemp'>
-                        <table>
-                            <tr>
-                                <td class="details">
-                                    <table>
-                                        <colgroup>
-                                            <col style="width:40%">
-                                            <col style="width:60%">
-                                        </colgroup>
-                                        <tbody>
-                                            <tr>
-                                                <td class="CardHeader">Id:</td>
-                                                <td>@card.Id</td>
-                                            </tr>
-                                            <tr>
-                                                <td class="CardHeader">Title:</td>
-                                                <td>@card.Title</td>
-                                            </tr>
-                                            <tr>
-                                                <td class="CardHeader">Desc:</td>
-                                                <td>@card.Description</td>
-                                            </tr>
-                                            <tr>
-                                                <td class="CardHeader">Status:</td>
-                                                <td>@card.Status</td>
-                                            </tr>
-                                            <tr>
-                                                <td class="CardHeader">Assignee Id:</td>
-                                                <td>@card.EmployeeId</td>
-                                            </tr>
-                                            <tr>
-                                                <td class="CardHeader">Assignee:</td>
-                                                <td>@card.Employee.Name</td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </td>
-                            </tr>
-                        </table>
-                    </div>
+    <KanbanCardSettings HeaderField="Title" ContentField="Summary">
+        <Template>
+            @{
+                KanbanGame.Shared.KanbanTask card = (KanbanGame.Shared.KanbanTask)context;
+
+                <table class="card-template-wrap table-fixed-layout">
+                    <colgroup>
+                        <col style="width:30%">
+                        <col style="width:70%">
+                    </colgroup>
+                    <tbody>
+                        <tr>
+                            <td class="e-image">
+                                <img src=@(card.Employee == null ? "Avatars/Default.png" : card.Employee.AvatarPath) style="width:64px" alt="logo" />
+                            </td>
+                            <td class="e-title">
+                                    <div class="e-card-header">
+                                        <div class="e-tooltip-text">@card.Title</div>
+                                    </div>
+                                    <div class="e-card-content" style="line-height:2.75em">
+                                        <div class="e-description">@card.Description</div>
+                                    </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table> 
+
                 }
-            </TooltipTemplate>
-        </KanbanTemplates>
+        </Template>
+    </KanbanCardSettings>
+    <KanbanTemplates>
+        <TooltipTemplate>
+            @{
+                KanbanGame.Shared.KanbanTask card = (KanbanGame.Shared.KanbanTask)context;
+                <div class='e-kanbantooltiptemp'>
+                    <table>
+                        <tr>
+                            <td class="details">
+                                <table>
+                                    <colgroup>
+                                        <col style="width:40%">
+                                        <col style="width:60%">
+                                    </colgroup>
+                                    <tbody>
+                                        <tr>
+                                            <td class="CardHeader">Id:</td>
+                                            <td>@card.Id</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="CardHeader">Title:</td>
+                                            <td>@card.Title</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="CardHeader">Desc:</td>
+                                            <td>@card.Description</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="CardHeader">Status:</td>
+                                            <td>@card.Status</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="CardHeader">Assignee Id:</td>
+                                            <td>@card.EmployeeId</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="CardHeader">Assignee:</td>
+                                            <td>@card.Employee.Name</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            }
+        </TooltipTemplate>
+    </KanbanTemplates>
 </SfKanban>
+
+<style>
+.e-kanban .card-template-wrap {
+    line-height: normal;
+    font-size: 12px;
+    width: 100%;
+}
+
+.e-kanban .e-card-header {
+        font-size: 15px;
+        font-weight: 500;
+        display: inline-block;
+    }
+</style>
 
 @code {
     private bool IsEnableTooltip = true;
@@ -72,17 +115,17 @@
     private async Task Connect()
     {
         hubConnection = new HubConnectionBuilder()
-            .WithUrl(NavigationManager.ToAbsoluteUri("/kanbanTaskHub"))
-            .Build();
-    
+                .WithUrl(NavigationManager.ToAbsoluteUri("/kanbanTaskHub"))
+                .Build();
+
         await hubConnection.StartAsync();
 
-        hubConnection.On<int>("KanbanTaskListUpdated", async (kanbanTaskId) => 
-            {
-                // reload data
-                await KanbanTaskService.GetKanbanTasks();
-                StateHasChanged();
-            });
+        hubConnection.On<int>("KanbanTaskListUpdated", async (kanbanTaskId) =>
+                {
+                    // reload data
+                    await KanbanTaskService.GetKanbanTasks();
+                    StateHasChanged();
+                });
     }
 
 
@@ -90,7 +133,7 @@
     {
         if (hubConnection != null)
         {
-            await hubConnection.DisposeAsync();
+                await hubConnection.DisposeAsync();
         }
     }
 }
