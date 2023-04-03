@@ -94,6 +94,7 @@ else
         else
         {
             await EmployeeService.UpdateEmployee((int)Id, employee);
+            NavigationManager.NavigateTo("/employees");
         }
         if(hubConnection is not null)
         {

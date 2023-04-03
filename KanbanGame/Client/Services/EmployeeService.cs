@@ -41,7 +41,6 @@ public class EmployeeService : IEmployeeService
     public async Task UpdateEmployee(int employeeId, Employee employee)
     {
         await _http.PutAsJsonAsync($"api/employee/{employeeId}", employee);
-        _navigationManger.NavigateTo("employees");
     }
     public async Task DeleteEmployee(int employeeId)
     {

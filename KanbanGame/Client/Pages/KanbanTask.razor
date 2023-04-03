@@ -111,6 +111,7 @@ else
         else
         {
             await KanbanTaskService.UpdateKanbanTask((int)Id, kanbanTask);
+            NavigationManager.NavigateTo("kanbanTasks");
         }
         if (hubConnection is not null)
         {

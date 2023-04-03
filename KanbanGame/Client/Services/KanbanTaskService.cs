@@ -41,7 +41,6 @@ public class KanbanTaskService : IKanbanTaskService
     public async Task UpdateKanbanTask(int kanbanTaskId, KanbanTask kanbanTask)
     {
         await _http.PutAsJsonAsync($"api/kanbanTask/{kanbanTaskId}", kanbanTask);
-        _navigationManger.NavigateTo("kanbanTasks");
     }
     public async Task DeleteKanbanTask(int kanbanTaskId)
     {
