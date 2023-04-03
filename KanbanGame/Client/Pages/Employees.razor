@@ -8,8 +8,8 @@
 <table class="table">
     <thead>
         <tr>
-            <th></th>
-            <th>Id</th>
+            <th style="width:64px">Id</th>
+            <th style="width:64px"></th>
             <th>Name</th>
             <th>Seniority</th>
             <th>Status</th>
@@ -20,8 +20,8 @@
         @foreach (var employee in EmployeeService.Employees)
         {
             <tr>
-                <td><img src="@($"Avatars/{employee.Name}.png")" onerror="@($"this.src='Avatars/Default.png';")" style="width:32px"></td> @*todo: find better solution for default image*@
                 <td>@employee.Id</td>
+                <td><img src="@($"Avatars/{employee.Name}.png")" onerror="@($"this.src='Avatars/Default.png';")" style="width:32px"></td> @*todo: find better solution for default image*@
                 <td>@employee.Name</td>
                 <td>@employee.Seniority</td>
                 <td>@employee.Status</td>
