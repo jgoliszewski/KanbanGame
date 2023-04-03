@@ -8,6 +8,7 @@
 <table class="table">
     <thead>
         <tr>
+            <th></th>
             <th>Id</th>
             <th>Name</th>
             <th>Seniority</th>
@@ -19,6 +20,7 @@
         @foreach (var employee in EmployeeService.Employees)
         {
             <tr>
+                <td><img src="@($"Avatars/{employee.Name}.png")" onerror="@($"this.src='Avatars/Default.png';")" style="width:32px"></td> @*todo: find better solution for default image*@
                 <td>@employee.Id</td>
                 <td>@employee.Name</td>
                 <td>@employee.Seniority</td>

@@ -17,31 +17,31 @@ public class DbSeeder
     private List<Employee> Employees = new List<Employee>(){
         new Employee(){
             Id = 0,
-            Name = "John",
+            Name = "Cthulhu",
             Seniority = Employee.EmployeeSeniority.Junior,
             Status = Employee.EmployeeStatus.Working
         },
         new Employee(){
             Id = 1,
-            Name = "Tom",
+            Name = "Witch",
             Seniority = Employee.EmployeeSeniority.Senior,
             Status = Employee.EmployeeStatus.Working
         },
         new Employee(){
             Id = 2,
-            Name = "Alice",
+            Name = "Yeti",
             Seniority = Employee.EmployeeSeniority.Junior,
             Status = Employee.EmployeeStatus.Learning
         },
         new Employee(){
             Id = 3,
-            Name = "Margaret",
+            Name = "Medusa",
             Seniority = Employee.EmployeeSeniority.Mid,
             Status = Employee.EmployeeStatus.Working
         },
         new Employee(){
             Id = 4,
-            Name = "Mark",
+            Name = "Mummy",
             Seniority = Employee.EmployeeSeniority.Junior,
             Status = Employee.EmployeeStatus.NotWorking
         },
