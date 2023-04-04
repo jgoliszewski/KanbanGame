@@ -9,14 +9,14 @@ public class CardService : ICardService
 {
     private readonly IKanbanTaskService _kanbanTaskService;
     private readonly IEmployeeService _employeeService;
-    public CardService(KanbanTaskService kanbanTaskService, EmployeeService employeeService)
+    public CardService(IKanbanTaskService kanbanTaskService, IEmployeeService employeeService)
     {
         _kanbanTaskService = kanbanTaskService;
         _employeeService = employeeService;
     }
     public List<Card> Cards { get; set; } = new List<Card>();
 
-    public async Task<List<Card>> GetCards()
+    public async Task GetCards()
     {
         await _kanbanTaskService.GetKanbanTasks();
         foreach (var t in _kanbanTaskService.KanbanTasks)
@@ -28,25 +28,16 @@ public class CardService : ICardService
         {
             Cards.Add(EmployeeToCard(e));
         }
-        return Cards;
     }
 
-    public Task GetCardsByColumnId()
-    {
-        throw new NotImplementedException();
-    }
-
-    Task<Employee?> ICardService.GetCardById(int employeeId)
-    {
-        throw new NotImplementedException();
-    }
-
+    private static int lastId = 0;
     private Card TaskToCard(KanbanTask kanbanTask)
     {
         var card = new Card()
         {
+            Id = lastId++,
             KanbanTask = kanbanTask,
-            StatusString = "Doing"
+            Column = "Backlog"
         };
         return card;
     }
@@ -55,8 +46,9 @@ public class CardService : ICardService
     {
         var card = new Card()
         {
+            Id = lastId++,
             Employee = employee,
-            StatusString = "Doing"
+            Column = "Doing"
         };
         return card;
     }
