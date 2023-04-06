@@ -75,7 +75,7 @@ else
     private async Task Connect()
     {
         hubConnection = new HubConnectionBuilder()
-            .WithUrl(NavigationManager.ToAbsoluteUri("/kanbanTaskHub"))
+            .WithUrl(NavigationManager.ToAbsoluteUri("/BoardHub"))
             .Build();
 
         await hubConnection.StartAsync();
@@ -115,7 +115,7 @@ else
         }
         if (hubConnection is not null)
         {
-            await hubConnection.SendAsync("UpdateKanbanTaskList", 0);
+            await hubConnection.SendAsync("UpdateBoard", 0);
         }
     }
 
@@ -124,7 +124,7 @@ else
         await KanbanTaskService.DeleteKanbanTask(kanbanTask.Id);
         if (hubConnection is not null)
         {
-            await hubConnection.SendAsync("UpdateKanbanTaskList", 0);
+            await hubConnection.SendAsync("UpdateBoard", 0);
         }
     }
 }

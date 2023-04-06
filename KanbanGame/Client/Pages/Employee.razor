@@ -68,7 +68,7 @@ else
     private async Task Connect()
     {
         hubConnection = new HubConnectionBuilder()
-            .WithUrl(NavigationManager.ToAbsoluteUri("/employeeHub"))
+            .WithUrl(NavigationManager.ToAbsoluteUri("/BoardHub"))
             .Build();
     
         await hubConnection.StartAsync();
@@ -98,7 +98,7 @@ else
         }
         if(hubConnection is not null)
         {
-            await hubConnection.SendAsync("UpdateEmployeeList", 0);
+            await hubConnection.SendAsync("UpdateBoard", 0);
         }
     }
 
@@ -107,7 +107,7 @@ else
         await EmployeeService.DeleteEmployee(employee.Id);
         if(hubConnection is not null)
         {
-            await hubConnection.SendAsync("UpdateEmployeeList", 0);
+            await hubConnection.SendAsync("UpdateBoard", 0);
         }
     }
 }

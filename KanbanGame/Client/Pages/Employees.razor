@@ -56,12 +56,12 @@
     private async Task Connect()
     {
         hubConnection = new HubConnectionBuilder()
-            .WithUrl(NavigationManager.ToAbsoluteUri("/EmployeeHub"))
+            .WithUrl(NavigationManager.ToAbsoluteUri("/BoardHub"))
             .Build();
     
         await hubConnection.StartAsync();
 
-        hubConnection.On<int>("EmployeeListUpdated", async (EmployeeId) => 
+        hubConnection.On<int>("BoardUpdated", async (boardId) => 
             {
                 // reload data
                 await EmployeeService.GetEmployees();
@@ -90,7 +90,7 @@
 
         if(hubConnection is not null)
         {
-            await hubConnection.SendAsync("UpdateEmployeeList", 0);
+            await hubConnection.SendAsync("UpdateBoard", 0);
         }
     }
     public async ValueTask DisposeAsync()

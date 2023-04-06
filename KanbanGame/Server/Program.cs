@@ -54,8 +54,7 @@ app.UseRouting();
 
 app.MapRazorPages();
 app.MapControllers();
-app.MapHub<KanbanTaskHub>("/kanbanTaskHub");
-app.MapHub<EmployeeHub>("/employeeHub");
+app.MapHub<BoardHub>("/BoardHub");
 app.MapFallbackToFile("index.html");
 
 app.Run();

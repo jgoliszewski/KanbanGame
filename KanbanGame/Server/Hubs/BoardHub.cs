@@ -3,14 +3,14 @@ using Microsoft.AspNetCore.SignalR;
 
 namespace KanbanGame.Server.Hubs;
 
-public class EmployeeHub : Hub
+public class BoardHub : Hub
 {
     public override async Task OnConnectedAsync()
     {
         await base.OnConnectedAsync();
     }
-    public async Task UpdateEmployeeList(int id)
+    public async Task UpdateBoard(int boardId)
     {
-        await Clients.All.SendAsync("EmployeeListUpdated", id);
+        await Clients.All.SendAsync("BoardUpdated", boardId);
     }
 }
