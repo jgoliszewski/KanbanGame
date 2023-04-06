@@ -14,10 +14,11 @@ public class CardService : ICardService
         _kanbanTaskService = kanbanTaskService;
         _employeeService = employeeService;
     }
-    public List<Card> Cards { get; set; } = new List<Card>();
+    public List<Card> Cards { get; set; }
 
     public async Task GetCards()
     {
+        Cards = new List<Card>();
         await _kanbanTaskService.GetKanbanTasks();
         foreach (var t in _kanbanTaskService.KanbanTasks)
         {
