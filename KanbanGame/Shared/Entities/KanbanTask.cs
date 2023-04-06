@@ -24,9 +24,13 @@ public class KanbanTask
 
     public enum TaskStatus
     {
-        Waiting,
-        Doing,
-        Done
+        Backlog,
+        Analysis,
+        DevelopmentWaiting,
+        DevelopmentDoing,
+        TestWaiting,
+        TestDoing,
+        Delivered
     }
     public void AddAssignee(int employeeId, Employee employee)
     {

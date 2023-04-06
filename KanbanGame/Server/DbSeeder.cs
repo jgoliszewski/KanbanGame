@@ -20,6 +20,7 @@ public class DbSeeder
             Name = "Tom",
             Seniority = Employee.EmployeeSeniority.Junior,
             Status = Employee.EmployeeStatus.Working,
+            CurrentRole = Employee.Role.Analyzer,
             AvatarPath = "Avatars/Cthulhu.png"
         },
         new Employee(){
@@ -27,6 +28,7 @@ public class DbSeeder
             Name = "Olivia",
             Seniority = Employee.EmployeeSeniority.Senior,
             Status = Employee.EmployeeStatus.Working,
+            CurrentRole = Employee.Role.Analyzer,
             AvatarPath = "Avatars/Witch.png"
         },
         new Employee(){
@@ -34,6 +36,7 @@ public class DbSeeder
             Name = "John",
             Seniority = Employee.EmployeeSeniority.Junior,
             Status = Employee.EmployeeStatus.Learning,
+            CurrentRole = Employee.Role.Developer,
             AvatarPath = "Avatars/Yeti.png"
         },
         new Employee(){
@@ -41,6 +44,7 @@ public class DbSeeder
             Name = "Emma",
             Seniority = Employee.EmployeeSeniority.Mid,
             Status = Employee.EmployeeStatus.Working,
+            CurrentRole = Employee.Role.Developer,
             AvatarPath = "Avatars/Medusa.png"
         },
         new Employee(){
@@ -48,6 +52,7 @@ public class DbSeeder
             Name = "Arthur",
             Seniority = Employee.EmployeeSeniority.Junior,
             Status = Employee.EmployeeStatus.NotWorking,
+            CurrentRole = Employee.Role.Tester,
             AvatarPath = "Avatars/Mummy.png"
         },
     };
@@ -55,27 +60,27 @@ public class DbSeeder
             new KanbanTask{
                 Title = "Task nr0",
                 Description = "Task description",
-                Status = KanbanTask.TaskStatus.Waiting,
+                Status = KanbanTask.TaskStatus.Backlog,
             },
             new KanbanTask{
                 Title = "Task nr1",
                 Description = "Task description",
-                Status = KanbanTask.TaskStatus.Waiting
+                Status = KanbanTask.TaskStatus.Analysis
             },
             new KanbanTask{
                 Title = "Task nr2",
                 Description = "Task description",
-                Status = KanbanTask.TaskStatus.Waiting
+                Status = KanbanTask.TaskStatus.DevelopmentDoing
             },
             new KanbanTask{
                 Title = "Task nr3",
                 Description = "Task description",
-                Status = KanbanTask.TaskStatus.Doing
+                Status = KanbanTask.TaskStatus.TestDoing
             },
             new KanbanTask{
                 Title = "Task nr4",
                 Description = "Task description",
-                Status = KanbanTask.TaskStatus.Done
+                Status = KanbanTask.TaskStatus.TestDoing
             },
         };
 

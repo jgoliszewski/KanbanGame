@@ -38,7 +38,7 @@ public class CardService : ICardService
         {
             Id = lastId++,
             KanbanTask = kanbanTask,
-            Column = "Backlog"
+            Column = kanbanTask.StatusString
         };
         return card;
     }
@@ -49,7 +49,7 @@ public class CardService : ICardService
         {
             Id = lastId++,
             Employee = employee,
-            Column = "Delivered"
+            Column = employee.CurrentRoleString
         };
         return card;
     }
