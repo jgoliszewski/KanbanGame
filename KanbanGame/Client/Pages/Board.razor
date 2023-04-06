@@ -37,7 +37,6 @@
                             </tr>
                         </tbody>
                     </table> 
-
             }
         </Template>
     </KanbanCardSettings>
@@ -92,28 +91,32 @@
 
 <SfKanban TValue="KanbanGame.Shared.Card" KeyField="Column" DataSource="CardService.Cards" Width="1500px">
     <KanbanColumns>
-        <KanbanColumn HeaderText="Backlog" KeyField="@(new List<string>() {"Backlog"})"></KanbanColumn>
-        <KanbanColumn HeaderText="Waiting" KeyField="@(new List<string>() {"Waiting"})"></KanbanColumn>
-        <KanbanColumn HeaderText="Doing" KeyField="@(new List<string>() {"Doing"})"></KanbanColumn>
-        <KanbanColumn HeaderText="Done" KeyField="@(new List<string>() {"Done"})"></KanbanColumn>
+        <KanbanColumn HeaderText="" KeyField="@(new List<string>() {"Backlog"})"></KanbanColumn>
+        <KanbanColumn HeaderText="" KeyField="@(new List<string>() {"Product"})"></KanbanColumn>
+        <KanbanColumn HeaderText="Waiting" KeyField="@(new List<string>() {"DevelopmentWaiting"})"></KanbanColumn>
+        <KanbanColumn HeaderText="Doing" KeyField="@(new List<string>() {"DevelopmentDoing"})"></KanbanColumn>
+        <KanbanColumn HeaderText="Waiting" KeyField="@(new List<string>() {"TestWaiting"})"></KanbanColumn>
+        <KanbanColumn HeaderText="Doing" KeyField="@(new List<string>() {"TestDoing"})"></KanbanColumn>
+        <KanbanColumn HeaderText="" KeyField="@(new List<string>() {"Delivered"})"></KanbanColumn>
     </KanbanColumns>
     <KanbanStackedHeaders>
         <KanbanStackedHeader Text="Backlog" KeyFields="@(new List<string>() {"Backlog"})"></KanbanStackedHeader>
-        <KanbanStackedHeader Text="Development Phase" KeyFields="@(new List<string>() {"Waiting", "Doing"})"></KanbanStackedHeader>
-        <KanbanStackedHeader Text="Done" KeyFields="@(new List<string>() {"Done"})"></KanbanStackedHeader>
+        <KanbanStackedHeader Text="Product" KeyFields="@(new List<string>() {"Product"})"></KanbanStackedHeader>
+        <KanbanStackedHeader Text="Development" KeyFields="@(new List<string>() {"DevelopmentWaiting", "DevelopmentDoing"})"></KanbanStackedHeader>
+        <KanbanStackedHeader Text="Test" KeyFields="@(new List<string>() {"TestWaiting", "TestDoing"})"></KanbanStackedHeader>
+        <KanbanStackedHeader Text="Delivered" KeyFields="@(new List<string>() {"Delivered"})"></KanbanStackedHeader>
     </KanbanStackedHeaders>
     <KanbanCardSettings HeaderField="Id" ContentField="Column">
         <Template>
             @{
                 KanbanGame.Shared.Card card = (KanbanGame.Shared.Card)context;
-
                 if (card.KanbanTask is null)
                 {
                     KanbanGame.Shared.Employee employee = card.Employee;
 
                     <div class="employee-card">
                         <div class="employee-h">@employee.Name</div>
-                        <div class="employee-a"><img src=@(employee.AvatarPath == null ? "Avatars/Default.png" : card.Employee.AvatarPath) style="width:64px" alt="logo" /></div>
+                        <div class="employee-a"><img src=@(employee.AvatarPath == null ? "Avatars/Default.png" : card.Employee.AvatarPath) style="width:48px" alt="logo" /></div>
                         <div class="employee-d">
                             <div>Id: @employee.Id</div>
                             <div>Seniority: @employee.Seniority.ToString()</div>
@@ -143,6 +146,9 @@
 </SfKanban>
 
 <style>
+.e-item-count{
+    content-visibility: hidden;
+}
 .task-card {  
     display: grid;
     grid-template-columns: 1fr;

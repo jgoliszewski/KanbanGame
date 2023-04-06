@@ -49,7 +49,7 @@ public class CardService : ICardService
         {
             Id = lastId++,
             Employee = employee,
-            Column = "Doing"
+            Column = "Delivered"
         };
         return card;
     }
