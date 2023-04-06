@@ -7,6 +7,7 @@ namespace KanbanGame.Client.Services;
 
 public class CardService : ICardService
 {
+    private int lastId;
     private readonly IKanbanTaskService _kanbanTaskService;
     private readonly IEmployeeService _employeeService;
     public CardService(IKanbanTaskService kanbanTaskService, IEmployeeService employeeService)
@@ -18,6 +19,7 @@ public class CardService : ICardService
 
     public async Task GetCards()
     {
+        lastId = 0;
         Cards = new List<Card>();
         await _kanbanTaskService.GetKanbanTasks();
         foreach (var t in _kanbanTaskService.KanbanTasks)
@@ -31,7 +33,7 @@ public class CardService : ICardService
         }
     }
 
-    private static int lastId = 0;
+
     private Card TaskToCard(KanbanTask kanbanTask)
     {
         var card = new Card()

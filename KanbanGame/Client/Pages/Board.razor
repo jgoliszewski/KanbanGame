@@ -27,8 +27,8 @@
         <Template>
             @{
                 KanbanGame.Shared.Card card = (KanbanGame.Shared.Card)context;
-                <div>@card.Id</div>
-                <div>@card.Column</div>
+                @* <div>@card.Id</div>
+                <div>@card.Column</div> *@
                 if (card.KanbanTask is null)
                 {
                     KanbanGame.Shared.Employee employee = card.Employee;
