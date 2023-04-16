@@ -30,7 +30,7 @@
                     @* <div>@card.Id</div>
                 <div>@card.Column</div> *@
 
-                if (card.KanbanTask is null)
+                if (card.KanbanTask is null && card.Employee is not null)
               {
                     KanbanGame.Shared.Employee employee = card.Employee;
     
@@ -47,7 +47,7 @@
                     </div>
 
                 }
-                else if (card.Employee is null)
+                else if (card.Employee is null && card.KanbanTask is not null)
                 {
                         KanbanGame.Shared.KanbanTask kanbanTask = card.KanbanTask;
     
