@@ -133,15 +133,12 @@
 
 @code {
     public SfKanban<KanbanGame.Shared.Card> kanbanBoard;
-    private List<String> employeeAllowedColumns = new List<string>() { "Analysis", "DevelopmentDoing", "TestDoing" };
-    public List<KanbanGame.Shared.Card>? customCards;
     private HubConnection? hubConnection;
 
     protected override async Task OnInitializedAsync()
     {
         await KanbanTaskService.GetKanbanTasks();
         await CardService.GetCards();
-        customCards = CardService.Cards; //I do not know why I have to do it this way
         await Connect();
     }
 
@@ -157,7 +154,6 @@
                 {
                     // reload data
                     await CardService.GetCards();
-                    customCards = CardService.Cards;
                     StateHasChanged();
                 });
     }
@@ -165,6 +161,7 @@
     private string? columnBeforeDrag;
     private string[] taskForbiddenSwap = {"Analysis", "DevelopmentDoing", "TestDoing"};
     private string[] employeeForbidenSwap = {"Backlog", "DevelopmentWaiting", "TestWaiting"};
+
     async Task DragStartHandler(DragEventArgs<KanbanGame.Shared.Card> args)
     {
         columnBeforeDrag = args.Data[0].Column;
@@ -182,9 +179,8 @@
             }
             else
             {
-                KanbanGame.Shared.KanbanTask kanbanTask = draggedCard.KanbanTask;
-                kanbanTask.StatusString = draggedCard.Column;
-                await KanbanTaskService.UpdateKanbanTask(kanbanTask.Id, kanbanTask);
+                draggedCard.KanbanTask.StatusString = draggedCard.Column;
+                await CardService.UpdateCard(draggedCard.Id, draggedCard);
                 if (hubConnection is not null)
                 {
                     await hubConnection.SendAsync("UpdateBoard", 0);
@@ -199,9 +195,8 @@
             }
             else
             {
-                KanbanGame.Shared.Employee employee = draggedCard.Employee;
-                employee.CurrentRoleString = draggedCard.Column;
-                await EmployeeService.UpdateEmployee(employee.Id, employee);
+                draggedCard.Employee.CurrentRoleString = draggedCard.Column;
+                await CardService.UpdateCard(draggedCard.Id, draggedCard);
                 if (hubConnection is not null)
                 {
                     await hubConnection.SendAsync("UpdateBoard", 0);

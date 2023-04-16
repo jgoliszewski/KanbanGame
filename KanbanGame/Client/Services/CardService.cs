@@ -10,8 +10,10 @@ public class CardService : ICardService
     private int lastId;
     private readonly IKanbanTaskService _kanbanTaskService;
     private readonly IEmployeeService _employeeService;
-    public CardService(IKanbanTaskService kanbanTaskService, IEmployeeService employeeService)
+    private readonly HttpClient _http;
+    public CardService(HttpClient http, IKanbanTaskService kanbanTaskService, IEmployeeService employeeService)
     {
+        _http = http;
         _kanbanTaskService = kanbanTaskService;
         _employeeService = employeeService;
     }
@@ -77,5 +79,17 @@ public class CardService : ICardService
             Column = employee.CurrentRoleString
         };
         return card;
+    }
+
+    public async Task UpdateCard(int cardId, Card card)
+    {
+        if (card.Employee is null)
+        {
+            await _http.PutAsJsonAsync($"api/kanbanTask/{card.KanbanTask.Id}", card.KanbanTask);
+        }
+        else if (card.KanbanTask is null)
+        {
+            await _http.PutAsJsonAsync($"api/employee/{card.Employee.Id}", card.Employee);
+        }
     }
 }
