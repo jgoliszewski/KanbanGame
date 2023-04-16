@@ -70,17 +70,22 @@ public class DbSeeder
             new KanbanTask{
                 Title = "Task nr2",
                 Description = "Task description",
-                Status = KanbanTask.TaskStatus.DevelopmentDoing
+                Status = KanbanTask.TaskStatus.DevelopmentWaiting
             },
             new KanbanTask{
                 Title = "Task nr3",
                 Description = "Task description",
-                Status = KanbanTask.TaskStatus.TestDoing
+                Status = KanbanTask.TaskStatus.TestWaiting
             },
             new KanbanTask{
                 Title = "Task nr4",
                 Description = "Task description",
-                Status = KanbanTask.TaskStatus.TestDoing
+                Status = KanbanTask.TaskStatus.TestWaiting
+            },
+            new KanbanTask{
+                Title = "Task nr5",
+                Description = "Task description",
+                Status = KanbanTask.TaskStatus.Backlog
             },
         };
 
@@ -92,7 +97,6 @@ public class DbSeeder
         KanbanTasks[1].AddAssignee(Employees[1].Id, Employees[1]);
         KanbanTasks[2].AddAssignee(Employees[2].Id, Employees[2]);
         KanbanTasks[3].AddAssignee(Employees[3].Id, Employees[3]);
-        KanbanTasks[4].AddAssignee(Employees[4].Id, Employees[4]);
 
         foreach (var task in KanbanTasks)
         {
