@@ -18,7 +18,10 @@ public class CardService : ICardService
         _employeeService = employeeService;
     }
     public List<Card> Cards { get; set; }
-    public Dictionary<string, int> ColumnCount;
+    private Dictionary<string, int> ColumnCount;
+    private Dictionary<Employee, KanbanTask?> Board;
+    private List<KanbanTask> tempTasks;
+
     public async Task GetCards()
     {
         lastId = 0;
@@ -36,24 +39,65 @@ public class CardService : ICardService
         await _kanbanTaskService.GetKanbanTasks();
         await _employeeService.GetEmployees();
 
+        //! working good
+        // foreach (var t in _kanbanTaskService.KanbanTasks)
+        // {
+        //     if (t.Employee is not null)
+        //     {
+        //         Cards.Add(EmployeeToCard(t.Employee, ColumnCount[t.Employee.CurrentRoleString]++));
+        //         t.StatusString = t.Employee.CurrentRoleString; //todo: make it has more sense
+        //         Cards.Add(TaskToCard(t, ColumnCount[t.Employee.CurrentRoleString]++));
+        //         _employeeService.Employees.RemoveAll(e => e.Id == t.Employee.Id);
+        //     }
+        //     else
+        //     {
+        //         Cards.Add(TaskToCard(t, ColumnCount[t.StatusString]++));
+        //     }
+        // }
+        // foreach (var e in _employeeService.Employees)
+        // {
+        //     Cards.Add(EmployeeToCard(e, ColumnCount[e.CurrentRoleString]++));
+        // }
+
+        // -------------------------------------------------------------------
+        //! ver2 - assignee cards stay in place, but sometimes stops working after fast d&d
+        Board = new Dictionary<Employee, KanbanTask?>();
+        tempTasks = new List<KanbanTask>();
+        foreach (var e in _employeeService.Employees)
+        {
+            Board.Add(e, null);
+        }
         foreach (var t in _kanbanTaskService.KanbanTasks)
         {
             if (t.Employee is not null)
             {
-                Cards.Add(EmployeeToCard(t.Employee, ColumnCount[t.Employee.CurrentRoleString]++));
                 t.StatusString = t.Employee.CurrentRoleString; //todo: make it has more sense
-                Cards.Add(TaskToCard(t, ColumnCount[t.Employee.CurrentRoleString]++));
-                _employeeService.Employees.RemoveAll(e => e.Id == t.Employee.Id);
+                var key = Board.Where(p => p.Key.Id == t.Employee.Id).FirstOrDefault().Key;
+                Board[key] = t;
+
+                // _kanbanTaskService.KanbanTasks.Remove(t);
             }
             else
             {
-                Cards.Add(TaskToCard(t, ColumnCount[t.StatusString]++));
+                tempTasks.Add(t);
             }
         }
-        foreach (var e in _employeeService.Employees)
+        foreach (var (e, t) in Board)
         {
             Cards.Add(EmployeeToCard(e, ColumnCount[e.CurrentRoleString]++));
+            if (t is not null)
+            {
+                Cards.Add(TaskToCard(t, ColumnCount[e.CurrentRoleString]++));
+            }
         }
+        foreach (var t in tempTasks)
+        {
+            Cards.Add(TaskToCard(t, ColumnCount[t.StatusString]++));
+        }
+
+
+
+
     }
 
 
