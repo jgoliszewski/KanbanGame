@@ -163,7 +163,8 @@
     }
 
     private string? columnBeforeDrag;
-    private string[] forbiddenDnD = {"Analysis", "DevelopmentDoing", "TestDoing"};
+    private string[] taskForbiddenSwap = {"Analysis", "DevelopmentDoing", "TestDoing"};
+    private string[] employeeForbidenSwap = {"Backlog", "DevelopmentWaiting", "TestWaiting"};
     async Task DragStartHandler(DragEventArgs<KanbanGame.Shared.Card> args)
     {
         columnBeforeDrag = args.Data[0].Column;
@@ -175,7 +176,7 @@
         if (draggedCard.Employee is null)
 
         { 
-            if(forbiddenDnD.Contains(columnBeforeDrag) && forbiddenDnD.Contains(draggedCard.Column))
+            if(taskForbiddenSwap.Contains(columnBeforeDrag) && taskForbiddenSwap.Contains(draggedCard.Column))
             {
                 args.Cancel = true;
             }
@@ -192,7 +193,7 @@
         }
         else if (draggedCard.KanbanTask is null)
         {
-            if (draggedCard.Column == "Backlog" || draggedCard.Column == "DevelopmentWaiting" || draggedCard.Column == "TestWaiting")
+            if (employeeForbidenSwap.Contains(draggedCard.Column))
             {
                 args.Cancel = true;
             }
