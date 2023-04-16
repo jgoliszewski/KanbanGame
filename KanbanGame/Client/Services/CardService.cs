@@ -24,13 +24,13 @@ public class CardService : ICardService
         lastId = 0;
         Cards = new List<Card>();
         ColumnCount = new Dictionary<string, int>{
-            {"Backlog", 0},
-            {"Analysis", 0},
-            {"DevelopmentWaiting", 0},
-            {"DevelopmentDoing", 0},
-            {"TestWaiting", 0},
-            {"TestDoing", 0},
-            {"Delivered", 0},
+            {"Backlog", 1},
+            {"Analysis", 1},
+            {"DevelopmentWaiting", 1},
+            {"DevelopmentDoing", 1},
+            {"TestWaiting", 1},
+            {"TestDoing", 1},
+            {"Delivered", 1},
         };
 
         await _kanbanTaskService.GetKanbanTasks();
@@ -90,6 +90,38 @@ public class CardService : ICardService
         else if (card.KanbanTask is null && card.Employee is not null)
         {
             await _http.PutAsJsonAsync($"api/employee/{card.Employee.Id}", card.Employee);
+        }
+    }
+
+    public async Task UpdateCards()
+    {
+        foreach (var card in Cards)
+        {
+            if (card.KanbanTask is not null)
+            {
+                //todo: better card above function; card ranks could have difference > 1T
+                var cardAbove = Cards.Where(c => c.Column == card.Column && c.RankId == card.RankId - 1).FirstOrDefault();
+
+                if (cardAbove is not null && cardAbove.Employee is not null)
+                {
+                    if (card.KanbanTask.Employee is null || card.KanbanTask.Employee.Id != cardAbove.Employee.Id)
+                    {
+                        // Console.WriteLine($"Above {card.KanbanTask.Title} is {cardAbove.Employee.Name}");
+                        card.KanbanTask.Employee = cardAbove.Employee;
+                        card.KanbanTask.EmployeeId = cardAbove.Employee.Id;
+                        await UpdateCard(card.Id, card);
+                    }
+                }
+                else
+                {
+                    if (card.KanbanTask.Employee is not null)
+                    {
+                        card.KanbanTask.Employee = null;
+                        card.KanbanTask.EmployeeId = null;
+                        await UpdateCard(card.Id, card);
+                    }
+                }
+            }
         }
     }
 }

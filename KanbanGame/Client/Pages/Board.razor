@@ -22,7 +22,8 @@
         <KanbanStackedHeader Text="Test" KeyFields="@(new List<string>() {"TestWaiting", "TestDoing"})"></KanbanStackedHeader>
         <KanbanStackedHeader Text="Delivered" KeyFields="@(new List<string>() {"Delivered"})"></KanbanStackedHeader>
     </KanbanStackedHeaders>
-    <KanbanEvents TValue="KanbanGame.Shared.Card" DragStart="@DragStartHandler" DragStop="@DragStopHandler"></KanbanEvents>
+    <KanbanSortSettings SortBy="SortOrderBy.Index" Field="RankId"></KanbanSortSettings>
+    <KanbanEvents TValue="KanbanGame.Shared.Card" DragStart="@DragStartHandler" DragStop="@DragStopHandler" ActionComplete="@ActionCompleteHandler"></KanbanEvents>
     <KanbanCardSettings HeaderField="Id">
         <Template>
             @{
@@ -43,6 +44,7 @@
                                 <div>Status: @employee.Status</div>
                                 <div>Role: @employee.CurrentRole</div>
                                 <div>Column: @employee.CurrentRoleString</div>
+                                <div>RankId: @card.RankId</div>
                             </div>
                     </div>
 
@@ -59,7 +61,8 @@
                                 <div>Ass. Id: @(kanbanTask.Employee is null ? "-" : kanbanTask.EmployeeId)</div>
                                 <div>Assignee.: @(kanbanTask.Employee == null ? "-" : kanbanTask.Employee.Name)</div>
                             </div>
-                        <div class="task-f">Status: @kanbanTask.StatusString</div>
+                        @* <div class="task-f">Status: @kanbanTask.StatusString</div> *@
+                        <div class="task-f">RankId: @card.RankId</div>
                     </div>
                 }
             }
@@ -169,22 +172,18 @@
 
     async Task DragStopHandler(DragEventArgs<KanbanGame.Shared.Card> args)
     {
+        
         KanbanGame.Shared.Card draggedCard = args.Data[0];
         if (draggedCard.Employee is null && draggedCard.KanbanTask is not null)
 
         { 
-            if(taskForbiddenSwap.Contains(columnBeforeDrag) && taskForbiddenSwap.Contains(draggedCard.Column))
+            if((taskForbiddenSwap.Contains(columnBeforeDrag) && taskForbiddenSwap.Contains(draggedCard.Column)) && columnBeforeDrag != draggedCard.Column)
             {
                 args.Cancel = true;
             }
             else
             {
                 draggedCard.KanbanTask.StatusString = draggedCard.Column;
-                await CardService.UpdateCard(draggedCard.Id, draggedCard);
-                if (hubConnection is not null)
-                {
-                    await hubConnection.SendAsync("UpdateBoard", 0);
-                }
             }
         }
         else if (draggedCard.KanbanTask is null && draggedCard.Employee is not null)
@@ -196,12 +195,18 @@
             else
             {
                 draggedCard.Employee.CurrentRoleString = draggedCard.Column;
-                await CardService.UpdateCard(draggedCard.Id, draggedCard);
-                if (hubConnection is not null)
-                {
-                    await hubConnection.SendAsync("UpdateBoard", 0);
-                }
             }
+        }
+        
+        
+    }
+
+    async Task ActionCompleteHandler(ActionEventArgs<KanbanGame.Shared.Card> args)    
+    {
+        await CardService.UpdateCards();
+        if (hubConnection is not null)
+        {
+            await hubConnection.SendAsync("UpdateBoard", 0);
         }
     }
 
@@ -212,4 +217,6 @@
             await hubConnection.DisposeAsync();
         }
     }
+
+    
 }
