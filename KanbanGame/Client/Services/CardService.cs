@@ -99,17 +99,16 @@ public class CardService : ICardService
         {
             if (card.KanbanTask is not null)
             {
-                //todo: better card above function; card ranks could have difference > 1T
-                var cardAbove = Cards.Where(c => c.Column == card.Column && c.RankId == card.RankId - 1).FirstOrDefault();
+
+                var cardAbove = FindCardAbove(card);
 
                 if (cardAbove is not null && cardAbove.Employee is not null)
                 {
                     if (card.KanbanTask.Employee is null || card.KanbanTask.Employee.Id != cardAbove.Employee.Id)
                     {
-                        // Console.WriteLine($"Above {card.KanbanTask.Title} is {cardAbove.Employee.Name}");
                         card.KanbanTask.Employee = cardAbove.Employee;
                         card.KanbanTask.EmployeeId = cardAbove.Employee.Id;
-                        await UpdateCard(card.Id, card);
+                        // await UpdateCard(card.Id, card);
                     }
                 }
                 else
@@ -118,10 +117,22 @@ public class CardService : ICardService
                     {
                         card.KanbanTask.Employee = null;
                         card.KanbanTask.EmployeeId = null;
-                        await UpdateCard(card.Id, card);
+                        // await UpdateCard(card.Id, card);
                     }
                 }
             }
+            //todo: some way not to update every single card
+            await UpdateCard(card.Id, card);
         }
+    }
+
+    private Card? FindCardAbove(Card card)
+    {
+        var column = Cards.Where(c => c.Column == card.Column && c.RankId < card.RankId);
+        if (column is not null)
+        {
+            return column.MaxBy(c => c.RankId);
+        }
+        return null;
     }
 }

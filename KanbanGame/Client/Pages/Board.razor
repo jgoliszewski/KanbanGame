@@ -37,7 +37,7 @@
     
                     <div     class="employee-card">
                             <div class="employee-h">@employee.Name</div>
-                            <div class="employee-a"><img src=@(employee.AvatarPath == null ? "Avatars/Default.png" : card.Employee.AvatarPath) style="width:48px" alt="logo" /></div>
+                            <div class="employee-a"><img src=@(employee.AvatarPath == null ? "Avatars/Default.png" : employee.AvatarPath) style="width:48px" alt="logo" /></div>
                         <div     class="employee-d">
                                 <div>Id: @employee.Id</div>
                                 <div>Seniority: @employee.Seniority.ToString()</div>
@@ -62,7 +62,7 @@
                                 <div>Assignee.: @(kanbanTask.Employee == null ? "-" : kanbanTask.Employee.Name)</div>
                             </div>
                         @* <div class="task-f">Status: @kanbanTask.StatusString</div> *@
-                        <div class="task-f">RankId: @card.RankId</div>
+                        <div class="task-f">RankId: @card.RankId <img src=@(kanbanTask.Employee == null ? "Avatars/Default.png" : kanbanTask.Employee.AvatarPath) style="width:32px; float:right;" alt="logo" /></div>
                     </div>
                 }
             }
@@ -184,7 +184,7 @@
             else
             {
                 draggedCard.KanbanTask.StatusString = draggedCard.Column; 
-                await CardService.UpdateCard(draggedCard.Id, draggedCard);
+                @* await CardService.UpdateCard(draggedCard.Id, draggedCard); *@
             }
         }
         else if (draggedCard.KanbanTask is null && draggedCard.Employee is not null)
@@ -196,7 +196,7 @@
             else
             {
                 draggedCard.Employee.CurrentRoleString = draggedCard.Column;
-                await CardService.UpdateCard(draggedCard.Id, draggedCard);
+                @* await CardService.UpdateCard(draggedCard.Id, draggedCard); *@
             }
         }
         
