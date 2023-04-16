@@ -183,7 +183,8 @@
             }
             else
             {
-                draggedCard.KanbanTask.StatusString = draggedCard.Column;
+                draggedCard.KanbanTask.StatusString = draggedCard.Column; 
+                await CardService.UpdateCard(draggedCard.Id, draggedCard);
             }
         }
         else if (draggedCard.KanbanTask is null && draggedCard.Employee is not null)
@@ -195,6 +196,7 @@
             else
             {
                 draggedCard.Employee.CurrentRoleString = draggedCard.Column;
+                await CardService.UpdateCard(draggedCard.Id, draggedCard);
             }
         }
         
