@@ -170,7 +170,7 @@
     async Task DragStopHandler(DragEventArgs<KanbanGame.Shared.Card> args)
     {
         KanbanGame.Shared.Card draggedCard = args.Data[0];
-        if (draggedCard.Employee is null)
+        if (draggedCard.Employee is null && draggedCard.KanbanTask is not null)
 
         { 
             if(taskForbiddenSwap.Contains(columnBeforeDrag) && taskForbiddenSwap.Contains(draggedCard.Column))
@@ -187,7 +187,7 @@
                 }
             }
         }
-        else if (draggedCard.KanbanTask is null)
+        else if (draggedCard.KanbanTask is null && draggedCard.Employee is not null)
         {
             if (employeeForbidenSwap.Contains(draggedCard.Column))
             {

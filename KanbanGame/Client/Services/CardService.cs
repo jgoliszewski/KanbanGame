@@ -83,11 +83,11 @@ public class CardService : ICardService
 
     public async Task UpdateCard(int cardId, Card card)
     {
-        if (card.Employee is null)
+        if (card.Employee is null && card.KanbanTask is not null)
         {
             await _http.PutAsJsonAsync($"api/kanbanTask/{card.KanbanTask.Id}", card.KanbanTask);
         }
-        else if (card.KanbanTask is null)
+        else if (card.KanbanTask is null && card.Employee is not null)
         {
             await _http.PutAsJsonAsync($"api/employee/{card.Employee.Id}", card.Employee);
         }
