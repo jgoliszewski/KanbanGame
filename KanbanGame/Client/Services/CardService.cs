@@ -60,7 +60,7 @@ public class CardService : ICardService
         // }
 
         // -------------------------------------------------------------------
-        //! ver2 - assignee cards stay in place, but sometimes stops working after fast d&d
+        //! ver2 - assignee cards stay in place, but sometimes stops working when all Assignees have Task
         Board = new Dictionary<Employee, KanbanTask?>();
         tempTasks = new List<KanbanTask>();
         foreach (var e in _employeeService.Employees)
@@ -94,10 +94,6 @@ public class CardService : ICardService
         {
             Cards.Add(TaskToCard(t, ColumnCount[t.StatusString]++));
         }
-
-
-
-
     }
 
 
@@ -129,11 +125,13 @@ public class CardService : ICardService
     {
         if (card.Employee is null && card.KanbanTask is not null)
         {
-            await _http.PutAsJsonAsync($"api/kanbanTask/{card.KanbanTask.Id}", card.KanbanTask);
+            // await _http.PutAsJsonAsync($"api/kanbanTask/{card.KanbanTask.Id}", card.KanbanTask);
+            await _kanbanTaskService.UpdateKanbanTask(card.KanbanTask.Id, card.KanbanTask);
         }
         else if (card.KanbanTask is null && card.Employee is not null)
         {
-            await _http.PutAsJsonAsync($"api/employee/{card.Employee.Id}", card.Employee);
+            // await _http.PutAsJsonAsync($"api/employee/{card.Employee.Id}", card.Employee);
+            await _employeeService.UpdateEmployee(card.Employee.Id, card.Employee);
         }
     }
 
