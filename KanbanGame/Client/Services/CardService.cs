@@ -16,8 +16,15 @@ public class CardService : ICardService
         _http = http;
         _kanbanTaskService = kanbanTaskService;
         _employeeService = employeeService;
+        ColumnMaxCount = new Dictionary<string, int>{
+            {"Backlog", 9},
+            {"Analysis", 9},
+            {"DevelopmentDoing", 9},
+            {"TestDoing", 9},
+        };
     }
     public List<Card> Cards { get; set; }
+    public Dictionary<string, int> ColumnMaxCount { get; set; }
     private Dictionary<string, int> ColumnCount;
     private Dictionary<Employee, KanbanTask?> Board;
     private List<KanbanTask> tempTasks;
@@ -26,6 +33,12 @@ public class CardService : ICardService
     {
         lastId = 0;
         Cards = new List<Card>();
+        ColumnMaxCount = new Dictionary<string, int>{
+            {"Backlog", 6},
+            {"Analysis", 0},
+            {"DevelopmentDoing", 0},
+            {"TestDoing", 0},
+        };
         ColumnCount = new Dictionary<string, int>{
             {"Backlog", 1},
             {"Analysis", 1},
@@ -44,6 +57,7 @@ public class CardService : ICardService
         foreach (var e in _employeeService.Employees)
         {
             Board.Add(e, null);
+            ColumnMaxCount[e.CurrentRoleString] += 2;
         }
         foreach (var t in _kanbanTaskService.KanbanTasks)
         {
