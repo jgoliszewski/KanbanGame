@@ -39,4 +39,23 @@ public class KanbanTask
     {
         this.PpEmployee = ppEmployee;
     }
+    public void UpdateTaskStatus()
+    {
+        if (Employee is null)
+        {
+            switch (Status)
+            {
+                case TaskStatus.Analysis:
+                    Status = TaskStatus.Backlog;
+                    break;
+                case TaskStatus.DevelopmentDoing:
+                    Status = TaskStatus.DevelopmentWaiting;
+                    break;
+                case TaskStatus.TestWaiting:
+                    Status = TaskStatus.TestWaiting;
+                    break;
+            }
+        }
+    }
+
 }

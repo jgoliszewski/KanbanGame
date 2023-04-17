@@ -151,7 +151,6 @@ public class CardService : ICardService
                     {
                         card.KanbanTask.Employee = cardAbove.Employee;
                         card.KanbanTask.StatusString = cardAbove.Employee.CurrentRoleString;
-                        // await UpdateCard(card.Id, card);
                     }
                 }
                 else
@@ -159,9 +158,9 @@ public class CardService : ICardService
                     if (card.KanbanTask.Employee is not null)
                     {
                         card.KanbanTask.Employee = null;
-                        // await UpdateCard(card.Id, card);
                     }
                 }
+                // card.KanbanTask.UpdateTaskStatus(); 
             }
             await UpdateCard(card.Id, card);
         }
