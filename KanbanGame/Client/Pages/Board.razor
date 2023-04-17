@@ -23,7 +23,7 @@
         <KanbanStackedHeader Text="Delivered" KeyFields="@(new List<string>() {"Delivered"})"></KanbanStackedHeader>
     </KanbanStackedHeaders>
     <KanbanSortSettings SortBy="SortOrderBy.Index" Field="RankId"></KanbanSortSettings>
-    <KanbanEvents TValue="KanbanGame.Shared.Card" DragStart="@DragStartHandler" DragStop="@DragStopHandler" ActionComplete="@ActionCompleteHandler"></KanbanEvents>
+    <KanbanEvents TValue="KanbanGame.Shared.Card" DragStart="@DragStartHandler" DragStop="@DragStopHandler"></KanbanEvents>
     <KanbanCardSettings HeaderField="Id">
         <Template>
             @{
@@ -162,6 +162,7 @@
     }
 
     private string? columnBeforeDrag;
+    private string? columnAfterDrag;
     private string[] taskForbiddenSwap = {"Analysis", "DevelopmentDoing", "TestDoing"};
     private string[] employeeForbidenSwap = {"Backlog", "DevelopmentWaiting", "TestWaiting"};
 
@@ -174,6 +175,8 @@
     {
         
         KanbanGame.Shared.Card draggedCard = args.Data[0];
+        columnAfterDrag = draggedCard.Column;
+
         if (draggedCard.Employee is null && draggedCard.KanbanTask is not null)
 
         { 
@@ -184,7 +187,13 @@
             else
             {
                 draggedCard.KanbanTask.StatusString = draggedCard.Column; 
-                @* await CardService.UpdateCard(draggedCard.Id, draggedCard); *@
+                await CardService.UpdateCardLocal(draggedCard.Id, draggedCard); //magic line to fix board stop working issue
+
+                await CardService.UpdateColumns(columnBeforeDrag, columnAfterDrag);
+                if (hubConnection is not null)
+                {
+                    await hubConnection.SendAsync("UpdateBoard", 0);
+                }
             }
         }
         else if (draggedCard.KanbanTask is null && draggedCard.Employee is not null)
@@ -196,19 +205,14 @@
             else
             {
                 draggedCard.Employee.CurrentRoleString = draggedCard.Column;
-                @* await CardService.UpdateCard(draggedCard.Id, draggedCard); *@
-            }
-        }
-        
-        
-    }
+                await CardService.UpdateCardLocal(draggedCard.Id, draggedCard); //magic line to fix board stop working issue
 
-    async Task ActionCompleteHandler(ActionEventArgs<KanbanGame.Shared.Card> args)    
-    {
-        await CardService.UpdateCards();
-        if (hubConnection is not null)
-        {
-            await hubConnection.SendAsync("UpdateBoard", 0);
+                await CardService.UpdateColumns(columnBeforeDrag, columnAfterDrag);
+                if (hubConnection is not null)
+                {
+                    await hubConnection.SendAsync("UpdateBoard", 0);
+                }
+            }
         }
     }
 

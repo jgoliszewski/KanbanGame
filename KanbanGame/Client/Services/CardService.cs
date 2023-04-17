@@ -39,28 +39,6 @@ public class CardService : ICardService
         await _kanbanTaskService.GetKanbanTasks();
         await _employeeService.GetEmployees();
 
-        //! working good
-        // foreach (var t in _kanbanTaskService.KanbanTasks)
-        // {
-        //     if (t.Employee is not null)
-        //     {
-        //         Cards.Add(EmployeeToCard(t.Employee, ColumnCount[t.Employee.CurrentRoleString]++));
-        //         t.StatusString = t.Employee.CurrentRoleString; //todo: make it has more sense
-        //         Cards.Add(TaskToCard(t, ColumnCount[t.Employee.CurrentRoleString]++));
-        //         _employeeService.Employees.RemoveAll(e => e.Id == t.Employee.Id);
-        //     }
-        //     else
-        //     {
-        //         Cards.Add(TaskToCard(t, ColumnCount[t.StatusString]++));
-        //     }
-        // }
-        // foreach (var e in _employeeService.Employees)
-        // {
-        //     Cards.Add(EmployeeToCard(e, ColumnCount[e.CurrentRoleString]++));
-        // }
-
-        // -------------------------------------------------------------------
-        //! ver2 - assignee cards stay in place, but sometimes stops working when all Assignees have Task
         Board = new Dictionary<Employee, KanbanTask?>();
         tempTasks = new List<KanbanTask>();
         foreach (var e in _employeeService.Employees)
@@ -74,8 +52,6 @@ public class CardService : ICardService
                 t.StatusString = t.Employee.CurrentRoleString; //todo: make it has more sense
                 var key = Board.Where(p => p.Key.Id == t.Employee.Id).FirstOrDefault().Key;
                 Board[key] = t;
-
-                // _kanbanTaskService.KanbanTasks.Remove(t);
             }
             else
             {
@@ -95,7 +71,6 @@ public class CardService : ICardService
             Cards.Add(TaskToCard(t, ColumnCount[t.StatusString]++));
         }
     }
-
 
     private Card TaskToCard(KanbanTask kanbanTask, int rankId)
     {
@@ -125,19 +100,28 @@ public class CardService : ICardService
     {
         if (card.Employee is null && card.KanbanTask is not null)
         {
-            // await _http.PutAsJsonAsync($"api/kanbanTask/{card.KanbanTask.Id}", card.KanbanTask);
             await _kanbanTaskService.UpdateKanbanTask(card.KanbanTask.Id, card.KanbanTask);
         }
         else if (card.KanbanTask is null && card.Employee is not null)
         {
-            // await _http.PutAsJsonAsync($"api/employee/{card.Employee.Id}", card.Employee);
             await _employeeService.UpdateEmployee(card.Employee.Id, card.Employee);
         }
     }
-
-    public async Task UpdateCards()
+    public async Task UpdateCardLocal(int cardId, Card card)
     {
-        foreach (var card in Cards)
+        var dbCard = Cards.Where(c => c.Id == cardId).FirstOrDefault();
+        if (dbCard is not null)
+        {
+            dbCard.Column = card.Column;
+            dbCard.RankId = card.RankId;
+            dbCard.Employee = card.Employee;
+            dbCard.KanbanTask = card.KanbanTask;
+        }
+    }
+
+    public async Task UpdateColumns(string c1, string c2)
+    {
+        foreach (var card in Cards.Where(c => c.Column == c1 || c.Column == c2))
         {
             if (card.KanbanTask is not null)
             {
@@ -163,7 +147,6 @@ public class CardService : ICardService
                     }
                 }
             }
-            //todo: some way not to update every single card
             await UpdateCard(card.Id, card);
         }
     }
