@@ -106,12 +106,14 @@ a, .btn-link {
     }
 
 
-/* --------Syncfusion Kanban---------- */
+/* -----------------------------------Syncfusion Kanban------––––––––––––––––––––––––------- */
 
 .e-control { 
     font-family: 'Varela Round' !important;   
 } 
-
+.e-kanban .e-kanban-header .e-header-cells .e-limits .e-max-count{
+    content-visibility: hidden;
+}
 .e-item-count{
     content-visibility: hidden;
 }
