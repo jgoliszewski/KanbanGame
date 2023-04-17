@@ -58,7 +58,7 @@
                             <div class="task-d">
                                 <div>Id: @kanbanTask.Id</div>
                                 <div>Desc: @kanbanTask.Description</div>
-                                <div>Ass. Id: @(kanbanTask.Employee is null ? "-" : kanbanTask.EmployeeId)</div>
+                                <div>Ass. Id: @(kanbanTask.Employee is null ? "-" : kanbanTask.Employee.Id)</div>
                                 <div>Assignee.: @(kanbanTask.Employee == null ? "-" : kanbanTask.Employee.Name)</div>
                             </div>
                         @* <div class="task-f">Status: @kanbanTask.StatusString</div> *@

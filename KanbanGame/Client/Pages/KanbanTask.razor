@@ -35,7 +35,7 @@ else
     </div>
     <div>
         <label for="employee">Employee</label>
-        <InputSelect id="employee" @bind-Value="kanbanTask.EmployeeId" class="form-control">
+        <InputSelect id="employee" @bind-Value="@selectedEmployeeId" class="form-control">
             <option value="-1"></option>
             @foreach (var employee in EmployeeService.Employees)
             {
@@ -56,6 +56,7 @@ else
     [Parameter]
     public int? Id { get; set; }
     string btnText = string.Empty;
+    private int selectedEmployeeId;
     private HubConnection? hubConnection;
 
     KanbanGame.Shared.KanbanTask kanbanTask =
@@ -70,6 +71,7 @@ else
     {
         await EmployeeService.GetEmployees();
         btnText = Id == null ? "Save New Task" : "Update Task";
+        
         await Connect();
     }
     private async Task Connect()
@@ -86,7 +88,10 @@ else
         {
             var result = await KanbanTaskService.GetKanbanTaskById((int)Id);
             if (result is not null)
+            {
                 kanbanTask = result;
+                selectedEmployeeId = kanbanTask.Employee is null ? -1 : kanbanTask.Employee.Id;
+            }
             else
                 NavigationManager.NavigateTo("/kanbanTask");
         }
@@ -94,14 +99,14 @@ else
 
     async Task HandleSubmit()
     {
-        if(kanbanTask.EmployeeId != -1) // check if Employee is selectd
+        if(selectedEmployeeId != -1) // check if Employee is selectd
         {
-            kanbanTask.Employee = EmployeeService.Employees.Where(e => e.Id == kanbanTask.EmployeeId).FirstOrDefault();
+            kanbanTask.Employee = EmployeeService.Employees.Where(e => e.Id == selectedEmployeeId).FirstOrDefault();
+            kanbanTask.StatusString = kanbanTask.Employee.CurrentRoleString;
         }
         else
         {
             kanbanTask.Employee = null;
-            kanbanTask.EmployeeId = null;
         }
 
         if (Id is null)

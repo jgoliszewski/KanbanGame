@@ -14,7 +14,6 @@ public class KanbanTask
             Status = (TaskStatus)Enum.Parse(typeof(TaskStatus), value);
         }
     } // for Syncfunction
-    public int? EmployeeId { get; set; }
     public Employee? Employee { get; set; }
 
     // pair programming 
@@ -34,12 +33,10 @@ public class KanbanTask
     }
     public void AddAssignee(int employeeId, Employee employee)
     {
-        this.EmployeeId = employeeId;
         this.Employee = employee;
     }
     public void AddPpAssignee(int ppEmployeeId, Employee ppEmployee)
     {
-        this.PpEmployeeId = ppEmployeeId;
         this.PpEmployee = ppEmployee;
     }
 }
