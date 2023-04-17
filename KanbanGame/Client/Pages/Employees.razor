@@ -11,6 +11,7 @@
             <th style="width:64px">Id</th>
             <th style="width:64px"></th>
             <th>Name</th>
+            <th>Current Role</th>
             <th>Seniority</th>
             <th>Status</th>
             <th></th>
@@ -23,6 +24,7 @@
                 <td>@employee.Id</td>
                 <td><img src=@(employee.AvatarPath == null ? "Avatars/Default.png" : employee.AvatarPath) style="width:32px"></td>
                 <td>@employee.Name</td>
+                <td>@employee.CurrentRole</td>
                 <td>@employee.Seniority</td>
                 <td>@employee.Status</td>
                 <td>

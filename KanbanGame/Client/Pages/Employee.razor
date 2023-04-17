@@ -20,6 +20,15 @@ else
         <InputText id="name" @bind-Value="employee.Name" class="form-control" />
     </div>
     <div>
+        <label for="CurrentRole">Current Role</label>
+        <InputSelect id="currentRole" @bind-Value="employee.CurrentRole" class="form-control">
+            @foreach (var role in Enum.GetValues(typeof(KanbanGame.Shared.Employee.Role)))
+            {
+                <option value="@role">@role</option>
+            }
+        </InputSelect>
+    </div>
+    <div>
         <label for="seniority">Seniority</label>
         <InputSelect id="seniority" @bind-Value="employee.Seniority" class="form-control">
             @foreach (var seniority in Enum.GetValues(typeof(KanbanGame.Shared.Employee.EmployeeSeniority)))
