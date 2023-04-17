@@ -60,15 +60,18 @@ public class CardService : ICardService
         }
         foreach (var (e, t) in Board)
         {
-            Cards.Add(EmployeeToCard(e, ColumnCount[e.CurrentRoleString]++));
+            Cards.Add(EmployeeToCard(e, ColumnCount[e.CurrentRoleString]));
+            ColumnCount[e.CurrentRoleString] += 2;
             if (t is not null)
             {
-                Cards.Add(TaskToCard(t, ColumnCount[e.CurrentRoleString]++));
+                Cards.Add(TaskToCard(t, ColumnCount[e.CurrentRoleString]));
+                ColumnCount[e.CurrentRoleString] += 2;
             }
         }
         foreach (var t in tempTasks)
         {
-            Cards.Add(TaskToCard(t, ColumnCount[t.StatusString]++));
+            Cards.Add(TaskToCard(t, ColumnCount[t.StatusString]));
+            ColumnCount[t.StatusString] += 2;
         }
     }
 
@@ -119,9 +122,9 @@ public class CardService : ICardService
         }
     }
 
-    public async Task UpdateColumns(string c1, string c2)
+    public async Task UpdateColumn(string column)
     {
-        foreach (var card in Cards.Where(c => c.Column == c1 || c.Column == c2))
+        foreach (var card in Cards.Where(c => c.Column == column))
         {
             if (card.KanbanTask is not null)
             {
