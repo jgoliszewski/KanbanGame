@@ -153,9 +153,10 @@ public class CardService : ICardService
     private Card? FindCardAbove(Card card)
     {
         var column = Cards.Where(c => c.Column == card.Column && c.RankId < card.RankId);
-        if (column is not null)
+        if (column.ToList().Count > 0)
         {
-            return column.MaxBy(c => c.RankId);
+            var cardAbove = column.MaxBy(c => c.RankId);
+            return cardAbove;
         }
         return null;
     }
