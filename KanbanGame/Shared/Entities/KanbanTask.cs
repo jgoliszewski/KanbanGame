@@ -16,27 +16,39 @@ public class KanbanTask
         }
     } // for Syncfunction D&D
 
-    public void AddAssignee(int employeeId, Employee employee)
+    public void AddAssignee(Employee employee)
     {
         this.Employee = employee;
     }
-    public void UpdateTaskStatus()
+    public void NextTaskStatus()
     {
-        if (Employee is null)
+        switch (Status)
         {
-            switch (Status)
-            {
-                case TaskStatus.AnalysisDoing:
-                    Status = TaskStatus.Backlog;
-                    break;
-                case TaskStatus.DevelopmentDoing:
-                    Status = TaskStatus.DevelopmentWaiting;
-                    break;
-                case TaskStatus.TestWaiting:
-                    Status = TaskStatus.TestWaiting;
-                    break;
-            }
-        }
+            case TaskStatus.AnalysisDoing:
+                Status = TaskStatus.DevelopmentWaiting;
+                break;
+            case TaskStatus.DevelopmentDoing:
+                Status = TaskStatus.TestWaiting;
+                break;
+            case TaskStatus.TestDoing:
+                Status = TaskStatus.Delivered;
+                break;
+        }  
+    }
+    public void MoveToWaiting()
+    {
+        switch (Status)
+        {
+            case TaskStatus.AnalysisDoing:
+                Status = TaskStatus.Backlog;
+                break;
+            case TaskStatus.DevelopmentDoing:
+                Status = TaskStatus.DevelopmentWaiting;
+                break;
+            case TaskStatus.TestDoing:
+                Status = TaskStatus.TestWaiting;
+                break;
+        }  
     }
 
     public enum TaskStatus

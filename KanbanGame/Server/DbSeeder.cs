@@ -93,10 +93,10 @@ public class DbSeeder
 
     public void Seed()
     {
-        KanbanTasks[0].AddAssignee(Employees[0].Id, Employees[0]);
-        KanbanTasks[1].AddAssignee(Employees[1].Id, Employees[1]);
-        KanbanTasks[2].AddAssignee(Employees[2].Id, Employees[2]);
-        KanbanTasks[3].AddAssignee(Employees[3].Id, Employees[3]);
+        KanbanTasks[0].AddAssignee(Employees[0]);
+        KanbanTasks[1].AddAssignee(Employees[1]);
+        KanbanTasks[2].AddAssignee(Employees[2]);
+        KanbanTasks[3].AddAssignee(Employees[3]);
 
         foreach (var task in KanbanTasks)
         {
