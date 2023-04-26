@@ -69,9 +69,16 @@ public class BoardService : IBoardService
         }
         foreach (var t in TempTasks)
         {
-            Cards.Add(TaskToCard(t, ColumnCount[t.SF_Column]));
+            var card = TaskToCard(t, ColumnCount[t.SF_Column]);
+            var cardAbove = FindCardAbove(card);
+            if( cardAbove is not null && cardAbove.Employee is not null)
+            {
+                card.KanbanTask.Employee = cardAbove.Employee;
+            }
+            Cards.Add(card);
             ColumnCount[t.SF_Column] += 2;
         }
+
     }
 
     private Card TaskToCard(KanbanTask kanbanTask, int rankId)
@@ -98,6 +105,19 @@ public class BoardService : IBoardService
         return card;
     }
 
+    public async Task SimulateBoard()
+    {
+        foreach (var card in Cards)
+        {
+            if(card.KanbanTask is not null && card.KanbanTask.Employee is not null)
+            {
+                card.KanbanTask.NextTaskStatus();
+                card.KanbanTask.Employee = null;
+
+                await _kanbanTaskService.UpdateKanbanTask(card.KanbanTask.Id, card.KanbanTask);
+            }
+        }
+    }
     public async Task UpdateCard(int cardId, Card card)
     {
         if (card.Employee is null && card.KanbanTask is not null)

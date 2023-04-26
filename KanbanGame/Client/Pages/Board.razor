@@ -5,6 +5,10 @@
 @inject NavigationManager NavigationManager
 @implements IAsyncDisposable
 
+<button class="btn btn-outline-warning" @onclick="(() => SimulateBoard())">
+        Ready <i class="oi oi-sun"></i>
+</button>
+
 <SfKanban @ref="kanbanBoard" TValue="KanbanGame.Shared.Card" KeyField="Column" DataSource="BoardService.Cards" Width="1800px">
     <KanbanColumns>
         <KanbanColumn HeaderText="" MaxCount="@BoardService.ColumnMaxCount["Backlog"]" KeyField="@(new List<string>() {"Backlog"})" TransitionColumns="@(new List<string>() {"AnalysisDoing"})" AllowAdding="true"></KanbanColumn>
@@ -149,6 +153,14 @@
         }
     }
 
+    async Task SimulateBoard()
+    {
+        await BoardService.SimulateBoard();
+        if (hubConnection is not null)
+        {
+            await hubConnection.SendAsync("UpdateBoard", 0);
+        }
+    }
     public async ValueTask DisposeAsync()
     {
         if (hubConnection != null)

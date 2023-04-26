@@ -9,5 +9,6 @@ public interface IBoardService
     Task UpdateCard(int cardId, Card card);
     Task UpdateCardLocal(int cardId, Card card);
     Task UpdateColumn(string column);
+    Task SimulateBoard(); //todo: change method name
 }
 
