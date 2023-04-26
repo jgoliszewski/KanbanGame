@@ -27,7 +27,7 @@ public class Employee
         switch (column.ToLower())
         {
             case "backlog":
-            case "analysis":
+            case "analysisdoing":
                 return Role.Analyzer;
             case "developmentwaiting":
             case "developmentdoing":
@@ -48,7 +48,7 @@ public class Employee
         switch (role)
         {
             case Role.Analyzer:
-                return "Analysis";
+                return "AnalysisDoing";
             case Role.Developer:
                 return "DevelopmentDoing";
             case Role.Tester:

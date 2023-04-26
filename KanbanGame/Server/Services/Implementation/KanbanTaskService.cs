@@ -35,8 +35,6 @@ public class KanbanTaskService : IKanbanTaskService
             dbTask.Description = kanbanTask.Description;
             dbTask.Status = kanbanTask.Status;
             dbTask.Employee = kanbanTask.Employee;
-            dbTask.PpEmployeeId = kanbanTask.PpEmployeeId;
-            dbTask.PpEmployee = kanbanTask.PpEmployee;
         }
         return dbTask;
     }

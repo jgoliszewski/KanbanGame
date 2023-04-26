@@ -18,7 +18,7 @@ public class BoardService : IBoardService
         _employeeService = employeeService;
         ColumnMaxCount = new Dictionary<string, int>{
             {"Backlog", 9},
-            {"Analysis", 9},
+            {"AnalysisDoing", 9},
             {"DevelopmentDoing", 9},
             {"TestDoing", 9},
         };
@@ -35,13 +35,13 @@ public class BoardService : IBoardService
         Cards = new List<Card>();
         ColumnMaxCount = new Dictionary<string, int>{
             {"Backlog", 6},
-            {"Analysis", 0},
+            {"AnalysisDoing", 0},
             {"DevelopmentDoing", 0},
             {"TestDoing", 0},
         };
         ColumnCount = new Dictionary<string, int>{
             {"Backlog", 1},
-            {"Analysis", 1},
+            {"AnalysisDoing", 1},
             {"DevelopmentWaiting", 1},
             {"DevelopmentDoing", 1},
             {"TestWaiting", 1},

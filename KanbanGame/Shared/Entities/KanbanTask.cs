@@ -16,15 +16,10 @@ public class KanbanTask
     } // for Syncfunction
     public Employee? Employee { get; set; }
 
-    // pair programming 
-    // todo: think about better solution
-    public int? PpEmployeeId { get; set; }
-    public Employee? PpEmployee { get; set; }
-
     public enum TaskStatus
     {
         Backlog,
-        Analysis,
+        AnalysisDoing,
         DevelopmentWaiting,
         DevelopmentDoing,
         TestWaiting,
@@ -35,17 +30,13 @@ public class KanbanTask
     {
         this.Employee = employee;
     }
-    public void AddPpAssignee(int ppEmployeeId, Employee ppEmployee)
-    {
-        this.PpEmployee = ppEmployee;
-    }
     public void UpdateTaskStatus()
     {
         if (Employee is null)
         {
             switch (Status)
             {
-                case TaskStatus.Analysis:
+                case TaskStatus.AnalysisDoing:
                     Status = TaskStatus.Backlog;
                     break;
                 case TaskStatus.DevelopmentDoing:

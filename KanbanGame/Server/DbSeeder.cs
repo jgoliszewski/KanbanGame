@@ -65,7 +65,7 @@ public class DbSeeder
             new KanbanTask{
                 Title = "Task nr1",
                 Description = "Task description",
-                Status = KanbanTask.TaskStatus.Analysis
+                Status = KanbanTask.TaskStatus.AnalysisDoing
             },
             new KanbanTask{
                 Title = "Task nr2",
