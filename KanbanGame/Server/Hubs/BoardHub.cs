@@ -45,4 +45,10 @@ public class BoardHub : Hub
         await Clients.All.SendAsync("StateNotReady", ReadyUsersIds.Count);
     }
 
+    public async Task ClearRedyUsers(int _)
+    {
+        ReadyUsersIds.Clear();
+        await Clients.All.SendAsync("StateReady", ReadyUsersIds.Count);
+    }
+
 }

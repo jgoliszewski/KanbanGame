@@ -5,7 +5,7 @@
 @inject NavigationManager NavigationManager
 @implements IAsyncDisposable
 <div class="center">
-    <button class="btn btn-outline-warning" @onclick="(() => SimulateBoard())">
+    <button disabled="@IsForceUpdateDisabled" class="btn btn-outline-warning" @onclick="(() => SimulateBoard())">
             Force Update <i class="oi oi-sun"></i>
     </button>
 
@@ -85,6 +85,7 @@
 </div>
 @code {
     public SfKanban<KanbanGame.Shared.Card> kanbanBoard;
+    protected bool IsForceUpdateDisabled = true;
     private HubConnection? hubConnection;
     private int connectedUserCount = 0;
     private int readyUserCount = 0;
@@ -110,16 +111,19 @@
         hubConnection.On<int>("StateReady", async (numberOfReadyClients) =>
                 {
                     readyUserCount = numberOfReadyClients;
+                    IsForceUpdateDisabled = readyUserCount == connectedUserCount ? false : true;
                     StateHasChanged();
                 });
         hubConnection.On<int>("StateNotReady", async (numberOfReadyClients) =>
                 {
                     readyUserCount = numberOfReadyClients;
+                    IsForceUpdateDisabled = readyUserCount == connectedUserCount ? false : true;
                     StateHasChanged();
                 });
         hubConnection.On<int>("UserCount", async (numberOfConnectedClients) =>
                 {
                     connectedUserCount = numberOfConnectedClients;
+                    IsForceUpdateDisabled = readyUserCount == connectedUserCount ? false : true;
                     StateHasChanged();
                 });
     }
@@ -185,6 +189,7 @@
         if (hubConnection is not null)
         {
             await hubConnection.SendAsync("UpdateBoard", 0);
+            await hubConnection.SendAsync("ClearRedyUsers", 0);
         }
     }
     async Task StateReady()
