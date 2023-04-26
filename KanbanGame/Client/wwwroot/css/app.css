@@ -181,3 +181,7 @@ a, .btn-link {
   justify-content: center;
   align-items: center;
 }
+
+.btn {
+    margin: 5px
+}

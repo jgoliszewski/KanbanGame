@@ -4,11 +4,20 @@
 @inject IBoardService BoardService
 @inject NavigationManager NavigationManager
 @implements IAsyncDisposable
+<div class="center">
+    <button class="btn btn-outline-warning" @onclick="(() => SimulateBoard())">
+            Force Update <i class="oi oi-sun"></i>
+    </button>
 
-<button class="btn btn-outline-warning" @onclick="(() => SimulateBoard())">
-        Ready <i class="oi oi-sun"></i>
-</button>
+    <input type="radio" class="btn-check" name="options-outlined" id="danger-outlined" autocomplete="off" checked>
+    <label class="btn btn-outline-danger" for="danger-outlined" @onclick="(() => StateNotReady())">Not Ready</label>
 
+    <input type="radio" class="btn-check" name="options-outlined" id="success-outlined" autocomplete="off">
+    <label class="btn btn-outline-success" for="success-outlined" @onclick="(() => StateReady())">Ready</label>
+
+    <div style="margin:10px;font-size: large;">Users ready: @readyUserCount / @connectedUserCount</div>
+</div>
+<div class="center">
 <SfKanban @ref="kanbanBoard" TValue="KanbanGame.Shared.Card" KeyField="Column" DataSource="BoardService.Cards" Width="1800px">
     <KanbanColumns>
         <KanbanColumn HeaderText="" MaxCount="@BoardService.ColumnMaxCount["Backlog"]" KeyField="@(new List<string>() {"Backlog"})" TransitionColumns="@(new List<string>() {"AnalysisDoing"})" AllowAdding="true"></KanbanColumn>
@@ -73,10 +82,12 @@
         </Template>
     </KanbanCardSettings>
 </SfKanban>
-
+</div>
 @code {
     public SfKanban<KanbanGame.Shared.Card> kanbanBoard;
     private HubConnection? hubConnection;
+    private int connectedUserCount = 0;
+    private int readyUserCount = 0;
     protected override async Task OnInitializedAsync()
     {
         await BoardService.GetCards();
@@ -88,12 +99,27 @@
         hubConnection = new HubConnectionBuilder()
                 .WithUrl(NavigationManager.ToAbsoluteUri("/BoardHub"))
                 .Build();
-
+        
         await hubConnection.StartAsync();
 
-        hubConnection.On<int>("BoardUpdated", async (boardId) =>
+        hubConnection.On<int>("BoardUpdated", async (_) =>
                 {
                     await BoardService.GetCards();
+                    StateHasChanged();
+                });
+        hubConnection.On<int>("StateReady", async (numberOfReadyClients) =>
+                {
+                    readyUserCount = numberOfReadyClients;
+                    StateHasChanged();
+                });
+        hubConnection.On<int>("StateNotReady", async (numberOfReadyClients) =>
+                {
+                    readyUserCount = numberOfReadyClients;
+                    StateHasChanged();
+                });
+        hubConnection.On<int>("UserCount", async (numberOfConnectedClients) =>
+                {
+                    connectedUserCount = numberOfConnectedClients;
                     StateHasChanged();
                 });
     }
@@ -159,6 +185,20 @@
         if (hubConnection is not null)
         {
             await hubConnection.SendAsync("UpdateBoard", 0);
+        }
+    }
+    async Task StateReady()
+    {
+        if (hubConnection is not null)
+        {
+            await hubConnection.SendAsync("StateReady", 0);
+        }
+    }
+    async Task StateNotReady()
+    {
+        if (hubConnection is not null)
+        {
+            await hubConnection.SendAsync("StateNotReady", 0);
         }
     }
     public async ValueTask DisposeAsync()
