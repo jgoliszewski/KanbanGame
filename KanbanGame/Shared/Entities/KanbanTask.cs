@@ -6,26 +6,16 @@ public class KanbanTask
     public string Title { get; set; }
     public string? Description { get; set; }
     public TaskStatus Status { get; set; }
-    public string StatusString
+    public string SF_Column
     {
         get => Status.ToString();
         set
         {
             Status = (TaskStatus)Enum.Parse(typeof(TaskStatus), value);
         }
-    } // for Syncfunction
+    } // for Syncfunction D&D
     public Employee? Employee { get; set; }
 
-    public enum TaskStatus
-    {
-        Backlog,
-        AnalysisDoing,
-        DevelopmentWaiting,
-        DevelopmentDoing,
-        TestWaiting,
-        TestDoing,
-        Delivered
-    }
     public void AddAssignee(int employeeId, Employee employee)
     {
         this.Employee = employee;
@@ -47,6 +37,17 @@ public class KanbanTask
                     break;
             }
         }
+    }
+
+    public enum TaskStatus
+    {
+        Backlog,
+        AnalysisDoing,
+        DevelopmentWaiting,
+        DevelopmentDoing,
+        TestWaiting,
+        TestDoing,
+        Delivered
     }
 
 }

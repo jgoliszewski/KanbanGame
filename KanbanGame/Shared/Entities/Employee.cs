@@ -8,11 +8,11 @@ public class Employee
     public EmployeeSeniority Seniority { get; set; } = EmployeeSeniority.Junior;
     public EmployeeStatus Status { get; set; } = EmployeeStatus.NotWorking;
     public Role CurrentRole { get; set; }
-    public string CurrentRoleString
+    public string SF_Column
     {
         get => RoleToColumn(CurrentRole);
         set => CurrentRole = ColumnToRole(value);
-    }
+    } // for Syncfunction D&D
     public string AvatarPath { get; set; } = "Avatars/Default.png";
 
     //todod: extract Role to separate classes with interface
@@ -38,8 +38,6 @@ public class Employee
                 return Role.Tester;
             default:
                 return Role.Developer;
-
-
         }
     }
 

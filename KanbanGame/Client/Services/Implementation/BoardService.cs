@@ -57,13 +57,13 @@ public class BoardService : IBoardService
         foreach (var e in _employeeService.Employees)
         {
             Board.Add(e, null);
-            ColumnMaxCount[e.CurrentRoleString] += 2;
+            ColumnMaxCount[e.SF_Column] += 2;
         }
         foreach (var t in _kanbanTaskService.KanbanTasks)
         {
             if (t.Employee is not null)
             {
-                t.StatusString = t.Employee.CurrentRoleString; //todo: make it has more sense
+                t.SF_Column = t.Employee.SF_Column;
                 var key = Board.Where(p => p.Key.Id == t.Employee.Id).FirstOrDefault().Key;
                 Board[key] = t;
             }
@@ -74,18 +74,18 @@ public class BoardService : IBoardService
         }
         foreach (var (e, t) in Board)
         {
-            Cards.Add(EmployeeToCard(e, ColumnCount[e.CurrentRoleString]));
-            ColumnCount[e.CurrentRoleString] += 2;
+            Cards.Add(EmployeeToCard(e, ColumnCount[e.SF_Column]));
+            ColumnCount[e.SF_Column] += 2;
             if (t is not null)
             {
-                Cards.Add(TaskToCard(t, ColumnCount[e.CurrentRoleString]));
-                ColumnCount[e.CurrentRoleString] += 2;
+                Cards.Add(TaskToCard(t, ColumnCount[e.SF_Column]));
+                ColumnCount[e.SF_Column] += 2;
             }
         }
         foreach (var t in tempTasks)
         {
-            Cards.Add(TaskToCard(t, ColumnCount[t.StatusString]));
-            ColumnCount[t.StatusString] += 2;
+            Cards.Add(TaskToCard(t, ColumnCount[t.SF_Column]));
+            ColumnCount[t.SF_Column] += 2;
         }
     }
 
@@ -96,7 +96,7 @@ public class BoardService : IBoardService
             Id = lastId++,
             RankId = rankId,
             KanbanTask = kanbanTask,
-            Column = kanbanTask.StatusString
+            Column = kanbanTask.SF_Column
         };
         return card;
     }
@@ -108,7 +108,7 @@ public class BoardService : IBoardService
             Id = lastId++,
             RankId = rankId,
             Employee = employee,
-            Column = employee.CurrentRoleString
+            Column = employee.SF_Column
         };
         return card;
     }
@@ -147,20 +147,13 @@ public class BoardService : IBoardService
 
                 if (cardAbove is not null && cardAbove.Employee is not null)
                 {
-                    if (card.KanbanTask.Employee is null || card.KanbanTask.Employee.Id != cardAbove.Employee.Id)
-                    {
-                        card.KanbanTask.Employee = cardAbove.Employee;
-                        card.KanbanTask.StatusString = cardAbove.Employee.CurrentRoleString;
-                    }
+                    card.KanbanTask.Employee = cardAbove.Employee;
+                    card.KanbanTask.SF_Column = cardAbove.Employee.SF_Column;
                 }
                 else
                 {
-                    if (card.KanbanTask.Employee is not null)
-                    {
-                        card.KanbanTask.Employee = null;
-                    }
-                }
-                // card.KanbanTask.UpdateTaskStatus(); 
+                    card.KanbanTask.Employee = null;
+                } 
             }
             await UpdateCard(card.Id, card);
         }

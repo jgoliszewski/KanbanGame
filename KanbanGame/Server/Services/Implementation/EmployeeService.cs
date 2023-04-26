@@ -33,7 +33,7 @@ public class EmployeeService : IEmployeeService
             dbEmployee.Name = employee.Name;
             dbEmployee.Seniority = employee.Seniority;
             dbEmployee.Status = employee.Status;
-            dbEmployee.CurrentRoleString = employee.CurrentRoleString;
+            dbEmployee.CurrentRole = employee.CurrentRole;
         }
         return dbEmployee;
     }

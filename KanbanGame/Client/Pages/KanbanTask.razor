@@ -93,7 +93,9 @@ else
                 selectedEmployeeId = kanbanTask.Employee is null ? -1 : kanbanTask.Employee.Id;
             }
             else
+            {
                 NavigationManager.NavigateTo("/kanbanTask");
+            }
         }
     }
 
@@ -102,7 +104,7 @@ else
         if(selectedEmployeeId != -1) // check if Employee is selectd
         {
             kanbanTask.Employee = EmployeeService.Employees.Where(e => e.Id == selectedEmployeeId).FirstOrDefault();
-            kanbanTask.StatusString = kanbanTask.Employee.CurrentRoleString;
+            kanbanTask.SF_Column = kanbanTask.Employee.SF_Column;
         }
         else
         {
@@ -118,6 +120,7 @@ else
             await KanbanTaskService.UpdateKanbanTask((int)Id, kanbanTask);
             NavigationManager.NavigateTo("kanbanTasks");
         }
+
         if (hubConnection is not null)
         {
             await hubConnection.SendAsync("UpdateBoard", 0);
