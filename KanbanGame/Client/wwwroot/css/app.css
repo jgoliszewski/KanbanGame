@@ -108,9 +108,12 @@ a, .btn-link {
 
 /* -----------------------------------Syncfusion Kanban------––––––––––––––––––––––––------- */
 
-.e-control { 
+.e-control .e-card { 
     font-family: 'Varela Round' !important;   
 } 
+.e-kanban{
+    margin: 10px
+}
 .e-kanban .e-kanban-header .e-header-cells .e-limits .e-max-count{
     content-visibility: hidden;
 }
@@ -171,4 +174,10 @@ a, .btn-link {
 .employee-d { 
     grid-area: d; 
     line-height: 120%;
+}
+
+.center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
