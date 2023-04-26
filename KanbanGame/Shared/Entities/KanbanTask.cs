@@ -6,6 +6,7 @@ public class KanbanTask
     public string Title { get; set; }
     public string? Description { get; set; }
     public TaskStatus Status { get; set; }
+    public Employee? Employee { get; set; }
     public string SF_Column
     {
         get => Status.ToString();
@@ -14,7 +15,6 @@ public class KanbanTask
             Status = (TaskStatus)Enum.Parse(typeof(TaskStatus), value);
         }
     } // for Syncfunction D&D
-    public Employee? Employee { get; set; }
 
     public void AddAssignee(int employeeId, Employee employee)
     {
