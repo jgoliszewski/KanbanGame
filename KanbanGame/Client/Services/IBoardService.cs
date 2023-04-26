@@ -1,7 +1,7 @@
 using KanbanGame.Shared;
 
 namespace KanbanGame.Client.Services;
-public interface ICardService
+public interface IBoardService
 {
     List<Card> Cards { get; set; }
     Dictionary<string, int> ColumnMaxCount { get; set; }

@@ -5,13 +5,13 @@ using System.Net.Http.Json;
 
 namespace KanbanGame.Client.Services;
 
-public class CardService : ICardService
+public class BoardService : IBoardService
 {
     private int lastId;
     private readonly IKanbanTaskService _kanbanTaskService;
     private readonly IEmployeeService _employeeService;
     private readonly HttpClient _http;
-    public CardService(HttpClient http, IKanbanTaskService kanbanTaskService, IEmployeeService employeeService)
+    public BoardService(HttpClient http, IKanbanTaskService kanbanTaskService, IEmployeeService employeeService)
     {
         _http = http;
         _kanbanTaskService = kanbanTaskService;
