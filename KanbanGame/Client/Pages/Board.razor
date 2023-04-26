@@ -8,7 +8,7 @@
 <SfKanban @ref="kanbanBoard" TValue="KanbanGame.Shared.Card" KeyField="Column" DataSource="BoardService.Cards" Width="1800px">
     <KanbanColumns>
         <KanbanColumn HeaderText="" MaxCount="@BoardService.ColumnMaxCount["Backlog"]" KeyField="@(new List<string>() {"Backlog"})" TransitionColumns="@(new List<string>() {"Analysis"})" AllowAdding="true"></KanbanColumn>
-        <KanbanColumn HeaderText="" MaxCount="@BoardService.ColumnMaxCount["Analysis"]" KeyField="@(new List<string>() {"Analysis"})" TransitionColumns="@(new List<string>() {"Backlog", "Analysis", "DevelopmentDoing", "TestDoing"})"></KanbanColumn>
+        <KanbanColumn HeaderText="Doing" MaxCount="@BoardService.ColumnMaxCount["Analysis"]" KeyField="@(new List<string>() {"Analysis"})" TransitionColumns="@(new List<string>() {"Backlog", "Analysis", "DevelopmentDoing", "TestDoing"})"></KanbanColumn>
         <KanbanColumn HeaderText="Waiting" KeyField="@(new List<string>() {"DevelopmentWaiting"})" TransitionColumns="@(new List<string>() {"DevelopmentDoing"})"></KanbanColumn>
         <KanbanColumn HeaderText="Doing" MaxCount="@BoardService.ColumnMaxCount["DevelopmentDoing"]" KeyField="@(new List<string>() {"DevelopmentDoing"})" TransitionColumns="@(new List<string>() {"DevelopmentWaiting", "Analysis", "DevelopmentDoing", "TestDoing"})"></KanbanColumn>
         <KanbanColumn HeaderText="Waiting" KeyField="@(new List<string>() {"TestWaiting"})" TransitionColumns="@(new List<string>() {"TestDoing"})"></KanbanColumn>
@@ -23,7 +23,7 @@
         <KanbanStackedHeader Text="Delivered" KeyFields="@(new List<string>() {"Delivered"})"></KanbanStackedHeader>
     </KanbanStackedHeaders>
     <KanbanSortSettings SortBy="SortOrderBy.Index" Field="RankId"></KanbanSortSettings>
-    <KanbanEvents TValue="KanbanGame.Shared.Card" DragStart="@DragStartHandler" DragStop="@DragStopHandler" ActionComplete="@ActionCompleteHandler"></KanbanEvents>
+    <KanbanEvents TValue="KanbanGame.Shared.Card" DragStart="@DragStartHandler" DragStop="@DragStopHandler"></KanbanEvents>
     <KanbanCardSettings HeaderField="Id">
         <Template>
             @{
@@ -75,7 +75,6 @@
     private HubConnection? hubConnection;
     protected override async Task OnInitializedAsync()
     {
-        await KanbanTaskService.GetKanbanTasks();
         await BoardService.GetCards();
         await Connect();
     }
@@ -90,7 +89,6 @@
 
         hubConnection.On<int>("BoardUpdated", async (boardId) =>
                 {
-                    // reload data
                     await BoardService.GetCards();
                     StateHasChanged();
                 });
@@ -122,10 +120,10 @@
             else
             {
                 draggedCard.KanbanTask.StatusString = draggedCard.Column; 
-                await BoardService.UpdateCardLocal(draggedCard.Id, draggedCard); //magic line to fix board stop working issue
-
+                await BoardService.UpdateCardLocal(draggedCard.Id, draggedCard);
                 await BoardService.UpdateColumn(columnBeforeDrag);
                 await BoardService.UpdateColumn(columnAfterDrag);
+
                 if (hubConnection is not null)
                 {
                     await hubConnection.SendAsync("UpdateBoard", 0);
@@ -141,10 +139,10 @@
             else
             {
                 draggedCard.Employee.CurrentRoleString = draggedCard.Column;
-                await BoardService.UpdateCardLocal(draggedCard.Id, draggedCard); //magic line to fix board stop working issue
-
+                await BoardService.UpdateCardLocal(draggedCard.Id, draggedCard);
                 await BoardService.UpdateColumn(columnBeforeDrag);
                 await BoardService.UpdateColumn(columnAfterDrag);
+                
                 if (hubConnection is not null)
                 {
                     await hubConnection.SendAsync("UpdateBoard", 0);
@@ -153,10 +151,6 @@
         }
     }
 
-    public async Task ActionCompleteHandler(ActionEventArgs<KanbanGame.Shared.Card> args)
-    {
-    }
-    
     public async ValueTask DisposeAsync()
     {
         if (hubConnection != null)
@@ -164,6 +158,4 @@
             await hubConnection.DisposeAsync();
         }
     }
-
-    
 }
