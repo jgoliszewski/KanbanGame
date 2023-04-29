@@ -1,0 +1,131 @@
+@page "/feature"
+@page "/feature/{id:int}"
+@inject IFeatureService FeatureService
+@inject IKanbanTaskService KanbanTaskService
+@inject NavigationManager NavigationManager
+
+@if (Id is null)
+{
+        <PageTitle>Create a new Task</PageTitle>
+        <h3>Create a new Task</h3>
+}
+else
+{
+        <PageTitle>Edit @feature.Title</PageTitle>
+        <h3>Edit @feature.Title</h3>
+}
+
+<EditForm Model="feature" OnSubmit="HandleSubmit">
+    <div>
+        <label for="title">Title</label>
+        <InputText id="title" @bind-Value="feature.Title" class="form-control" />
+    </div>
+    <div>
+        <label for="description">Description</label>
+        <InputText id="category" @bind-Value="feature.Description" class="form-control" />
+    </div>
+    <div>
+        <label for="status">Status</label>
+        <InputSelect id="status" @bind-Value="feature.Status" class="form-control">
+            @foreach (var status in Enum.GetValues(typeof(KanbanGame.Shared.Feature.FeatureStatus)))
+            {
+                    <option value="@status">@status</option>
+            }
+        </InputSelect>
+    </div>
+
+    @* todo: choosing tasks to feature *@
+    
+    <br />
+    <button type="submit" class="btn btn-primary">@btnText</button>
+    <button type="button" class="btn btn-danger"
+            @onclick="DeleteFeature">
+        Delete Task
+    </button>
+</EditForm>
+
+@code {
+
+    [Parameter]
+    public int? Id { get; set; }
+    string btnText = string.Empty;
+    private int selectedEmployeeId;
+    private HubConnection? hubConnection;
+
+    KanbanGame.Shared.Feature feature =
+        new KanbanGame.Shared.Feature{
+            Id = 0,
+            Title = "New Task",
+            Description = "Description",
+            Status = KanbanGame.Shared.Feature.FeatureStatus.Backlog
+        };
+
+    protected override async Task OnInitializedAsync()
+    {
+        await KanbanTaskService.GetKanbanTasks();
+        btnText = Id == null ? "Save New Task" : "Update Task";
+        
+        await Connect();
+    }
+    private async Task Connect()
+    {
+        hubConnection = new HubConnectionBuilder()
+            .WithUrl(NavigationManager.ToAbsoluteUri("/BoardHub"))
+            .Build();
+
+        await hubConnection.StartAsync();
+    }
+    protected override async Task OnParametersSetAsync()
+    {
+        if (Id is not null)
+        {
+            var result = await FeatureService.GetFeatureById((int)Id);
+            if (result is not null)
+            {
+                feature = result;
+                @* selectedEmployeeId = feature.Employee is null ? -1 : feature.Employee.Id; *@
+            }
+            else
+            {
+                NavigationManager.NavigateTo("/feature");
+            }
+        }
+    }
+
+    async Task HandleSubmit()
+    {
+        @* if(selectedEmployeeId != -1) // check if Employee is selectd
+        {
+            feature.Employee = EmployeeService.Employees.Where(e => e.Id == selectedEmployeeId).FirstOrDefault();
+            feature.SF_Column = feature.Employee.SF_Column;
+        }
+        else
+        {
+            feature.Employee = null;
+        } *@
+
+        if (Id is null)
+        {
+            await FeatureService.CreateFeature(feature);
+        }
+        else
+        {
+            await FeatureService.UpdateFeature((int)Id, feature);
+            NavigationManager.NavigateTo("features");
+        }
+
+        if (hubConnection is not null)
+        {
+            await hubConnection.SendAsync("UpdateBoard", 0);
+        }
+    }
+
+    async Task DeleteFeature()
+    {
+        await FeatureService.DeleteFeature(feature.Id);
+        if (hubConnection is not null)
+        {
+            await hubConnection.SendAsync("UpdateBoard", 0);
+        }
+    }
+}

@@ -11,6 +11,7 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
 builder.Services.AddSingleton<IKanbanTaskService, KanbanTaskService>();
 builder.Services.AddSingleton<IEmployeeService, EmployeeService>();
+builder.Services.AddSingleton<IFeatureService, FeatureService>();
 builder.Services.AddSignalR();
 builder.Services.AddResponseCompression(options =>
     options.MimeTypes = ResponseCompressionDefaults

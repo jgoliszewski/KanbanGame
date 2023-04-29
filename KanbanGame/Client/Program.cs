@@ -14,6 +14,7 @@ builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.
 builder.Services.AddScoped<IKanbanTaskService, KanbanTaskService>();
 builder.Services.AddScoped<IEmployeeService, EmployeeService>();
 builder.Services.AddScoped<IBoardService, BoardService>();
+builder.Services.AddScoped<IFeatureService, FeatureService>();
 builder.Services.AddSyncfusionBlazor();
 
 await builder.Build().RunAsync();

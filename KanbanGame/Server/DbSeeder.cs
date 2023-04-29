@@ -8,10 +8,13 @@ public class DbSeeder
 
     private readonly IEmployeeService _EmployeeService;
     private readonly IKanbanTaskService _KanbanTaskService;
-    public DbSeeder(IEmployeeService employeeService, IKanbanTaskService kanbanTaskService)
+    private readonly IFeatureService _FeatureService;
+    
+    public DbSeeder(IEmployeeService employeeService, IKanbanTaskService kanbanTaskService, IFeatureService featureService)
     {
         _EmployeeService = employeeService;
         _KanbanTaskService = kanbanTaskService;
+        _FeatureService = featureService;
     }
 
     private List<Employee> Employees = new List<Employee>(){
@@ -56,47 +59,81 @@ public class DbSeeder
             AvatarPath = "Avatars/Mummy.png"
         },
     };
-    private List<KanbanTask> KanbanTasks = new List<KanbanTask>(){
+    private List<KanbanTask> KanbanTasks = new List<KanbanTask>()
+    {
             new KanbanTask{
-                Title = "Task nr0",
+                Title = "A1",
                 Description = "Task description",
                 Status = KanbanTask.TaskStatus.Backlog,
             },
             new KanbanTask{
-                Title = "Task nr1",
+                Title = "A2",
                 Description = "Task description",
                 Status = KanbanTask.TaskStatus.AnalysisDoing
             },
             new KanbanTask{
-                Title = "Task nr2",
+                Title = "A3",
                 Description = "Task description",
                 Status = KanbanTask.TaskStatus.DevelopmentWaiting
             },
             new KanbanTask{
-                Title = "Task nr3",
+                Title = "B1",
                 Description = "Task description",
                 Status = KanbanTask.TaskStatus.TestWaiting
             },
             new KanbanTask{
-                Title = "Task nr4",
-                Description = "Task description",
-                Status = KanbanTask.TaskStatus.TestWaiting
-            },
-            new KanbanTask{
-                Title = "Task nr5",
+                Title = "B2",
                 Description = "Task description",
                 Status = KanbanTask.TaskStatus.Backlog
             },
+            new KanbanTask{
+                Title = "C1",
+                Description = "Task description",
+                Status = KanbanTask.TaskStatus.Backlog,
+            },
+            new KanbanTask{
+                Title = "C2",
+                Description = "Task description",
+                Status = KanbanTask.TaskStatus.TestDoing,
+            },
         };
 
-
+    private List<Feature> Features = new List<Feature>()
+    {
+        new Feature{
+            Title = "A",
+            Description = "Cool Feature about sth",
+            Status = Feature.FeatureStatus.Backlog,
+        },
+        new Feature{
+            Title = "B",
+            Description = "Nice Feature adding cool stuff",
+            Status = Feature.FeatureStatus.Backlog,
+        },
+        new Feature{
+            Title = "C",
+            Description = "Amazing things",
+            Status = Feature.FeatureStatus.Backlog,
+        }
+    };
 
     public void Seed()
     {
-        KanbanTasks[0].AddAssignee(Employees[0]);
-        KanbanTasks[1].AddAssignee(Employees[1]);
-        KanbanTasks[2].AddAssignee(Employees[2]);
-        KanbanTasks[3].AddAssignee(Employees[3]);
+        // KanbanTasks[0].AddAssignee(Employees[0]);
+        // KanbanTasks[1].AddAssignee(Employees[1]);
+        // KanbanTasks[2].AddAssignee(Employees[2]);
+        // KanbanTasks[3].AddAssignee(Employees[3]);
+
+        Features[0].KanbanTasks = new List<KanbanTask>(){
+            KanbanTasks[0],
+            KanbanTasks[1],
+            KanbanTasks[2]};
+        Features[1].KanbanTasks = new List<KanbanTask>(){
+            KanbanTasks[3],
+            KanbanTasks[4]};
+        Features[2].KanbanTasks = new List<KanbanTask>(){
+            KanbanTasks[5],
+            KanbanTasks[6]};
 
         foreach (var task in KanbanTasks)
         {
@@ -106,6 +143,11 @@ public class DbSeeder
         foreach (var employee in Employees)
         {
             _EmployeeService.CreateEmployee(employee);
+        }
+
+        foreach(var feature in Features)
+        {
+            _FeatureService.CreateFeature(feature);
         }
     }
 }

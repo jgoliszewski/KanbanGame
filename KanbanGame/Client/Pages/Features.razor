@@ -1,0 +1,99 @@
+@page "/Features"
+@inject IFeatureService FeatureService
+@inject NavigationManager NavigationManager
+@implements IAsyncDisposable
+
+<h3>Tasks</h3>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th style="width:64px">Task Id</th>
+            <th>Title</th>
+            <th>Description</th>
+            <th>Status</th>
+            <th>Number of Tasks</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var task in FeatureService.Features)
+        {
+            <tr>
+                <td>@task.Id</td>
+                <td>@task.Title</td>
+                <td>@task.Description</td>
+                <td>@task.Status</td>
+                <td>@task.KanbanTasks.Count</td>
+                <td>
+                    <button class="btn btn-primary"
+                        @onclick="(() => ShowFeature(task.Id))">
+                        <i class="oi oi-pencil"></i>
+                    </button>
+                    <button class="btn btn-danger"
+                        @onclick="(() => DeleteFeature(task.Id))">
+                        <i class="oi oi-trash"></i>
+                    </button>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+<button class="btn btn-primary"
+        @onclick="CreateNewFeature">
+    Create New Task
+</button>
+
+@code {
+    private HubConnection? hubConnection;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await FeatureService.GetFeatures();
+        await Connect();
+    }
+
+    private async Task Connect()
+    {
+        hubConnection = new HubConnectionBuilder()
+            .WithUrl(NavigationManager.ToAbsoluteUri("/BoardHub"))
+            .Build();
+    
+        await hubConnection.StartAsync();
+
+        hubConnection.On<int>("BoardUpdated", async (boardId) => 
+            {
+                // reload data
+                await FeatureService.GetFeatures();
+                StateHasChanged();
+            });
+    }
+    
+    void ShowFeature(int id)
+    {
+        NavigationManager.NavigateTo($"/Feature/{id}");
+    }
+
+    void CreateNewFeature()
+    {
+        NavigationManager.NavigateTo("/Feature");
+    }
+    async Task DeleteFeature(int FeatureId)
+    {
+        await FeatureService.DeleteFeature(FeatureId);
+        FeatureService.Features.RemoveAll(t => t.Id == FeatureId);
+
+        if(hubConnection is not null)
+        {
+            await hubConnection.SendAsync("UpdateBoard", 0);
+        }
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        if (hubConnection != null)
+        {
+            await hubConnection.DisposeAsync();
+        }
+    }
+}
