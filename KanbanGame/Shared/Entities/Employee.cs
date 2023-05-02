@@ -8,6 +8,7 @@ public class Employee
     public EmployeeSeniority Seniority { get; set; } = EmployeeSeniority.Junior;
     public EmployeeStatus Status { get; set; } = EmployeeStatus.NotWorking;
     public Role CurrentRole { get; set; }
+    public Team.TeamName Team { get; set; }
     public string AvatarPath { get; set; } = "Avatars/Default.png";
     public string SF_Column
     {
