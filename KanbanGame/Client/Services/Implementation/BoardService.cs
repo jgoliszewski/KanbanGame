@@ -278,7 +278,9 @@ public class BoardService : IBoardService
 
     private Card? FindCardAbove(Card card)
     {
-        var column = Cards.Where(c => c.Column == card.Column && c.RankId < card.RankId);
+        var column = Cards.Where(
+            c => c.Team == card.Team && c.Column == card.Column && c.RankId < card.RankId
+        );
         if (column.ToList().Count > 0)
         {
             var cardAbove = column.MaxBy(c => c.RankId);
