@@ -10,6 +10,7 @@ public class Feature
     public List<KanbanTask> KanbanTasks { get; set; }
     public Employee? Assignee { get; set; }
     public FeatureStatus Status { get; set; }
+    public Team.TeamName Team = KanbanGame.Shared.Team.TeamName.HighLevelAnalysis;
 
     public double DeliveredTaskPercentage
     {

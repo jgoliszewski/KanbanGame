@@ -7,7 +7,7 @@ public class KanbanTask
     public string? Description { get; set; }
     public TaskStatus Status { get; set; }
     public Employee? Assignee { get; set; }
-    public Team.TeamName? Team { get; set; }
+    public Team.TeamName Team { get; set; }
     public string SF_Column
     {
         get => Status.ToString();

@@ -16,7 +16,7 @@ public class KanbanTaskService : IKanbanTaskService
 
     public async Task<List<KanbanTask>?> GetKanbanTasksByTeamId(int teamId)
     {
-        var dbTask = KanbanTasks.FindAll(t => t.Team is not null && (int)t.Team == teamId);
+        var dbTask = KanbanTasks.FindAll(t => (int)t.Team == teamId);
         return dbTask;
     }
 
