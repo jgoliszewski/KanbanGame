@@ -25,8 +25,8 @@
                 <td>@task.Title</td>
                 <td>@task.Description</td>
                 <td>@task.Status</td>
-                <td>@(@task.Employee is null ? "" : @task.Employee.Id)</td>
-                <td>@(@task.Employee is null ? "" : @task.Employee.Name)</td>
+                <td>@(@task.Assignee is null ? "" : @task.Assignee.Id)</td>
+                <td>@(@task.Assignee is null ? "" : @task.Assignee.Name)</td>
                 <td>
                     <button class="btn btn-primary"
                         @onclick="(() => ShowKanbanTask(task.Id))">

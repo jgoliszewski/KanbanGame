@@ -72,11 +72,11 @@
                                             <div class="task-d">
                                                 <div>Id: @kanbanTask.Id</div>
                                                 <div>Desc: @kanbanTask.Description</div>
-                                                <div>Ass. Id: @(kanbanTask.Employee is null ? "-" : kanbanTask.Employee.Id)</div>
-                                                <div>Assignee.: @(kanbanTask.Employee == null ? "-" : kanbanTask.Employee.Name)</div>
+                                                <div>Ass. Id: @(kanbanTask.Assignee is null ? "-" : kanbanTask.Assignee.Id)</div>
+                                                <div>Assignee.: @(kanbanTask.Assignee == null ? "-" : kanbanTask.Assignee.Name)</div>
                                             </div>
                             @* <div class="task-f">Status: @kanbanTask.SF_Column</div> *@
-                                        <div class="task-f">RankId: @card.RankId <img src=@(kanbanTask.Employee == null ? "Avatars/Default.png" : kanbanTask.Employee.AvatarPath) style="width:32px; float:right;" alt="logo" /></div>
+                                        <div class="task-f">RankId: @card.RankId <img src=@(kanbanTask.Assignee == null ? "Avatars/Default.png" : kanbanTask.Assignee.AvatarPath) style="width:32px; float:right;" alt="logo" /></div>
                                     </div>
                     }
                 }

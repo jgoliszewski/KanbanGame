@@ -64,10 +64,10 @@ public class BoardService : IBoardService
 
         foreach (var t in _kanbanTaskService.KanbanTasks)
         {
-            if (t.Employee is not null)
+            if (t.Assignee is not null)
             {
-                t.SF_Column = t.Employee.SF_Column;
-                var key = BoardBuild.Where(p => p.Key.Id == t.Employee.Id).FirstOrDefault().Key;
+                t.SF_Column = t.Assignee.SF_Column;
+                var key = BoardBuild.Where(p => p.Key.Id == t.Assignee.Id).FirstOrDefault().Key;
                 BoardBuild[key] = t;
             }
             else
@@ -92,7 +92,7 @@ public class BoardService : IBoardService
             var cardAbove = FindCardAbove(card);
             if (cardAbove is not null && cardAbove.Employee is not null)
             {
-                card.KanbanTask.Employee = cardAbove.Employee;
+                card.KanbanTask.Assignee = cardAbove.Employee;
             }
             Cards.Add(card);
             ColumnCount[t.SF_Column] += 2;
@@ -127,10 +127,10 @@ public class BoardService : IBoardService
     {
         foreach (var card in Cards)
         {
-            if (card.KanbanTask is not null && card.KanbanTask.Employee is not null)
+            if (card.KanbanTask is not null && card.KanbanTask.Assignee is not null)
             {
                 card.KanbanTask.NextTaskStatus();
-                card.KanbanTask.Employee = null;
+                card.KanbanTask.Assignee = null;
 
                 await _kanbanTaskService.UpdateKanbanTask(card.KanbanTask.Id, card.KanbanTask);
             }
@@ -171,12 +171,12 @@ public class BoardService : IBoardService
 
                 if (cardAbove is not null && cardAbove.Employee is not null)
                 {
-                    card.KanbanTask.Employee = cardAbove.Employee;
+                    card.KanbanTask.Assignee = cardAbove.Employee;
                     card.KanbanTask.SF_Column = cardAbove.Employee.SF_Column;
                 }
                 else
                 {
-                    card.KanbanTask.Employee = null;
+                    card.KanbanTask.Assignee = null;
                 }
             }
             await UpdateCard(card.Id, card);

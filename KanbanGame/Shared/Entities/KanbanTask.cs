@@ -6,7 +6,7 @@ public class KanbanTask
     public string Title { get; set; }
     public string? Description { get; set; }
     public TaskStatus Status { get; set; }
-    public Employee? Employee { get; set; }
+    public Employee? Assignee { get; set; }
     public Team.TeamName? Team { get; set; }
     public string SF_Column
     {
@@ -16,7 +16,7 @@ public class KanbanTask
 
     public void AddAssignee(Employee employee)
     {
-        this.Employee = employee;
+        this.Assignee = employee;
     }
 
     public void NextTaskStatus()

@@ -34,8 +34,8 @@ else
         </InputSelect>
     </div>
     <div>
-        <label for="employee">Employee</label>
-        <InputSelect id="employee" @bind-Value="@selectedEmployeeId" class="form-control">
+        <label for="assignee">Assignee</label>
+        <InputSelect id="assignee" @bind-Value="@selectedEmployeeId" class="form-control">
             <option value="-1"></option>
             @foreach (var employee in EmployeeService.Employees)
             {
@@ -90,7 +90,7 @@ else
             if (result is not null)
             {
                 kanbanTask = result;
-                selectedEmployeeId = kanbanTask.Employee is null ? -1 : kanbanTask.Employee.Id;
+                selectedEmployeeId = kanbanTask.Assignee is null ? -1 : kanbanTask.Assignee.Id;
             }
             else
             {
@@ -103,12 +103,12 @@ else
     {
         if(selectedEmployeeId != -1) // check if Employee is selectd
         {
-            kanbanTask.Employee = EmployeeService.Employees.Where(e => e.Id == selectedEmployeeId).FirstOrDefault();
-            kanbanTask.SF_Column = kanbanTask.Employee.SF_Column;
+            kanbanTask.Assignee = EmployeeService.Employees.Where(e => e.Id == selectedEmployeeId).FirstOrDefault();
+            kanbanTask.SF_Column = kanbanTask.Assignee.SF_Column;
         }
         else
         {
-            kanbanTask.Employee = null;
+            kanbanTask.Assignee = null;
         }
 
         if (Id is null)
