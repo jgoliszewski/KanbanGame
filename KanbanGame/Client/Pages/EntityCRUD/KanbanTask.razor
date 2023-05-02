@@ -37,7 +37,7 @@ else
         <label for="assignee">Assignee</label>
         <InputSelect id="assignee" @bind-Value="@selectedEmployeeId" class="form-control">
             <option value="-1"></option>
-            @foreach (var employee in EmployeeService.Employees)
+            @foreach (var employee in EmployeeService.Employees.FindAll(e => e.Team != KanbanGame.Shared.Team.TeamName.HighLevelAnalysis))
             {
                     <option value="@employee.Id">@employee.Name</option>
             }
