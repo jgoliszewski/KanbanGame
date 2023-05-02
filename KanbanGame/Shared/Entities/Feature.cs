@@ -5,20 +5,38 @@ public class Feature
     public int Id { get; set; }
     public string Title { get; set; }
     public string? Description { get; set; }
-    public List<KanbanTask> KanbanTasks {get; set;}
+    public int? EstimatedMinEarnings { get; set; }
+    public int? EstimatedMaxEarnings { get; set; }
+    public List<KanbanTask> KanbanTasks { get; set; }
+    public Employee? Assignee { get; set; }
     public FeatureStatus Status { get; set; }
 
-    private DeliveredPercentage DeliveredTaskPercentage {
+    public double DeliveredTaskPercentage
+    {
         get
         {
-            var tasksCount = KanbanTasks.Count;
-            var deliveredTasksCount = KanbanTasks.FindAll(t => t.Status == KanbanTask.TaskStatus.Delivered).Count;
-            return PercentageToStatus(deliveredTasksCount/tasksCount);
+            double tasksCount = KanbanTasks.Count;
+            double deliveredTasksCount = KanbanTasks
+                .FindAll(t => t.Status == KanbanTask.TaskStatus.Delivered)
+                .Count;
+            return (deliveredTasksCount / tasksCount);
+        }
+    }
+    public DeliveredPercentage DeliveredTaskPercentageStatus
+    {
+        get
+        {
+            double tasksCount = KanbanTasks.Count;
+            double deliveredTasksCount = KanbanTasks
+                .FindAll(t => t.Status == KanbanTask.TaskStatus.Delivered)
+                .Count;
+            var p = deliveredTasksCount / tasksCount;
+            return PercentageToStatus(p);
         }
     }
     public string SF_Column
     {
-        get => DeliveredTaskPercentage.ToString();
+        get => DeliveredTaskPercentageStatus.ToString();
     } // for Syncfunction D&D
 
     public enum FeatureStatus
@@ -27,9 +45,10 @@ public class Feature
         Doing,
         Delivered
     }
-    
+
     public enum DeliveredPercentage
     {
+        Zero,
         Zero_Twenty,
         Twenty_Forty,
         Forty_Sixty,
@@ -40,8 +59,10 @@ public class Feature
 
     private DeliveredPercentage PercentageToStatus(double p)
     {
-        switch(p)
+        switch (p)
         {
+            case 0:
+                return DeliveredPercentage.Zero;
             case < 0.2:
                 return DeliveredPercentage.Zero_Twenty;
             case < 0.4:
@@ -56,5 +77,4 @@ public class Feature
                 return DeliveredPercentage.Hundred;
         }
     }
-
 }

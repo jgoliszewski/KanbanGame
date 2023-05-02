@@ -1,0 +1,72 @@
+@page "/featureBoard"
+@inject IFeatureService FeatureService
+@inject NavigationManager NavigationManager
+@implements IAsyncDisposable
+
+<div class="center">
+<SfKanban @ref="kanbanBoard" TValue="KanbanGame.Shared.Feature" KeyField="SF_Column" DataSource="FeatureService.Features" Width="1800px" AllowDragAndDrop="false">
+    <KanbanColumns>
+        <KanbanColumn HeaderText="" KeyField="@(new List<string>() {"Zero"})"></KanbanColumn>
+        <KanbanColumn HeaderText="<20%" KeyField="@(new List<string>() {"Zero_Twenty"})"></KanbanColumn>
+        <KanbanColumn HeaderText="<40%" KeyField="@(new List<string>() {"Twenty_Forty"})"></KanbanColumn>
+        <KanbanColumn HeaderText="<60%" KeyField="@(new List<string>() {"Forty_Sixty"})"></KanbanColumn>
+        <KanbanColumn HeaderText="<80%" KeyField="@(new List<string>() {"Sixty_Eighty"})"></KanbanColumn>
+        <KanbanColumn HeaderText="<100%" KeyField="@(new List<string>() {"Eighty_Hundred"})"></KanbanColumn>
+        <KanbanColumn HeaderText="" KeyField="@(new List<string>() {"Hundred"})"></KanbanColumn>
+    </KanbanColumns>
+    <KanbanStackedHeaders>
+        <KanbanStackedHeader Text="Backlog" KeyFields="@(new List<string>() {"Backlog"})"></KanbanStackedHeader>
+        <KanbanStackedHeader Text="Doing" KeyFields="@(new List<string>() {"Zero_Twenty", "Twenty_Forty", "Forty_Sixty", "Sixty_Eighty", "Eighty_Hundred"})"></KanbanStackedHeader>
+        <KanbanStackedHeader Text="Delivered" KeyFields="@(new List<string>() {"Delivered"})"></KanbanStackedHeader>
+    </KanbanStackedHeaders>
+    <KanbanCardSettings HeaderField="Id">
+        <Template>
+                @{
+                    KanbanGame.Shared.Feature feature = (KanbanGame.Shared.Feature)context;
+                    <div     class="task-card">
+                            <div   class="task-h">@feature.Title</div>
+                            <div class="task-d">
+                                <div>Id: @feature.Id</div>
+                                @* <div>Desc: @feature.Description</div> *@
+                                <div>Task count: @feature.KanbanTasks.Count</div>
+                                <div>Delivered: @(Math.Round(feature.DeliveredTaskPercentage*100, 1)) %</div>
+                            </div>
+                        <div class="task-f"></div>
+                    </div>
+                }
+        </Template>
+    </KanbanCardSettings>
+</SfKanban>
+</div>
+@code {
+    public SfKanban<KanbanGame.Shared.Feature> kanbanBoard;
+    private HubConnection? hubConnection;
+    protected override async Task OnInitializedAsync()
+    {
+        await FeatureService.GetFeatures();
+        await Connect();
+    }
+
+    private async Task Connect()
+    {
+        hubConnection = new HubConnectionBuilder()
+                .WithUrl(NavigationManager.ToAbsoluteUri("/BoardHub"))
+                .Build();
+
+        await hubConnection.StartAsync();
+
+        hubConnection.On<int>("BoardUpdated", async (_) =>
+                {
+                    await FeatureService.GetFeatures();
+                    StateHasChanged();
+                });
+    }
+    
+    public async ValueTask DisposeAsync()
+    {
+        if (hubConnection != null)
+        {
+            await hubConnection.DisposeAsync();
+        }
+    }
+}
