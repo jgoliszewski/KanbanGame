@@ -7,7 +7,7 @@ public class Team
 
     public enum TeamName
     {
-        HighAnalysis,
+        HighLevelAnalysis,
         FrontEnd,
         BackEnd,
     }

@@ -19,10 +19,12 @@ public class Employee
     //todod: extract Role to separate classes with interface
     public enum Role
     {
+        HighLevelAnalyzer,
         Analyzer,
         Developer,
         Tester
     }
+
     static Role ColumnToRole(string column)
     {
         switch (column.ToLower())
