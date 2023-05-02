@@ -2,6 +2,7 @@
 @page "/feature/{id:int}"
 @inject IFeatureService FeatureService
 @inject IKanbanTaskService KanbanTaskService
+@inject IEmployeeService EmployeeService
 @inject NavigationManager NavigationManager
 
 @if (Id is null)
@@ -33,7 +34,16 @@ else
             }
         </InputSelect>
     </div>
-
+        <div>
+        <label for="assignee">Assignee</label>
+        <InputSelect id="assignee" @bind-Value="@selectedEmployeeId" class="form-control">
+            <option value="-1"></option>
+            @foreach (var employee in EmployeeService.Employees.FindAll(e => e.Team == KanbanGame.Shared.Team.TeamName.HighLevelAnalysis))
+            {
+                    <option value="@employee.Id">@employee.Name</option>
+            }
+        </InputSelect>
+    </div>
     @* todo: choosing tasks to feature *@
     
     <br />
@@ -63,6 +73,7 @@ else
     protected override async Task OnInitializedAsync()
     {
         await KanbanTaskService.GetKanbanTasks();
+        await EmployeeService.GetEmployees();
         btnText = Id == null ? "Save New Task" : "Update Task";
         
         await Connect();
@@ -83,7 +94,7 @@ else
             if (result is not null)
             {
                 feature = result;
-                @* selectedEmployeeId = feature.Employee is null ? -1 : feature.Employee.Id; *@
+                selectedEmployeeId = feature.Assignee is null ? -1 : feature.Assignee.Id;
             }
             else
             {
@@ -94,15 +105,15 @@ else
 
     async Task HandleSubmit()
     {
-        @* if(selectedEmployeeId != -1) // check if Employee is selectd
+        if(selectedEmployeeId != -1) // check if Employee is selectd
         {
-            feature.Employee = EmployeeService.Employees.Where(e => e.Id == selectedEmployeeId).FirstOrDefault();
-            feature.SF_Column = feature.Employee.SF_Column;
+            feature.Assignee = EmployeeService.Employees.Where(e => e.Id == selectedEmployeeId).FirstOrDefault();
+            feature.SF_Column = feature.Assignee.SF_Column;
         }
         else
         {
-            feature.Employee = null;
-        } *@
+            feature.Assignee = null;
+        }
 
         if (Id is null)
         {
