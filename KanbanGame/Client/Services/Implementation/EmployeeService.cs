@@ -15,6 +15,7 @@ public class EmployeeService : IEmployeeService
         _http = http;
         _navigationManger = navigationManger;
     }
+
     public List<Employee> Employees { get; set; } = new List<Employee>();
 
     public async Task GetEmployees()
@@ -23,6 +24,14 @@ public class EmployeeService : IEmployeeService
         if (result is not null)
             Employees = result;
     }
+
+    public async Task GetEmployeesByTeamId(int teamId)
+    {
+        var result = await _http.GetFromJsonAsync<List<Employee>>($"api/employee/team/{teamId}");
+        if (result is not null)
+            Employees = result;
+    }
+
     public async Task<Employee?> GetEmployeeById(int employeeId)
     {
         var result = await _http.GetAsync($"api/employee/{employeeId}");
@@ -32,6 +41,7 @@ public class EmployeeService : IEmployeeService
         }
         return null;
     }
+
     public async Task CreateEmployee(Employee employee)
     {
         await _http.PostAsJsonAsync("api/employee", employee);
@@ -42,6 +52,7 @@ public class EmployeeService : IEmployeeService
     {
         await _http.PutAsJsonAsync($"api/employee/{employeeId}", employee);
     }
+
     public async Task DeleteEmployee(int employeeId)
     {
         var result = await _http.DeleteAsync($"api/employee/{employeeId}");

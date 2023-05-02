@@ -9,6 +9,7 @@ namespace KanbanGame.Server.Controllers;
 public class KanbanTaskController : ControllerBase
 {
     private readonly IKanbanTaskService _TaskService;
+
     public KanbanTaskController(IKanbanTaskService TaskService)
     {
         _TaskService = TaskService;
@@ -18,6 +19,12 @@ public class KanbanTaskController : ControllerBase
     public async Task<List<KanbanTask>> GetTasks()
     {
         return await _TaskService.GetKanbanTasks();
+    }
+
+    [HttpGet("team/{id}")]
+    public async Task<List<KanbanTask>?> GetTasksByTeamId(int id)
+    {
+        return await _TaskService.GetKanbanTasksByTeamId(id);
     }
 
     [HttpGet("{id}")]

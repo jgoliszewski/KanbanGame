@@ -1,13 +1,21 @@
 using KanbanGame.Shared;
 
 namespace KanbanGame.Server.Services;
+
 public class EmployeeService : IEmployeeService
 {
     public List<Employee> Employees = new List<Employee>();
     private int _lastId = 0;
+
     public async Task<List<Employee>> GetEmployees()
     {
         return Employees;
+    }
+
+    public async Task<List<Employee>?> GetEmployeesByTeamId(int teamId)
+    {
+        var dbEmployees = Employees.FindAll(t => (int)t.Team == teamId);
+        return dbEmployees;
     }
 
     public async Task<Employee?> GetEmployeeById(int employeeId)

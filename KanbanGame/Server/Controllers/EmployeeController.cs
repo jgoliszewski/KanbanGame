@@ -9,6 +9,7 @@ namespace KanbanGame.Server.Controllers;
 public class EmployeeController : ControllerBase
 {
     private readonly IEmployeeService _EmployeeService;
+
     public EmployeeController(IEmployeeService EmployeeService)
     {
         _EmployeeService = EmployeeService;
@@ -18,6 +19,12 @@ public class EmployeeController : ControllerBase
     public async Task<List<Employee>> GetEmployees()
     {
         return await _EmployeeService.GetEmployees();
+    }
+
+    [HttpGet("team/{id}")]
+    public async Task<List<Employee>?> GetEmployeesByTeamId(int id)
+    {
+        return await _EmployeeService.GetEmployeesByTeamId(id);
     }
 
     [HttpGet("{id}")]

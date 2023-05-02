@@ -8,15 +8,24 @@ public class KanbanTaskService : IKanbanTaskService
     public List<KanbanTask> KanbanTasks = new List<KanbanTask>();
 
     private int _lastId = 0;
+
     public async Task<List<KanbanTask>> GetKanbanTasks()
     {
         return KanbanTasks;
     }
+
+    public async Task<List<KanbanTask>?> GetKanbanTasksByTeamId(int teamId)
+    {
+        var dbTask = KanbanTasks.FindAll(t => t.Team is not null && (int)t.Team == teamId);
+        return dbTask;
+    }
+
     public async Task<KanbanTask?> GetKanbanTaskById(int kanbanTaskId)
     {
         var dbTask = KanbanTasks.Where(t => t.Id == kanbanTaskId).FirstOrDefault();
         return dbTask;
     }
+
     public async Task<KanbanTask> CreateKanbanTask(KanbanTask kanbanTask)
     {
         //todo: better unique id method
@@ -38,6 +47,7 @@ public class KanbanTaskService : IKanbanTaskService
         }
         return dbTask;
     }
+
     public async Task<bool> DeleteKanbanTask(int kanbanTaskId)
     {
         var dbTask = KanbanTasks.Where(t => t.Id == kanbanTaskId).FirstOrDefault();

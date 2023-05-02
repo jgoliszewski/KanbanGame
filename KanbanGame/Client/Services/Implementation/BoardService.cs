@@ -11,16 +11,22 @@ public class BoardService : IBoardService
     private readonly IKanbanTaskService _kanbanTaskService;
     private readonly IEmployeeService _employeeService;
     private readonly HttpClient _http;
-    public BoardService(HttpClient http, IKanbanTaskService kanbanTaskService, IEmployeeService employeeService)
+
+    public BoardService(
+        HttpClient http,
+        IKanbanTaskService kanbanTaskService,
+        IEmployeeService employeeService
+    )
     {
         _http = http;
         _kanbanTaskService = kanbanTaskService;
         _employeeService = employeeService;
-        ColumnMaxCount = new Dictionary<string, int>{
-            {"Backlog", 9},
-            {"AnalysisDoing", 9},
-            {"DevelopmentDoing", 9},
-            {"TestDoing", 9},
+        ColumnMaxCount = new Dictionary<string, int>
+        {
+            { "Backlog", 9 },
+            { "AnalysisDoing", 9 },
+            { "DevelopmentDoing", 9 },
+            { "TestDoing", 9 },
         }; // For SF Initialization
     }
 
@@ -33,10 +39,23 @@ public class BoardService : IBoardService
     public async Task GetCards()
     {
         InitProperties();
-        
+
         await _kanbanTaskService.GetKanbanTasks();
         await _employeeService.GetEmployees();
+        await BuildBoard();
+    }
 
+    public async Task GetCardsByTeamId(int teamId)
+    {
+        InitProperties();
+
+        await _kanbanTaskService.GetKanbanTasksByTeamId(teamId);
+        await _employeeService.GetEmployeesByTeamId(teamId);
+        await BuildBoard();
+    }
+
+    private async Task BuildBoard()
+    {
         foreach (var e in _employeeService.Employees)
         {
             BoardBuild.Add(e, null);
@@ -55,7 +74,7 @@ public class BoardService : IBoardService
             {
                 TempTasks.Add(t);
             }
-        } 
+        }
 
         foreach (var (e, t) in BoardBuild)
         {
@@ -71,14 +90,13 @@ public class BoardService : IBoardService
         {
             var card = TaskToCard(t, ColumnCount[t.SF_Column]);
             var cardAbove = FindCardAbove(card);
-            if( cardAbove is not null && cardAbove.Employee is not null)
+            if (cardAbove is not null && cardAbove.Employee is not null)
             {
                 card.KanbanTask.Employee = cardAbove.Employee;
             }
             Cards.Add(card);
             ColumnCount[t.SF_Column] += 2;
         }
-
     }
 
     private Card TaskToCard(KanbanTask kanbanTask, int rankId)
@@ -109,7 +127,7 @@ public class BoardService : IBoardService
     {
         foreach (var card in Cards)
         {
-            if(card.KanbanTask is not null && card.KanbanTask.Employee is not null)
+            if (card.KanbanTask is not null && card.KanbanTask.Employee is not null)
             {
                 card.KanbanTask.NextTaskStatus();
                 card.KanbanTask.Employee = null;
@@ -118,6 +136,7 @@ public class BoardService : IBoardService
             }
         }
     }
+
     public async Task UpdateCard(int cardId, Card card)
     {
         if (card.Employee is null && card.KanbanTask is not null)
@@ -129,6 +148,7 @@ public class BoardService : IBoardService
             await _employeeService.UpdateEmployee(card.Employee.Id, card.Employee);
         }
     }
+
     public async Task UpdateCardLocal(int cardId, Card card)
     {
         var dbCard = Cards.Where(c => c.Id == cardId).FirstOrDefault();
@@ -147,7 +167,6 @@ public class BoardService : IBoardService
         {
             if (card.KanbanTask is not null)
             {
-
                 var cardAbove = FindCardAbove(card);
 
                 if (cardAbove is not null && cardAbove.Employee is not null)
@@ -158,7 +177,7 @@ public class BoardService : IBoardService
                 else
                 {
                     card.KanbanTask.Employee = null;
-                } 
+                }
             }
             await UpdateCard(card.Id, card);
         }
@@ -179,20 +198,22 @@ public class BoardService : IBoardService
     {
         lastId = 0;
         Cards = new List<Card>();
-        ColumnMaxCount = new Dictionary<string, int>{
-            {"Backlog", 6},
-            {"AnalysisDoing", 0},
-            {"DevelopmentDoing", 0},
-            {"TestDoing", 0},
+        ColumnMaxCount = new Dictionary<string, int>
+        {
+            { "Backlog", 6 },
+            { "AnalysisDoing", 0 },
+            { "DevelopmentDoing", 0 },
+            { "TestDoing", 0 },
         };
-        ColumnCount = new Dictionary<string, int>{
-            {"Backlog", 1},
-            {"AnalysisDoing", 1},
-            {"DevelopmentWaiting", 1},
-            {"DevelopmentDoing", 1},
-            {"TestWaiting", 1},
-            {"TestDoing", 1},
-            {"Delivered", 1},
+        ColumnCount = new Dictionary<string, int>
+        {
+            { "Backlog", 1 },
+            { "AnalysisDoing", 1 },
+            { "DevelopmentWaiting", 1 },
+            { "DevelopmentDoing", 1 },
+            { "TestWaiting", 1 },
+            { "TestDoing", 1 },
+            { "Delivered", 1 },
         };
         BoardBuild = new Dictionary<Employee, KanbanTask?>();
         TempTasks = new List<KanbanTask>();
