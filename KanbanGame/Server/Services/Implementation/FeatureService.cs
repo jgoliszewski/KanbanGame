@@ -8,15 +8,18 @@ public class FeatureService : IFeatureService
     public List<Feature> Features = new List<Feature>();
 
     private int _lastId = 0;
+
     public async Task<List<Feature>> GetFeatures()
     {
         return Features;
     }
+
     public async Task<Feature?> GetFeatureById(int FeatureId)
     {
         var dbFeature = Features.Where(t => t.Id == FeatureId).FirstOrDefault();
         return dbFeature;
     }
+
     public async Task<Feature> CreateFeature(Feature Feature)
     {
         //todo: better unique id method
@@ -35,9 +38,11 @@ public class FeatureService : IFeatureService
             dbFeature.Description = Feature.Description;
             dbFeature.Status = Feature.Status;
             dbFeature.KanbanTasks = Feature.KanbanTasks;
+            dbFeature.Assignee = Feature.Assignee;
         }
         return dbFeature;
     }
+
     public async Task<bool> DeleteFeature(int FeatureId)
     {
         var dbFeature = Features.Where(t => t.Id == FeatureId).FirstOrDefault();
