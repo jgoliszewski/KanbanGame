@@ -13,25 +13,29 @@
             <th>Description</th>
             <th>Status</th>
             <th>Number of Tasks</th>
+            <th>Assignee Id</th>
+            <th>Assignee</th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-        @foreach (var task in FeatureService.Features)
+        @foreach (var feature in FeatureService.Features)
         {
             <tr>
-                <td>@task.Id</td>
-                <td>@task.Title</td>
-                <td>@task.Description</td>
-                <td>@task.Status</td>
-                <td>@task.KanbanTasks.Count</td>
+                <td>@feature.Id</td>
+                <td>@feature.Title</td>
+                <td>@feature.Description</td>
+                <td>@feature.Status</td>
+                <td>@feature.KanbanTasks.Count</td>
+                <td>@(feature.Assignee is null ? "" : feature.Assignee.Id)</td>
+                <td>@(feature.Assignee is null ? "" : feature.Assignee.Name)</td>
                 <td>
                     <button class="btn btn-primary"
-                        @onclick="(() => ShowFeature(task.Id))">
+                        @onclick="(() => ShowFeature(feature.Id))">
                         <i class="oi oi-pencil"></i>
                     </button>
                     <button class="btn btn-danger"
-                        @onclick="(() => DeleteFeature(task.Id))">
+                        @onclick="(() => DeleteFeature(feature.Id))">
                         <i class="oi oi-trash"></i>
                     </button>
                 </td>

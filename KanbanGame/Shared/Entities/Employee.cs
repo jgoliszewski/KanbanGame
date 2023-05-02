@@ -19,7 +19,8 @@ public class Employee
     //todod: extract Role to separate classes with interface
     public enum Role
     {
-        HighLevelAnalyzer,
+        HighLevelAnalyzer1,
+        HighLevelAnalyzer2,
         Analyzer,
         Developer,
         Tester
@@ -39,6 +40,10 @@ public class Employee
             case "testdoing":
             case "delivered":
                 return Role.Tester;
+            case "doing1":
+                return Role.HighLevelAnalyzer1;
+            case "doing2":
+                return Role.HighLevelAnalyzer2;
             default:
                 return Role.Developer;
         }
@@ -54,6 +59,10 @@ public class Employee
                 return "DevelopmentDoing";
             case Role.Tester:
                 return "TestDoing";
+            case Role.HighLevelAnalyzer1:
+                return "Doing1";
+            case Role.HighLevelAnalyzer2:
+                return "Doing2";
             default:
                 return "DevelopmentDoing";
         }

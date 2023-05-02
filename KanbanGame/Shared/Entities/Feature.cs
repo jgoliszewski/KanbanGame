@@ -34,15 +34,21 @@ public class Feature
             return PercentageToStatus(p);
         }
     }
-    public string SF_Column
+    public string SF_PercentageColumn
     {
         get => DeliveredTaskPercentageStatus.ToString();
     } // for Syncfunction D&D
+    public string SF_Column
+    {
+        get => Status.ToString();
+        set { Status = (FeatureStatus)Enum.Parse(typeof(FeatureStatus), value); }
+    }
 
     public enum FeatureStatus
     {
         Backlog,
-        Doing,
+        Doing1,
+        Doing2,
         Delivered
     }
 
@@ -55,6 +61,19 @@ public class Feature
         Sixty_Eighty,
         Eighty_Hundred,
         Hundred,
+    }
+
+    public void NextFeatureStatus()
+    {
+        switch (Status)
+        {
+            case FeatureStatus.Doing1:
+                Status = FeatureStatus.Doing2;
+                break;
+            case FeatureStatus.Doing2:
+                Status = FeatureStatus.Delivered;
+                break;
+        }
     }
 
     private DeliveredPercentage PercentageToStatus(double p)

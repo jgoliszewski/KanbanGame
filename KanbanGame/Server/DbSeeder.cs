@@ -81,7 +81,7 @@ public class DbSeeder
             Name = "Andy",
             Seniority = Employee.EmployeeSeniority.Mid,
             Status = Employee.EmployeeStatus.Working,
-            CurrentRole = Employee.Role.HighLevelAnalyzer,
+            CurrentRole = Employee.Role.HighLevelAnalyzer1,
             Team = Team.TeamName.HighLevelAnalysis,
             AvatarPath = "Avatars/Reaper.png"
         },
@@ -90,7 +90,7 @@ public class DbSeeder
             Name = "Hannah",
             Seniority = Employee.EmployeeSeniority.Mid,
             Status = Employee.EmployeeStatus.Working,
-            CurrentRole = Employee.Role.HighLevelAnalyzer,
+            CurrentRole = Employee.Role.HighLevelAnalyzer2,
             Team = Team.TeamName.HighLevelAnalysis,
             AvatarPath = "Avatars/Devil.png"
         },

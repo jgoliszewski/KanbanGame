@@ -4,7 +4,7 @@
 @implements IAsyncDisposable
 
 <div class="center">
-<SfKanban @ref="kanbanBoard" TValue="KanbanGame.Shared.Feature" KeyField="SF_Column" DataSource="FeatureService.Features" Width="1800px" AllowDragAndDrop="false">
+<SfKanban @ref="kanbanBoard" TValue="KanbanGame.Shared.Feature" KeyField="SF_PercentageColumn" DataSource="FeatureService.Features" Width="1800px" AllowDragAndDrop="false">
     <KanbanColumns>
         <KanbanColumn HeaderText="" KeyField="@(new List<string>() {"Zero"})"></KanbanColumn>
         <KanbanColumn HeaderText="<20%" KeyField="@(new List<string>() {"Zero_Twenty"})"></KanbanColumn>
