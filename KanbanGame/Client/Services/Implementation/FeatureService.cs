@@ -15,6 +15,7 @@ public class FeatureService : IFeatureService
         _http = http;
         _navigationManger = navigationManger;
     }
+
     public List<Feature> Features { get; set; } = new List<Feature>();
 
     public async Task GetFeatures()
@@ -23,6 +24,7 @@ public class FeatureService : IFeatureService
         if (result is not null)
             Features = result;
     }
+
     public async Task<Feature?> GetFeatureById(int FeatureId)
     {
         var result = await _http.GetAsync($"api/Feature/{FeatureId}");
@@ -32,6 +34,7 @@ public class FeatureService : IFeatureService
         }
         return null;
     }
+
     public async Task CreateFeature(Feature Feature)
     {
         await _http.PostAsJsonAsync("api/Feature", Feature);
@@ -42,6 +45,7 @@ public class FeatureService : IFeatureService
     {
         await _http.PutAsJsonAsync($"api/Feature/{FeatureId}", Feature);
     }
+
     public async Task DeleteFeature(int FeatureId)
     {
         var result = await _http.DeleteAsync($"api/Feature/{FeatureId}");
