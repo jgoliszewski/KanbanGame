@@ -9,7 +9,7 @@
 <div class="center">
 <SfKanban @ref="kanbanBoard" TValue="KanbanGame.Shared.Feature" KeyField="SF_PercentageColumn" DataSource="FeatureService.Features" Width="1800px" AllowDragAndDrop="false">
     <KanbanColumns>
-        <KanbanColumn HeaderText="" KeyField="@(new List<string>() {"Zero"})"></KanbanColumn>
+        <KanbanColumn HeaderText="" KeyField="@(new List<string>() {"None"})"></KanbanColumn>
         <KanbanColumn HeaderText="<20%" KeyField="@(new List<string>() {"Zero_Twenty"})"></KanbanColumn>
         <KanbanColumn HeaderText="<40%" KeyField="@(new List<string>() {"Twenty_Forty"})"></KanbanColumn>
         <KanbanColumn HeaderText="<60%" KeyField="@(new List<string>() {"Forty_Sixty"})"></KanbanColumn>
@@ -18,14 +18,14 @@
         <KanbanColumn HeaderText="" KeyField="@(new List<string>() {"Hundred"})"></KanbanColumn>
     </KanbanColumns>
     <KanbanStackedHeaders>
-        <KanbanStackedHeader Text="Backlog" KeyFields="@(new List<string>() {"Zero"})"></KanbanStackedHeader>
+        <KanbanStackedHeader Text="Backlog" KeyFields="@(new List<string>() {"None"})"></KanbanStackedHeader>
         <KanbanStackedHeader Text="Doing" KeyFields="@(new List<string>() {"Zero_Twenty", "Twenty_Forty", "Forty_Sixty", "Sixty_Eighty", "Eighty_Hundred"})"></KanbanStackedHeader>
         <KanbanStackedHeader Text="Delivered" KeyFields="@(new List<string>() {"Hundred"})"></KanbanStackedHeader>
     </KanbanStackedHeaders>
     <KanbanCardSettings HeaderField="Id">
         <Template>
                 @{        
-                         KanbanGa   me.Shared.Feature feature = (KanbanGame.Shared.Feature)context;
+                         KanbanGame.Shared.Feature feature = (KanbanGame.Shared.Feature)context;
                            <div      class="task-card">
                               <div         class="task-h">@feature.Title</div>
                           <d class="task-d">

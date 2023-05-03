@@ -55,7 +55,7 @@ public class Feature
 
     public enum DeliveredPercentage
     {
-        Zero,
+        None,
         Zero_Twenty,
         Twenty_Forty,
         Forty_Sixty,
@@ -82,7 +82,7 @@ public class Feature
         switch (p)
         {
             case 0:
-                return DeliveredPercentage.Zero;
+                return DeliveredPercentage.None;
             case < 0.2:
                 return DeliveredPercentage.Zero_Twenty;
             case < 0.4:
