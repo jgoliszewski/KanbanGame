@@ -27,11 +27,12 @@
         <KanbanColumn HeaderText="Doing1" MaxCount="@BoardService.ColumnMaxCount["Doing1"]" KeyField="@(new List<string>() {"Doing1"})" TransitionColumns="@(new List<string>() {"Backlog", "Doing2"})"></KanbanColumn>
         <KanbanColumn HeaderText="Doing2" MaxCount="@BoardService.ColumnMaxCount["Doing2"]" KeyField="@(new List<string>() {"Doing2"})" TransitionColumns="@(new List<string>() {"Doing1"})"></KanbanColumn>
         <KanbanColumn HeaderText="" KeyField="@(new List<string>() {"Delivered"})" AllowDrag="false"></KanbanColumn>
+        <KanbanColumn HeaderText="ReadyForDevelopment" KeyField="@(new List<string>() {"ReadyForDevelopment"})" TransitionColumns="@(new List<string>() {"ReadyForDevelopment"})"></KanbanColumn>
     </KanbanColumns>
     <KanbanStackedHeaders>
         <KanbanStackedHeader Text="Backlog" KeyFields="@(new List<string>() {"Backlog"})"></KanbanStackedHeader>
         <KanbanStackedHeader Text="Doing" KeyFields="@(new List<string>() {"Doing1", "Doing2"})"></KanbanStackedHeader>
-        <KanbanStackedHeader Text="Delivered" KeyFields="@(new List<string>() {"Delivered"})"></KanbanStackedHeader>
+        <KanbanStackedHeader Text="Delivered" KeyFields="@(new List<string>() {"Delivered", "ReadyForDevelopment"})"></KanbanStackedHeader>
     </KanbanStackedHeaders>
     <KanbanSortSettings SortBy="SortOrderBy.Index" Field="RankId"></KanbanSortSettings>
     <KanbanEvents TValue="KanbanGame.Shared.Card" DragStart="@DragStartHandler" DragStop="@DragStopHandler"></KanbanEvents>
@@ -73,6 +74,20 @@
                                             </div>
                             @* <div class="task-f">Status: @kanbanTask.SF_Column</div> *@
                                         <div class="task-f">RankId: @card.RankId <img src=@(feature.Assignee == null ? "Avatars/Default.png" : feature.Assignee.AvatarPath) style="width:32px; float:right;" alt="logo" /></div>
+                                    </div>
+                    }
+                    else if (card.KanbanTask is not null)
+                    {
+                        KanbanGame.Shared.KanbanTask kanbanTask = card.KanbanTask;
+
+                                    <div     class="task-minimal-card">
+                                          <div   class="task-minimal-h">@kanbanTask.Title</div>
+                                            <div class="task-minimal-d">
+                                                <div>Card Id: @card.Id</div>
+                                                <div>Id: @kanbanTask.Id</div>
+                                                <div>Desc: @kanbanTask.Description</div>
+                                                <div>RankId: @card.RankId</div>
+                                            </div>
                                     </div>
                     }
                 }

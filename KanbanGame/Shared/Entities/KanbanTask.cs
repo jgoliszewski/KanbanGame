@@ -5,9 +5,10 @@ public class KanbanTask
     public int Id { get; set; }
     public string Title { get; set; }
     public string? Description { get; set; }
-    public TaskStatus Status { get; set; }
+    public TaskType Type {get; set;}
+    public TaskStatus Status { get; set; } = TaskStatus.None;
     public Employee? Assignee { get; set; }
-    public Team.TeamName Team { get; set; }
+    public Team.TeamName Team { get; set; } = Shared.Team.TeamName.None;
     public string SF_Column
     {
         get => Status.ToString();
@@ -53,6 +54,8 @@ public class KanbanTask
 
     public enum TaskStatus
     {
+        None,
+        ReadyForDevelopment,
         Backlog,
         AnalysisDoing,
         DevelopmentWaiting,
@@ -60,5 +63,10 @@ public class KanbanTask
         TestWaiting,
         TestDoing,
         Delivered
+    }
+    public enum TaskType
+    {
+        FrontEnd,
+        BackEnd
     }
 }

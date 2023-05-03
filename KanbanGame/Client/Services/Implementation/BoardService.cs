@@ -140,6 +140,7 @@ public class BoardService : IBoardService
                 ColumnCount[e.SF_Column] += 2;
             }
         }
+        
         foreach (var f in TempFeatures)
         {
             var card = FeatureToCard(f, ColumnCount[f.SF_Column]);
@@ -150,6 +151,12 @@ public class BoardService : IBoardService
             }
             Cards.Add(card);
             ColumnCount[f.SF_Column] += 2;
+        }
+
+        foreach (var t in _kanbanTaskService.KanbanTasks)
+        {
+            Cards.Add(TaskToCard(t, ColumnCount[t.SF_Column]));
+            ColumnCount[t.SF_Column] += 2;
         }
         //todo: add task to delivered
     }
@@ -205,9 +212,22 @@ public class BoardService : IBoardService
             {
                 card.Feature.NextFeatureStatus();
                 card.Feature.Assignee = null;
+                if(card.Feature.Status == Feature.FeatureStatus.Delivered)
+                {
+                    UnpackFeature(card.Feature);
+                }
 
                 await _featureService.UpdateFeature(card.Feature.Id, card.Feature);
             }
+        }
+    }
+    private async Task UnpackFeature(Feature feature)
+    {
+        foreach(var t in feature.KanbanTasks)
+        {
+            t.Team = Team.TeamName.HighLevelAnalysis;
+            t.Status = KanbanTask.TaskStatus.ReadyForDevelopment;
+            _kanbanTaskService.CreateKanbanTask(t);
         }
     }
 
@@ -284,8 +304,6 @@ public class BoardService : IBoardService
         if (column.ToList().Count > 0)
         {
             var cardAbove = column.MaxBy(c => c.RankId);
-            Console.WriteLine($"Card above {card.Id} is {cardAbove.Id}");
-            Console.WriteLine($"--------------------------");
             return cardAbove;
         }
         return null;
@@ -314,7 +332,8 @@ public class BoardService : IBoardService
             { "TestDoing", 1 },
             { "Delivered", 1 },
             { "Doing1", 1 },
-            { "Doing2", 1 }
+            { "Doing2", 1 },
+            { "ReadyForDevelopment", 1}
         };
         DevBoardBuild = new Dictionary<Employee, KanbanTask?>();
         FeatureBoardBuild = new Dictionary<Employee, Feature?>();

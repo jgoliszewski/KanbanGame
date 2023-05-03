@@ -131,12 +131,14 @@ a, .btn-link {
         "d"
         "f";
     padding-top: 10px;
+    padding-bottom: 10px;
     padding-left: 15px;
 }
 
 .task-h { 
     grid-area: h;
     text-align: center;
+    font-weight: bold;
 }
 
 .task-d { 
@@ -148,6 +150,30 @@ a, .btn-link {
     grid-area: f;
 }
 
+.task-minimal-card {  
+    display: grid;
+    grid-template-columns: 1fr 3fr;
+    grid-template-rows: 1fr;
+    gap: 10px 10px;
+    grid-auto-flow: row;
+    grid-template-areas:
+        "h d";
+    padding-top: 10px;
+    padding-bottom: 5px;
+    padding-left: 15px;
+}
+
+.task-minimal-h { 
+    grid-area: h;
+    text-align: center;
+    align-items: center;
+    font-weight: bold;
+}
+
+.task-minimal-d { 
+    grid-area: d; 
+    line-height: 120%;
+}
 
 
 .employee-card {  
@@ -160,11 +186,13 @@ a, .btn-link {
         "h h"
         "a d";
     padding-top: 5px;
+    padding-bottom: 5px;
     padding-left: 10px;
 }
 .employee-h { 
     grid-area: h;
     text-align: center;
+    font-weight: bold;
 }
 
 .employee-a { 
@@ -175,6 +203,7 @@ a, .btn-link {
     grid-area: d; 
     line-height: 120%;
 }
+
 
 .center {
   display: flex;

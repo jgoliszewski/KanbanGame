@@ -47,7 +47,6 @@ public class KanbanTaskService : IKanbanTaskService
     public async Task CreateKanbanTask(KanbanTask kanbanTask)
     {
         await _http.PostAsJsonAsync("api/kanbanTask", kanbanTask);
-        _navigationManger.NavigateTo("kanbanTasks");
     }
 
     public async Task UpdateKanbanTask(int kanbanTaskId, KanbanTask kanbanTask)
@@ -58,6 +57,5 @@ public class KanbanTaskService : IKanbanTaskService
     public async Task DeleteKanbanTask(int kanbanTaskId)
     {
         var result = await _http.DeleteAsync($"api/kanbanTask/{kanbanTaskId}");
-        _navigationManger.NavigateTo("kanbanTasks");
     }
 }

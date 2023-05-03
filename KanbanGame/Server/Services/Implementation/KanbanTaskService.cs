@@ -42,6 +42,7 @@ public class KanbanTaskService : IKanbanTaskService
             //ToDo: change to copy function
             dbTask.Title = kanbanTask.Title;
             dbTask.Description = kanbanTask.Description;
+            dbTask.Type = kanbanTask.Type;
             dbTask.Status = kanbanTask.Status;
             dbTask.Assignee = kanbanTask.Assignee;
         }
