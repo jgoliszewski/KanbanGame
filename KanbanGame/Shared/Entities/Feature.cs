@@ -82,7 +82,10 @@ public class Feature
         switch (p)
         {
             case 0:
-                return DeliveredPercentage.None;
+                if (Status == FeatureStatus.Delivered)
+                    return DeliveredPercentage.Zero_Twenty;
+                else
+                    return DeliveredPercentage.None;
             case < 0.2:
                 return DeliveredPercentage.Zero_Twenty;
             case < 0.4:
@@ -93,8 +96,11 @@ public class Feature
                 return DeliveredPercentage.Sixty_Eighty;
             case < 1:
                 return DeliveredPercentage.Eighty_Hundred;
-            default:
+            case 1:
                 return DeliveredPercentage.Hundred;
+            default:
+                return DeliveredPercentage.None;
         }
+
     }
 }
