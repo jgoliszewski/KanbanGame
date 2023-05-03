@@ -13,6 +13,11 @@ public class FeatureService : IFeatureService
     {
         return Features;
     }
+    public async Task<List<Feature>?> GetFeaturesByTeamId(int teamId)
+    {
+        var dbFeatures = Features.FindAll(f => (int)f.Team == teamId);
+        return dbFeatures;
+    }
 
     public async Task<Feature?> GetFeatureById(int FeatureId)
     {
@@ -39,6 +44,7 @@ public class FeatureService : IFeatureService
             dbFeature.Status = Feature.Status;
             dbFeature.KanbanTasks = Feature.KanbanTasks;
             dbFeature.Assignee = Feature.Assignee;
+            dbFeature.Team = Feature.Team;
         }
         return dbFeature;
     }

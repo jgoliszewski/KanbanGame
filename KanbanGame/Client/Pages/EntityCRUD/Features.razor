@@ -13,6 +13,7 @@
             <th>Description</th>
             <th>Status</th>
             <th>Number of Tasks</th>
+            <th>Team</th>
             <th>Assignee Id</th>
             <th>Assignee</th>
             <th></th>
@@ -27,6 +28,7 @@
                 <td>@feature.Description</td>
                 <td>@feature.Status</td>
                 <td>@feature.KanbanTasks.Count</td>
+                <td>@feature.Team</td>
                 <td>@(feature.Assignee is null ? "" : feature.Assignee.Id)</td>
                 <td>@(feature.Assignee is null ? "" : feature.Assignee.Name)</td>
                 <td>

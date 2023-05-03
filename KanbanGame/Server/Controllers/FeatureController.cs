@@ -20,6 +20,11 @@ public class FeatureController : ControllerBase
         return await _FeatureService.GetFeatures();
     }
 
+    [HttpGet("team/{id}")]
+    public async Task<List<Feature>?> GetFeatureByTeamId(int id)
+    {
+        return await _FeatureService.GetFeaturesByTeamId(id);
+    }
     [HttpGet("{id}")]
     public async Task<Feature?> GetFeatureById(int id)
     {

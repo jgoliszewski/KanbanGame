@@ -25,6 +25,13 @@ public class FeatureService : IFeatureService
             Features = result;
     }
 
+    public async Task GetFeaturesByTeamId(int teamId)
+    {
+        var result = await _http.GetFromJsonAsync<List<Feature>>($"api/Feature/team/{teamId}");
+        if (result is not null)
+            Features = result;
+    }
+
     public async Task<Feature?> GetFeatureById(int FeatureId)
     {
         var result = await _http.GetAsync($"api/Feature/{FeatureId}");

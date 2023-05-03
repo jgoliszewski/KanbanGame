@@ -5,6 +5,7 @@ public interface IFeatureService
 {
     List<Feature> Features { get; set; }
     Task GetFeatures();
+    Task GetFeaturesByTeamId(int teamId);
     Task<Feature?> GetFeatureById(int FeatureId);
     Task CreateFeature(Feature Feature);
     Task UpdateFeature(int FeatureId, Feature Feature);
