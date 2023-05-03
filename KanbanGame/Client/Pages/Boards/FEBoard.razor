@@ -9,7 +9,10 @@
     <h3>FrontEnd Team</h3>
 </div>
 <div class="center">
-    <button disabled="@IsForceUpdateDisabled" class="btn btn-outline-warning" @onclick="(() => SimulateBoard())">
+    @* <button disabled="@IsForceUpdateDisabled" class="btn btn-outline-warning" @onclick="(() => SimulateBoard())">
+            Force Update <i class="oi oi-sun"></i>
+    </button> *@
+    <button class="btn btn-outline-warning" @onclick="(() => SimulateBoard())">
             Force Update <i class="oi oi-sun"></i>
     </button>
 
@@ -25,7 +28,7 @@
 <div class="center">
 <SfKanban @ref="kanbanBoard" TValue="KanbanGame.Shared.Card" KeyField="Column" DataSource="BoardService.Cards" Width="1800px">
     <KanbanColumns>
-        <KanbanColumn HeaderText="" MaxCount="@BoardService.ColumnMaxCount["Backlog"]" KeyField="@(new List<string>() {"Backlog"})" TransitionColumns="@(new List<string>() {"AnalysisDoing"})" AllowAdding="true"></KanbanColumn>
+        <KanbanColumn HeaderText="" KeyField="@(new List<string>() {"Backlog"})" TransitionColumns="@(new List<string>() {"AnalysisDoing"})"></KanbanColumn>
         <KanbanColumn HeaderText="Doing" MaxCount="@BoardService.ColumnMaxCount["AnalysisDoing"]" KeyField="@(new List<string>() {"AnalysisDoing"})" TransitionColumns="@(new List<string>() {"Backlog", "AnalysisDoing", "DevelopmentDoing", "TestDoing"})"></KanbanColumn>
         <KanbanColumn HeaderText="Waiting" KeyField="@(new List<string>() {"DevelopmentWaiting"})" TransitionColumns="@(new List<string>() {"DevelopmentDoing"})"></KanbanColumn>
         <KanbanColumn HeaderText="Doing" MaxCount="@BoardService.ColumnMaxCount["DevelopmentDoing"]" KeyField="@(new List<string>() {"DevelopmentDoing"})" TransitionColumns="@(new List<string>() {"DevelopmentWaiting", "AnalysisDoing", "DevelopmentDoing", "TestDoing"})"></KanbanColumn>
