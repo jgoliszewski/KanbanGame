@@ -4,6 +4,10 @@
 @inject IBoardService BoardService
 @inject NavigationManager NavigationManager
 @implements IAsyncDisposable
+
+<div class="center">
+    <h3>FrontEnd Team</h3>
+</div>
 <div class="center">
     <button disabled="@IsForceUpdateDisabled" class="btn btn-outline-warning" @onclick="(() => SimulateBoard())">
             Force Update <i class="oi oi-sun"></i>
@@ -42,8 +46,6 @@
         <Template>
                 @{
                     KanbanGame.Shared.Card card = (KanbanGame.Shared.Card)context;
-                    @* <div>@card.Id</div>
-                <div>@card.Column</div> *@
 
                     if (card.KanbanTask is null && card.Employee is not null)
                     {
@@ -62,7 +64,6 @@
                                                 <div>RankId: @card.RankId</div>
                                             </div>
                                     </div>
-
                     }
                     else if (card.Employee is null && card.KanbanTask is not null)
                     {

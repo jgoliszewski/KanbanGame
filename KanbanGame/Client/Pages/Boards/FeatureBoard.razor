@@ -4,6 +4,9 @@
 @implements IAsyncDisposable
 
 <div class="center">
+    <h3>Feature Board</h3>
+</div>
+<div class="center">
 <SfKanban @ref="kanbanBoard" TValue="KanbanGame.Shared.Feature" KeyField="SF_PercentageColumn" DataSource="FeatureService.Features" Width="1800px" AllowDragAndDrop="false">
     <KanbanColumns>
         <KanbanColumn HeaderText="" KeyField="@(new List<string>() {"Zero"})"></KanbanColumn>
@@ -15,23 +18,24 @@
         <KanbanColumn HeaderText="" KeyField="@(new List<string>() {"Hundred"})"></KanbanColumn>
     </KanbanColumns>
     <KanbanStackedHeaders>
-        <KanbanStackedHeader Text="Backlog" KeyFields="@(new List<string>() {"Backlog"})"></KanbanStackedHeader>
+        <KanbanStackedHeader Text="Backlog" KeyFields="@(new List<string>() {"Zero"})"></KanbanStackedHeader>
         <KanbanStackedHeader Text="Doing" KeyFields="@(new List<string>() {"Zero_Twenty", "Twenty_Forty", "Forty_Sixty", "Sixty_Eighty", "Eighty_Hundred"})"></KanbanStackedHeader>
-        <KanbanStackedHeader Text="Delivered" KeyFields="@(new List<string>() {"Delivered"})"></KanbanStackedHeader>
+        <KanbanStackedHeader Text="Delivered" KeyFields="@(new List<string>() {"Hundred"})"></KanbanStackedHeader>
     </KanbanStackedHeaders>
     <KanbanCardSettings HeaderField="Id">
         <Template>
-                @{
-                    KanbanGame.Shared.Feature feature = (KanbanGame.Shared.Feature)context;
-                    <div     class="task-card">
-                            <div   class="task-h">@feature.Title</div>
-                            <div class="task-d">
-                                <div>Id: @feature.Id</div>
-                                @* <div>Desc: @feature.Description</div> *@
-                                <div>Task count: @feature.KanbanTasks.Count</div>
-                                <div>Delivered: @(Math.Round(feature.DeliveredTaskPercentage*100, 1)) %</div>
-                            </div>
-                        <div class="task-f"></div>
+                @{        
+                         KanbanGa   me.Shared.Feature feature = (KanbanGame.Shared.Feature)context;
+                           <div      class="task-card">
+                              <div         class="task-h">@feature.Title</div>
+                          <d class="task-d">
+                                        <div>Id: @feature.Id</div>
+                                        @* <div>Desc: @feature.Description</div> *@    
+                                        <div>Task count: @feature.KanbanTasks.Count</div>
+                                        <div>Delivered: @(Math.Round(feature.DeliveredTaskPercentage*100, 1)) %</div>
+                                    </d>
+                     
+                    <div class="task-f"></div>
                     </div>
                 }
         </Template>
@@ -59,7 +63,7 @@
                 {
                     await FeatureService.GetFeatures();
                     StateHasChanged();
-                });
+            });
     }
     
     public async ValueTask DisposeAsync()
