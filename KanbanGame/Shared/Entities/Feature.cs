@@ -10,7 +10,7 @@ public class Feature
     public List<KanbanTask> KanbanTasks { get; set; }
     public Employee? Assignee { get; set; }
     public FeatureStatus Status { get; set; }
-    public Team.TeamName Team = KanbanGame.Shared.Team.TeamName.HighLevelAnalysis;
+    public Team.TeamName Team { get; set; } = KanbanGame.Shared.Team.TeamName.HighLevelAnalysis;
 
     public double DeliveredTaskPercentage
     {
@@ -50,6 +50,8 @@ public class Feature
         Backlog,
         Doing1,
         Doing2,
+        ReadyForDevelopment,
+        UnderDevelopment,
         Delivered
     }
 
@@ -72,6 +74,12 @@ public class Feature
                 Status = FeatureStatus.Doing2;
                 break;
             case FeatureStatus.Doing2:
+                Status = FeatureStatus.ReadyForDevelopment;
+                break;
+            case FeatureStatus.ReadyForDevelopment:
+                Status = FeatureStatus.UnderDevelopment;
+                break;
+            case FeatureStatus.UnderDevelopment:
                 Status = FeatureStatus.Delivered;
                 break;
         }
@@ -82,7 +90,7 @@ public class Feature
         switch (p)
         {
             case 0:
-                if (Status == FeatureStatus.Delivered)
+                if (Status == FeatureStatus.UnderDevelopment)
                     return DeliveredPercentage.Zero_Twenty;
                 else
                     return DeliveredPercentage.None;

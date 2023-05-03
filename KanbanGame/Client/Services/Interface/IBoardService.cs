@@ -11,4 +11,5 @@ public interface IBoardService
     Task UpdateCardLocal(int cardId, Card card);
     Task UpdateColumn(string column);
     Task SimulateBoard(); //todo: change method name
+    Task SendFeatureTasksToTeams(Feature feature);
 }

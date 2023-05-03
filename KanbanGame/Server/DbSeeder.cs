@@ -95,56 +95,50 @@ public class DbSeeder
             AvatarPath = "Avatars/Devil.png"
         },
     };
+    
     private List<KanbanTask> KanbanTasks = new List<KanbanTask>()
     {
         new KanbanTask
         {
             Title = "A1",
             Description = "Task description",
-            Status = KanbanTask.TaskStatus.Backlog,
-            Team = Team.TeamName.BackEnd
+            Type = KanbanTask.TaskType.BackEnd
         },
         new KanbanTask
         {
             Title = "A2",
             Description = "Task description",
-            Status = KanbanTask.TaskStatus.TestWaiting,
-            Team = Team.TeamName.FrontEnd
+            Type = KanbanTask.TaskType.FrontEnd
         },
         new KanbanTask
         {
             Title = "A3",
             Description = "Task description",
-            Status = KanbanTask.TaskStatus.DevelopmentWaiting,
-            Team = Team.TeamName.FrontEnd
+            Type = KanbanTask.TaskType.FrontEnd
         },
         new KanbanTask
         {
             Title = "B1",
             Description = "Task description",
-            Status = KanbanTask.TaskStatus.TestWaiting,
-            Team = Team.TeamName.BackEnd
+            Type = KanbanTask.TaskType.BackEnd
         },
         new KanbanTask
         {
             Title = "B2",
             Description = "Task description",
-            Status = KanbanTask.TaskStatus.Backlog,
-            Team = Team.TeamName.FrontEnd
+            Type = KanbanTask.TaskType.FrontEnd
         },
         new KanbanTask
         {
             Title = "C1",
             Description = "Task description",
-            Status = KanbanTask.TaskStatus.Backlog,
-            Team = Team.TeamName.BackEnd
+            Type = KanbanTask.TaskType.BackEnd
         },
         new KanbanTask
         {
             Title = "C2",
             Description = "Task description",
-            Status = KanbanTask.TaskStatus.DevelopmentWaiting,
-            Team = Team.TeamName.FrontEnd
+            Type = KanbanTask.TaskType.FrontEnd
         },
     };
 
@@ -167,7 +161,7 @@ public class DbSeeder
             Title = "C",
             Description = "Amazing things",
             Status = Feature.FeatureStatus.Backlog,
-        }
+        },
     };
 
     public void Seed()
@@ -181,10 +175,10 @@ public class DbSeeder
         Features[1].KanbanTasks = new List<KanbanTask>() { KanbanTasks[3], KanbanTasks[4] };
         Features[2].KanbanTasks = new List<KanbanTask>() { KanbanTasks[5], KanbanTasks[6] };
 
-        foreach (var task in KanbanTasks)
-        {
-            _KanbanTaskService.CreateKanbanTask(task);
-        }
+        // foreach (var task in KanbanTasks)
+        // {
+        //     _KanbanTaskService.CreateKanbanTask(task);
+        // }
 
         foreach (var employee in Employees)
         {

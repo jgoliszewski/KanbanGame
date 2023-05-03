@@ -7,7 +7,10 @@
     <h3>High Level Analysis Team</h3>
 </div>
 <div class="center">
-    <button disabled="@IsForceUpdateDisabled" class="btn btn-outline-warning" @onclick="(() => SimulateBoard())">
+    @* <button disabled="@IsForceUpdateDisabled" class="btn btn-outline-warning" @onclick="(() => SimulateBoard())">
+            Force Update <i class="oi oi-sun"></i>
+    </button> *@
+    <button class="btn btn-outline-warning" @onclick="(() => SimulateBoard())">
             Force Update <i class="oi oi-sun"></i>
     </button>
 
@@ -26,13 +29,12 @@
         <KanbanColumn HeaderText="" KeyField="@(new List<string>() {"Backlog"})" TransitionColumns="@(new List<string>() {"Doing1"})" AllowAdding="true"></KanbanColumn>
         <KanbanColumn HeaderText="Doing1" MaxCount="@BoardService.ColumnMaxCount["Doing1"]" KeyField="@(new List<string>() {"Doing1"})" TransitionColumns="@(new List<string>() {"Backlog", "Doing2"})"></KanbanColumn>
         <KanbanColumn HeaderText="Doing2" MaxCount="@BoardService.ColumnMaxCount["Doing2"]" KeyField="@(new List<string>() {"Doing2"})" TransitionColumns="@(new List<string>() {"Doing1"})"></KanbanColumn>
-        <KanbanColumn HeaderText="" KeyField="@(new List<string>() {"Delivered"})" AllowDrag="false"></KanbanColumn>
-        <KanbanColumn HeaderText="ReadyForDevelopment" KeyField="@(new List<string>() {"ReadyForDevelopment"})" TransitionColumns="@(new List<string>() {"ReadyForDevelopment"})"></KanbanColumn>
+        <KanbanColumn HeaderText="" KeyField="@(new List<string>() {"ReadyForDevelopment"})" TransitionColumns="@(new List<string>() {"ReadyForDevelopment"})"></KanbanColumn>
     </KanbanColumns>
     <KanbanStackedHeaders>
         <KanbanStackedHeader Text="Backlog" KeyFields="@(new List<string>() {"Backlog"})"></KanbanStackedHeader>
         <KanbanStackedHeader Text="Doing" KeyFields="@(new List<string>() {"Doing1", "Doing2"})"></KanbanStackedHeader>
-        <KanbanStackedHeader Text="Delivered" KeyFields="@(new List<string>() {"Delivered", "ReadyForDevelopment"})"></KanbanStackedHeader>
+        <KanbanStackedHeader Text="ReadyForDevelopment" KeyFields="@(new List<string>() {"ReadyForDevelopment"})"></KanbanStackedHeader>
     </KanbanStackedHeaders>
     <KanbanSortSettings SortBy="SortOrderBy.Index" Field="RankId"></KanbanSortSettings>
     <KanbanEvents TValue="KanbanGame.Shared.Card" DragStart="@DragStartHandler" DragStop="@DragStopHandler"></KanbanEvents>
@@ -45,50 +47,63 @@
                     {
                         KanbanGame.Shared.Employee employee = card.Employee;
 
-                                    <div     class="employee-card">
-                                            <div class="employee-h">@employee.Name</div>
-                                            <div class="employee-a"><img src=@(employee.AvatarPath == null ? "Avatars/Default.png" : employee.AvatarPath) style="width:48px" alt="logo" /></div>
-                                        <div     class="employee-d">
-                                                <div>Card Id: @card.Id</div>
-                                                <div>Id: @employee.Id</div>
-                                                <div>Seniority: @employee.Seniority.ToString()</div>
-                                                <div>Status: @employee.Status</div>
-                                                <div>Role: @employee.CurrentRole</div>
-                                                <div>Column: @employee.SF_Column</div>
-                                                <div>RankId: @card.RankId</div>
+                                            <div     class="employee-card">
+                                                    <div class="employee-h">@employee.Name</div>
+                                                    <div class="employee-a"><img src=@(employee.AvatarPath == null ? "Avatars/Default.png" : employee.AvatarPath) style="width:48px" alt="logo" /></div>
+                                                <div     class="employee-d">
+                                                        <div>Card Id: @card.Id</div>
+                                                        <div>Id: @employee.Id</div>
+                                                        <div>Seniority: @employee.Seniority.ToString()</div>
+                                                        <div>Status: @employee.Status</div>
+                                                        <div>Role: @employee.CurrentRole</div>
+                                                        <div>Column: @employee.SF_Column</div>
+                                                        <div>RankId: @card.RankId</div>
+                                                    </div>
                                             </div>
-                                    </div>
                     }
                     else if (card.Feature is not null)
                     {
                         KanbanGame.Shared.Feature feature = card.Feature;
-
-                                    <div     class="task-card">
-                                          <div   class="task-h">@feature.Title</div>
-                                            <div class="task-d">
-                                                <div>Card Id: @card.Id</div>
-                                                <div>Id: @feature.Id</div>
-                                                <div>Desc: @feature.Description</div>
-                                                <div>Ass. Id: @(feature.Assignee is null ? "-" : feature.Assignee.Id)</div>
-                                                <div>Assignee.: @(feature.Assignee == null ? "-" : feature.Assignee.Name)</div>
-                                            </div>
-                            @* <div class="task-f">Status: @kanbanTask.SF_Column</div> *@
+                        if (feature.Status == KanbanGame.Shared.Feature.FeatureStatus.ReadyForDevelopment)
+                        {
+                                        <div class="task-card">
+                                        <div   class="task-h">@feature.Title</div>
+                                        <div class="task-d">
+                                            <div>Card Id: @card.Id</div>
+                                            <div>Id: @feature.Id</div>
+                                            <div>Desc: @feature.Description</div>
+                                            <div>Tasks:</div>
+                                    @{
+                                        foreach (var t in feature.KanbanTasks)
+                                        {
+                                            <li>@t.Title - @t.Type</li>
+                                        }
+                                    }
+                                </div>
+                                <div class="task-f">
+                                    RankId: @card.RankId
+                                    <button class="btn btn-primary" style="float:right;"
+                                        @onclick="(() => SendFeatureTasksToTeams(feature))">
+                                        <i class="oi oi-arrow-circle-right"></i>
+                                    </button>
+                                    
+                                </div>
+                            </div>
+                        }
+                        else
+                        {
+                                    <div class="task-card">
+                                        <div   class="task-h">@feature.Title</div>
+                                        <div class="task-d">
+                                            <div>Card Id: @card.Id</div>
+                                            <div>Id: @feature.Id</div>
+                                            <div>Desc: @feature.Description</div>
+                                            <div>Ass. Id: @(feature.Assignee is null ? "-" : feature.Assignee.Id)</div>
+                                            <div>Assignee.: @(feature.Assignee == null ? "-" : feature.Assignee.Name)</div>
+                                        </div>
                                         <div class="task-f">RankId: @card.RankId <img src=@(feature.Assignee == null ? "Avatars/Default.png" : feature.Assignee.AvatarPath) style="width:32px; float:right;" alt="logo" /></div>
                                     </div>
-                    }
-                    else if (card.KanbanTask is not null)
-                    {
-                        KanbanGame.Shared.KanbanTask kanbanTask = card.KanbanTask;
-
-                                    <div     class="task-minimal-card">
-                                          <div   class="task-minimal-h">@kanbanTask.Title</div>
-                                            <div class="task-minimal-d">
-                                                <div>Card Id: @card.Id</div>
-                                                <div>Id: @kanbanTask.Id</div>
-                                                <div>Desc: @kanbanTask.Description</div>
-                                                <div>RankId: @card.RankId</div>
-                                            </div>
-                                    </div>
+                        }
                     }
                 }
         </Template>
@@ -96,7 +111,7 @@
 </SfKanban>
 </div>
 @code {
-    private int BoardId = (int) KanbanGame.Shared.Team.TeamName.HighLevelAnalysis;
+    private int BoardId = (int)KanbanGame.Shared.Team.TeamName.HighLevelAnalysis;
     int EditionCode = 1;
     public SfKanban<KanbanGame.Shared.Card> kanbanBoard;
     protected bool IsForceUpdateDisabled = true;
@@ -150,11 +165,11 @@
                     StateHasChanged();
                 });
     }
-    
+
     private string? columnBeforeDrag;
     private string? columnAfterDrag;
-    private string[] featureForbiddenSwap = { "Doing1", "Doing2"};
-    private string[] employeeForbidenSwap = { "Backlog"};
+    private string[] featureForbiddenSwap = { "Doing1", "Doing2" };
+    private string[] employeeForbidenSwap = { "Backlog" };
 
     async Task DragStartHandler(DragEventArgs<KanbanGame.Shared.Card> args)
     {
@@ -246,6 +261,15 @@
         if (hubConnection != null)
         {
             await hubConnection.DisposeAsync();
+        }
+    }
+
+    async Task SendFeatureTasksToTeams(KanbanGame.Shared.Feature feature)
+    {
+        await BoardService.SendFeatureTasksToTeams(feature);
+        if (hubConnection is not null)
+        {
+            await hubConnection.SendAsync("UpdateBoard", 0);
         }
     }
 }

@@ -26,7 +26,6 @@ public class BoardService : IBoardService
         _featureService = featureService;
         ColumnMaxCount = new Dictionary<string, int>
         {
-            { "Backlog", 9 },
             { "AnalysisDoing", 9 },
             { "DevelopmentDoing", 9 },
             { "TestDoing", 9 },
@@ -47,15 +46,15 @@ public class BoardService : IBoardService
     {
         InitProperties();
 
-        await _kanbanTaskService.GetKanbanTasksByTeamId(teamId);
         await _employeeService.GetEmployeesByTeamId(teamId);
         if (teamId == (int)Team.TeamName.HighLevelAnalysis)
         {
-            await _featureService.GetFeatures();
+            await _featureService.GetFeaturesByTeamId(teamId);
             await BuildFeatureBoard();
         }
         else
         {
+            await _kanbanTaskService.GetKanbanTasksByTeamId(teamId);
             await BuildDevBoard();
         }
     }
@@ -152,13 +151,6 @@ public class BoardService : IBoardService
             Cards.Add(card);
             ColumnCount[f.SF_Column] += 2;
         }
-
-        foreach (var t in _kanbanTaskService.KanbanTasks)
-        {
-            Cards.Add(TaskToCard(t, ColumnCount[t.SF_Column]));
-            ColumnCount[t.SF_Column] += 2;
-        }
-        //todo: add task to delivered
     }
 
     private Card TaskToCard(KanbanTask kanbanTask, int rankId)
@@ -212,23 +204,32 @@ public class BoardService : IBoardService
             {
                 card.Feature.NextFeatureStatus();
                 card.Feature.Assignee = null;
-                if(card.Feature.Status == Feature.FeatureStatus.Delivered)
-                {
-                    UnpackFeature(card.Feature);
-                }
 
                 await _featureService.UpdateFeature(card.Feature.Id, card.Feature);
             }
         }
     }
-    private async Task UnpackFeature(Feature feature)
+
+    public async Task SendFeatureTasksToTeams(Feature feature)
     {
+        //todo: maybe it's a FeatureService method?
         foreach(var t in feature.KanbanTasks)
         {
-            t.Team = Team.TeamName.HighLevelAnalysis;
-            t.Status = KanbanTask.TaskStatus.ReadyForDevelopment;
-            _kanbanTaskService.CreateKanbanTask(t);
+            switch(t.Type)
+            {
+                case KanbanTask.TaskType.FrontEnd:
+                    t.Team = Team.TeamName.FrontEnd;
+                    break;
+                case KanbanTask.TaskType.BackEnd:
+                    t.Team = Team.TeamName.BackEnd;
+                    break;
+            }
+            t.Status = KanbanTask.TaskStatus.Backlog;
+            await _kanbanTaskService.CreateKanbanTask(t);
         }
+        feature.Team = Team.TeamName.None;
+        feature.Status = Feature.FeatureStatus.UnderDevelopment;
+        await _featureService.UpdateFeature(feature.Id, feature);
     }
 
     public async Task UpdateCard(int cardId, Card card)
