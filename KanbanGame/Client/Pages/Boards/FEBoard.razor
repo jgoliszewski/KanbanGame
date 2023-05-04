@@ -47,45 +47,45 @@
     <KanbanEvents TValue="KanbanGame.Shared.Card" DragStart="@DragStartHandler" DragStop="@DragStopHandler"></KanbanEvents>
     <KanbanCardSettings HeaderField="Id">
         <Template>
-                @{
-                    KanbanGame.Shared.Card card = (KanbanGame.Shared.Card)context;
+        @{
+            KanbanGame.Shared.Card card = (KanbanGame.Shared.Card)context;
 
-                    if (card.KanbanTask is null && card.Employee is not null)
-                    {
-                        KanbanGame.Shared.Employee employee = card.Employee;
+            if (card.KanbanTask is null && card.Employee is not null)
+            {
+                KanbanGame.Shared.Employee employee = card.Employee;
 
-                                    <div     class="employee-card">
-                                            <div class="employee-h">@employee.Name</div>
-                                            <div class="employee-a"><img src=@(employee.AvatarPath == null ? "Avatars/Default.png" : employee.AvatarPath) style="width:48px" alt="logo" /></div>
-                                        <div     class="employee-d">
-                                                <div>Card Id: @card.Id</div>
-                                                <div>Id: @employee.Id</div>
-                                                <div>Seniority: @employee.Seniority.ToString()</div>
-                                                <div>Status: @employee.Status</div>
-                                                <div>Role: @employee.CurrentRole</div>
-                                                <div>Column: @employee.SF_Column</div>
-                                                <div>RankId: @card.RankId</div>
-                                            </div>
-                                    </div>
-                    }
-                    else if (card.Employee is null && card.KanbanTask is not null)
-                    {
-                        KanbanGame.Shared.KanbanTask kanbanTask = card.KanbanTask;
+                <div class="employee-card">
+                    <div class="employee-h">@employee.Name</div>
+                    <div class="employee-a"><img src=@(employee.AvatarPath == null ? "Avatars/Default.png" : employee.AvatarPath) style="width:48px" alt="logo" /></div>
+                    <div class="employee-d">
+                        <div>Card Id: @card.Id</div>
+                        <div>Id: @employee.Id</div>
+                        <div>Seniority: @employee.Seniority.ToString()</div>
+                        <div>Status: @employee.Status</div>
+                        <div>Role: @employee.CurrentRole</div>
+                        <div>Column: @employee.SF_Column</div>
+                        <div>RankId: @card.RankId</div>
+                    </div>
+                </div>
+            }
+            else if (card.Employee is null && card.KanbanTask is not null)
+            {
+                KanbanGame.Shared.KanbanTask kanbanTask = card.KanbanTask;
 
-                                    <div     class="task-card">
-                                          <div   class="task-h">@kanbanTask.Title</div>
-                                            <div class="task-d">
-                                                <div>Card Id: @card.Id</div>
-                                                <div>Id: @kanbanTask.Id</div>
-                                                <div>Desc: @kanbanTask.Description</div>
-                                                <div>Ass. Id: @(kanbanTask.Assignee is null ? "-" : kanbanTask.Assignee.Id)</div>
-                                                <div>Assignee.: @(kanbanTask.Assignee == null ? "-" : kanbanTask.Assignee.Name)</div>
-                                            </div>
-                            @* <div class="task-f">Status: @kanbanTask.SF_Column</div> *@
-                                        <div class="task-f">RankId: @card.RankId <img src=@(kanbanTask.Assignee == null ? "Avatars/Default.png" : kanbanTask.Assignee.AvatarPath) style="width:32px; float:right;" alt="logo" /></div>
-                                    </div>
-                    }
-                }
+                <div class="task-card">
+                    <div class="task-h">@kanbanTask.Title</div>
+                    <div class="task-d">
+                        <div>Card Id: @card.Id</div>
+                        <div>Id: @kanbanTask.Id</div>
+                        <div>Desc: @kanbanTask.Description</div>
+                        <div>Ass. Id: @(kanbanTask.Assignee is null ? "-" : kanbanTask.Assignee.Id)</div>
+                        <div>Assignee.: @(kanbanTask.Assignee == null ? "-" : kanbanTask.Assignee.Name)</div>
+                    </div>
+                    @* <div class="task-f">Status: @kanbanTask.SF_Column</div> *@
+                    <div class="task-f">RankId: @card.RankId <img src=@(kanbanTask.Assignee == null ? "Avatars/Default.png" : kanbanTask.Assignee.AvatarPath) style="width:32px; float:right;" alt="logo" /></div>
+                </div>
+            }
+        }
         </Template>
     </KanbanCardSettings>
 </SfKanban>

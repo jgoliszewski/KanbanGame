@@ -24,20 +24,19 @@
     </KanbanStackedHeaders>
     <KanbanCardSettings HeaderField="Id">
         <Template>
-                @{        
-                         KanbanGame.Shared.Feature feature = (KanbanGame.Shared.Feature)context;
-                           <div      class="task-card">
-                              <div         class="task-h">@feature.Title</div>
-                          <d class="task-d">
-                                        <div>Id: @feature.Id</div>
-                                        @* <div>Desc: @feature.Description</div> *@    
-                                        <div>Task count: @feature.KanbanTasks.Count</div>
-                                        <div>Delivered: @(Math.Round(feature.DeliveredTaskPercentage*100, 1)) %</div>
-                                    </d>
-                     
-                    <div class="task-f"></div>
-                    </div>
-                }
+        @{        
+            KanbanGame.Shared.Feature feature = (KanbanGame.Shared.Feature)context;
+            <div class="task-card">
+                <div class="task-h">@feature.Title</div>
+                <div class="task-d">
+                    <div>Id: @feature.Id</div>
+                    @* <div>Desc: @feature.Description</div> *@    
+                    <div>Task count: @feature.KanbanTasks.Count</div>
+                    <div>Delivered: @(Math.Round(feature.DeliveredTaskPercentage*100, 1)) %</div>
+                </div>
+                <div class="task-f"></div>
+            </div>
+        }
         </Template>
     </KanbanCardSettings>
 </SfKanban>
