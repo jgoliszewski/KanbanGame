@@ -26,7 +26,7 @@
 
 </div>
 <div class="center">
-<SfKanban @ref="kanbanBoard" TValue="KanbanGame.Shared.Card" KeyField="Column" DataSource="BoardService.Cards" Width="1800px">
+<SfKanban @ref="kanbanBoard" TValue="Card" KeyField="Column" DataSource="BoardService.Cards" Width="1800px">
     <KanbanColumns>
         <KanbanColumn HeaderText="" KeyField="@(new List<string>() {"Backlog"})" TransitionColumns="@(new List<string>() {"AnalysisDoing"})"></KanbanColumn>
         <KanbanColumn HeaderText="Doing" MaxCount="@BoardService.ColumnMaxCount["AnalysisDoing"]" KeyField="@(new List<string>() {"AnalysisDoing"})" TransitionColumns="@(new List<string>() {"Backlog", "AnalysisDoing", "DevelopmentDoing", "TestDoing"})"></KanbanColumn>
@@ -44,15 +44,15 @@
         <KanbanStackedHeader Text="Delivered" KeyFields="@(new List<string>() {"Delivered"})"></KanbanStackedHeader>
     </KanbanStackedHeaders>
     <KanbanSortSettings SortBy="SortOrderBy.Index" Field="RankId"></KanbanSortSettings>
-    <KanbanEvents TValue="KanbanGame.Shared.Card" DragStart="@DragStartHandler" DragStop="@DragStopHandler"></KanbanEvents>
+    <KanbanEvents TValue="Card" DragStart="@DragStartHandler" DragStop="@DragStopHandler"></KanbanEvents>
     <KanbanCardSettings HeaderField="Id">
         <Template>
         @{
-            KanbanGame.Shared.Card card = (KanbanGame.Shared.Card)context;
+            Card card = (Card)context;
 
             if (card.KanbanTask is null && card.Employee is not null)
             {
-                KanbanGame.Shared.Employee employee = card.Employee;
+                Employee employee = card.Employee;
 
                 <div class="employee-card">
                     <div class="employee-h">@employee.Name</div>
@@ -70,7 +70,7 @@
             }
             else if (card.Employee is null && card.KanbanTask is not null)
             {
-                KanbanGame.Shared.KanbanTask kanbanTask = card.KanbanTask;
+                KanbanTask kanbanTask = card.KanbanTask;
 
                 <div class="task-card">
                     <div class="task-h">@kanbanTask.Title</div>
@@ -91,9 +91,9 @@
 </SfKanban>
 </div>
 @code {
-    private int BoardId = (int) KanbanGame.Shared.Team.TeamName.FrontEnd;
+    private int BoardId = (int) Team.TeamName.FrontEnd;
     int EditionCode = 1;
-    public SfKanban<KanbanGame.Shared.Card> kanbanBoard;
+    public SfKanban<Card> kanbanBoard;
     protected bool IsForceUpdateDisabled = true;
     private bool IsReadySelected = true;
     private bool IsNotReadySelected = false;
@@ -151,15 +151,15 @@
     private string[] taskForbiddenSwap = { "AnalysisDoing", "DevelopmentDoing", "TestDoing" };
     private string[] employeeForbidenSwap = { "Backlog", "DevelopmentWaiting", "TestWaiting" };
 
-    async Task DragStartHandler(DragEventArgs<KanbanGame.Shared.Card> args)
+    async Task DragStartHandler(DragEventArgs<Card> args)
     {
         columnBeforeDrag = args.Data[0].Column;
     }
 
-    async Task DragStopHandler(DragEventArgs<KanbanGame.Shared.Card> args)
+    async Task DragStopHandler(DragEventArgs<Card> args)
     {
 
-        KanbanGame.Shared.Card draggedCard = args.Data[0];
+        Card draggedCard = args.Data[0];
         columnAfterDrag = draggedCard.Column;
 
         if (draggedCard.Employee is null && draggedCard.KanbanTask is not null)

@@ -7,7 +7,7 @@
     <h3>Feature Board</h3>
 </div>
 <div class="center">
-<SfKanban @ref="kanbanBoard" TValue="KanbanGame.Shared.Feature" KeyField="SF_PercentageColumn" DataSource="FeatureService.Features" Width="1800px" AllowDragAndDrop="false">
+<SfKanban @ref="kanbanBoard" TValue="Feature" KeyField="SF_PercentageColumn" DataSource="FeatureService.Features" Width="1800px" AllowDragAndDrop="false">
     <KanbanColumns>
         <KanbanColumn HeaderText="" KeyField="@(new List<string>() {"None"})"></KanbanColumn>
         <KanbanColumn HeaderText="<20%" KeyField="@(new List<string>() {"Zero_Twenty"})"></KanbanColumn>
@@ -25,8 +25,8 @@
     <KanbanCardSettings HeaderField="Id">
         <Template>
         @{        
-            KanbanGame.Shared.Feature feature = (KanbanGame.Shared.Feature)context;
-            if(feature.Status == KanbanGame.Shared.Feature.FeatureStatus.ReadyForDevelopment || feature.Status == KanbanGame.Shared.Feature.FeatureStatus.UnderDevelopment)
+            Feature feature = (Feature)context;
+            if(feature.Status == Feature.FeatureStatus.ReadyForDevelopment || feature.Status == Feature.FeatureStatus.UnderDevelopment)
             {
                 <div class="task-card">
                     <div class="task-h">@feature.Title</div>
@@ -58,7 +58,7 @@
 </SfKanban>
 </div>
 @code {
-    public SfKanban<KanbanGame.Shared.Feature> kanbanBoard;
+    public SfKanban<Feature> kanbanBoard;
     private HubConnection? hubConnection;
     protected override async Task OnInitializedAsync()
     {
