@@ -317,7 +317,6 @@ public class BoardService : IBoardService
         Cards = new List<Card>();
         ColumnMaxCount = new Dictionary<string, int>
         {
-            { "Backlog", 6 },
             { "AnalysisDoing", 0 },
             { "DevelopmentDoing", 0 },
             { "TestDoing", 0 },
