@@ -3,22 +3,17 @@ namespace KanbanGame.Shared;
 public class KanbanTask
 {
     public int Id { get; set; }
-    public string Title { get; set; }
+    public string Title { get; set; } = "Title";
     public string? Description { get; set; }
     public TaskType Type {get; set;}
-    public TaskStatus Status { get; set; } = TaskStatus.None;
     public Employee? Assignee { get; set; }
+    public TaskStatus Status { get; set; } = TaskStatus.None;
     public Team.TeamName Team { get; set; } = Shared.Team.TeamName.None;
     public string SF_Column
     {
         get => Status.ToString();
         set { Status = (TaskStatus)Enum.Parse(typeof(TaskStatus), value); }
     } // for Syncfunction D&D
-
-    public void AddAssignee(Employee employee)
-    {
-        this.Assignee = employee;
-    }
 
     public void NextTaskStatus()
     {
@@ -32,22 +27,6 @@ public class KanbanTask
                 break;
             case TaskStatus.TestDoing:
                 Status = TaskStatus.Delivered;
-                break;
-        }
-    }
-
-    public void MoveToWaiting()
-    {
-        switch (Status)
-        {
-            case TaskStatus.AnalysisDoing:
-                Status = TaskStatus.Backlog;
-                break;
-            case TaskStatus.DevelopmentDoing:
-                Status = TaskStatus.DevelopmentWaiting;
-                break;
-            case TaskStatus.TestDoing:
-                Status = TaskStatus.TestWaiting;
                 break;
         }
     }
