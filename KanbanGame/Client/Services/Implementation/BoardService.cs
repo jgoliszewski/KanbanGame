@@ -37,8 +37,8 @@ public class BoardService : IBoardService
     public List<Card> Cards { get; set; }
     public Dictionary<string, int> ColumnMaxCount { get; set; }
     private Dictionary<string, int> ColumnCount;
-    private Dictionary<Employee, KanbanTask?> DevBoardBuild;
-    private Dictionary<Employee, Feature?> FeatureBoardBuild;
+    private Dictionary<Employee, KanbanTask?> DevBoardDict;
+    private Dictionary<Employee, Feature?> FeatureBoardDict;
     private List<KanbanTask> TempTasks;
     private List<Feature> TempFeatures;
 
@@ -63,7 +63,7 @@ public class BoardService : IBoardService
     {
         foreach (var e in _employeeService.Employees)
         {
-            DevBoardBuild.Add(e, null);
+            DevBoardDict.Add(e, null);
             ColumnMaxCount[e.SF_Column] += 2;
         }
 
@@ -72,8 +72,8 @@ public class BoardService : IBoardService
             if (t.Assignee is not null)
             {
                 t.SF_Column = t.Assignee.SF_Column;
-                var key = DevBoardBuild.Where(p => p.Key.Id == t.Assignee.Id).FirstOrDefault().Key;
-                DevBoardBuild[key] = t;
+                var key = DevBoardDict.Where(p => p.Key.Id == t.Assignee.Id).FirstOrDefault().Key;
+                DevBoardDict[key] = t;
             }
             else
             {
@@ -81,7 +81,7 @@ public class BoardService : IBoardService
             }
         }
 
-        foreach (var (e, t) in DevBoardBuild)
+        foreach (var (e, t) in DevBoardDict)
         {
             Cards.Add(EmployeeToCard(e, ColumnCount[e.SF_Column]));
             ColumnCount[e.SF_Column] += 2;
@@ -108,7 +108,7 @@ public class BoardService : IBoardService
     {
         foreach (var e in _employeeService.Employees)
         {
-            FeatureBoardBuild.Add(e, null);
+            FeatureBoardDict.Add(e, null);
             ColumnMaxCount[e.SF_Column] += 2;
         }
 
@@ -117,11 +117,11 @@ public class BoardService : IBoardService
             if (f.Assignee is not null)
             {
                 f.SF_Column = f.Assignee.SF_Column;
-                var key = FeatureBoardBuild
+                var key = FeatureBoardDict
                     .Where(p => p.Key.Id == f.Assignee.Id)
                     .FirstOrDefault()
                     .Key;
-                FeatureBoardBuild[key] = f;
+                FeatureBoardDict[key] = f;
             }
             else
             {
@@ -129,7 +129,7 @@ public class BoardService : IBoardService
             }
         }
 
-        foreach (var (e, f) in FeatureBoardBuild)
+        foreach (var (e, f) in FeatureBoardDict)
         {
             Cards.Add(EmployeeToCard(e, ColumnCount[e.SF_Column]));
             ColumnCount[e.SF_Column] += 2;
@@ -225,7 +225,6 @@ public class BoardService : IBoardService
                     break;
             }
             t.Status = KanbanTask.TaskStatus.Backlog;
-            // await _kanbanTaskService.CreateKanbanTask(t);
             await _kanbanTaskService.UpdateKanbanTask(t.Id, t);
         }
         feature.Team = Team.TeamName.None;
@@ -235,11 +234,11 @@ public class BoardService : IBoardService
 
     public async Task UpdateCard(int cardId, Card card)
     {
-        if (card.Employee is null && card.KanbanTask is not null)
+        if (card.KanbanTask is not null)
         {
             await _kanbanTaskService.UpdateKanbanTask(card.KanbanTask.Id, card.KanbanTask);
         }
-        else if (card.KanbanTask is null && card.Employee is not null)
+        else if (card.Employee is not null)
         {
             await _employeeService.UpdateEmployee(card.Employee.Id, card.Employee);
         }
@@ -337,8 +336,8 @@ public class BoardService : IBoardService
             { "Doing2", 1 },
             { "ReadyForDevelopment", 1 }
         };
-        DevBoardBuild = new Dictionary<Employee, KanbanTask?>();
-        FeatureBoardBuild = new Dictionary<Employee, Feature?>();
+        DevBoardDict = new Dictionary<Employee, KanbanTask?>();
+        FeatureBoardDict = new Dictionary<Employee, Feature?>();
         TempTasks = new List<KanbanTask>();
         TempFeatures = new List<Feature>();
     }
