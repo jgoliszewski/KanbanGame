@@ -6,7 +6,7 @@ public class Employee
     public int Id { get; set; }
     public string Name { get; set; }
     public EmployeeSeniority Seniority { get; set; } = EmployeeSeniority.Junior;
-    public EmployeeStatus Status { get; set; } = EmployeeStatus.NotWorking;
+    public EmployeeStatus Status { get; set; } = EmployeeStatus.Working;
     public Role CurrentRole { get; set; }
     public Team.TeamName Team { get; set; }
     public string AvatarPath { get; set; } = "Avatars/Default.png";
@@ -26,11 +26,15 @@ public class Employee
         Tester
     }
 
-    static Role ColumnToRole(string column)
+    public Role ColumnToRole(string column)
     {
         switch (column.ToLower())
         {
             case "backlog":
+                if(this.Team == Shared.Team.TeamName.HighLevelAnalysis)
+                    return Role.HighLevelAnalyzer1;
+                else
+                    return Role.Analyzer;
             case "analysisdoing":
                 return Role.Analyzer;
             case "developmentwaiting":
