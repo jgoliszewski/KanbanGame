@@ -7,7 +7,7 @@ public class Feature
     public string? Description { get; set; }
     public int? EstimatedMinEarnings { get; set; }
     public int? EstimatedMaxEarnings { get; set; }
-    public List<KanbanTask> KanbanTasks { get; set; }
+    public List<KanbanTask> KanbanTasks { get; set; } = new List<KanbanTask>();
     public Employee? Assignee { get; set; }
     public FeatureStatus Status { get; set; } = FeatureStatus.None;
     public Team.TeamName Team { get; set; } = KanbanGame.Shared.Team.TeamName.HighLevelAnalysis;
@@ -23,18 +23,9 @@ public class Feature
             return (deliveredTasksCount / tasksCount);
         }
     }
-    public DeliveredPercentage DeliveredTaskPercentageStatus
-    {
-        get
-        {
-            double tasksCount = KanbanTasks.Count;
-            double deliveredTasksCount = KanbanTasks
-                .FindAll(t => t.Status == KanbanTask.TaskStatus.Delivered)
-                .Count;
-            var p = deliveredTasksCount / tasksCount;
-            return PercentageToStatus(p);
-        }
-    }
+    public DeliveredPercentage DeliveredTaskPercentageStatus { get => PercentageToStatus(DeliveredTaskPercentage); }
+            
+    
     public string SF_PercentageColumn
     {
         get => DeliveredTaskPercentageStatus.ToString();
