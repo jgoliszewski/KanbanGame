@@ -333,6 +333,7 @@ public class BoardService : IBoardService
             { "TestWaiting", 1 },
             { "TestDoing", 1 },
             { "Delivered", 1 },
+            { "None", 1},
             { "Doing1", 1 },
             { "Doing2", 1 },
             { "ReadyForDevelopment", 1 }

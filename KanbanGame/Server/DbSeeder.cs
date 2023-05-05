@@ -148,19 +148,16 @@ public class DbSeeder
         {
             Title = "A",
             Description = "Cool Feature about sth",
-            Status = Feature.FeatureStatus.Backlog,
         },
         new Feature
         {
             Title = "B",
             Description = "Nice Feature adding cool stuff",
-            Status = Feature.FeatureStatus.Backlog,
         },
         new Feature
         {
             Title = "C",
             Description = "Amazing things",
-            Status = Feature.FeatureStatus.Backlog,
         },
     };
 

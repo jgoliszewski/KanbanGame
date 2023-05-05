@@ -3,13 +3,13 @@ namespace KanbanGame.Shared;
 public class Feature
 {
     public int Id { get; set; }
-    public string Title { get; set; }
+    public string Title { get; set; } = "Title";
     public string? Description { get; set; }
     public int? EstimatedMinEarnings { get; set; }
     public int? EstimatedMaxEarnings { get; set; }
     public List<KanbanTask> KanbanTasks { get; set; }
     public Employee? Assignee { get; set; }
-    public FeatureStatus Status { get; set; }
+    public FeatureStatus Status { get; set; } = FeatureStatus.None;
     public Team.TeamName Team { get; set; } = KanbanGame.Shared.Team.TeamName.HighLevelAnalysis;
 
     public double DeliveredTaskPercentage
@@ -47,6 +47,7 @@ public class Feature
 
     public enum FeatureStatus
     {
+        None,
         Backlog,
         Doing1,
         Doing2,

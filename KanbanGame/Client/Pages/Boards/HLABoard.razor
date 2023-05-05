@@ -26,12 +26,14 @@
 <div class="center">
 <SfKanban @ref="kanbanBoard" TValue="KanbanGame.Shared.Card" KeyField="Column" DataSource="BoardService.Cards" Width="1800px">
     <KanbanColumns>
-        <KanbanColumn HeaderText="" KeyField="@(new List<string>() {"Backlog"})" TransitionColumns="@(new List<string>() {"Doing1"})" AllowAdding="true"></KanbanColumn>
+        <KanbanColumn HeaderText="" KeyField="@(new List<string>() {"None"})" TransitionColumns="@(new List<string>() {"Backlog"})" AllowAdding="true"></KanbanColumn>
+        <KanbanColumn HeaderText="" KeyField="@(new List<string>() {"Backlog"})" TransitionColumns="@(new List<string>() {"Doing1", "None"})"></KanbanColumn>
         <KanbanColumn HeaderText="Doing1" MaxCount="@BoardService.ColumnMaxCount["Doing1"]" KeyField="@(new List<string>() {"Doing1"})" TransitionColumns="@(new List<string>() {"Backlog", "Doing2"})"></KanbanColumn>
         <KanbanColumn HeaderText="Doing2" MaxCount="@BoardService.ColumnMaxCount["Doing2"]" KeyField="@(new List<string>() {"Doing2"})" TransitionColumns="@(new List<string>() {"Doing1"})"></KanbanColumn>
         <KanbanColumn HeaderText="" KeyField="@(new List<string>() {"ReadyForDevelopment"})" TransitionColumns="@(new List<string>() {"ReadyForDevelopment"})"></KanbanColumn>
     </KanbanColumns>
     <KanbanStackedHeaders>
+        <KanbanStackedHeader Text="Feature Pool" KeyFields="@(new List<string>() {"None"})"></KanbanStackedHeader>
         <KanbanStackedHeader Text="Backlog" KeyFields="@(new List<string>() {"Backlog"})"></KanbanStackedHeader>
         <KanbanStackedHeader Text="Doing" KeyFields="@(new List<string>() {"Doing1", "Doing2"})"></KanbanStackedHeader>
         <KanbanStackedHeader Text="ReadyForDevelopment" KeyFields="@(new List<string>() {"ReadyForDevelopment"})"></KanbanStackedHeader>
