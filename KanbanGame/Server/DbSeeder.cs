@@ -26,7 +26,6 @@ public class DbSeeder
         {
             Name = "Tom",
             Seniority = Employee.EmployeeSeniority.Junior,
-            Status = Employee.EmployeeStatus.Working,
             CurrentRole = Employee.Role.Analyzer,
             Team = Team.TeamName.BackEnd,
             AvatarPath = "Avatars/Cthulhu.png"
@@ -35,7 +34,6 @@ public class DbSeeder
         {
             Name = "Olivia",
             Seniority = Employee.EmployeeSeniority.Senior,
-            Status = Employee.EmployeeStatus.Working,
             CurrentRole = Employee.Role.Developer,
             Team = Team.TeamName.BackEnd,
             AvatarPath = "Avatars/Witch.png"
@@ -44,7 +42,6 @@ public class DbSeeder
         {
             Name = "John",
             Seniority = Employee.EmployeeSeniority.Junior,
-            Status = Employee.EmployeeStatus.Learning,
             CurrentRole = Employee.Role.Tester,
             Team = Team.TeamName.BackEnd,
             AvatarPath = "Avatars/Yeti.png"
@@ -53,7 +50,6 @@ public class DbSeeder
         {
             Name = "Emma",
             Seniority = Employee.EmployeeSeniority.Mid,
-            Status = Employee.EmployeeStatus.Working,
             CurrentRole = Employee.Role.Analyzer,
             Team = Team.TeamName.FrontEnd,
             AvatarPath = "Avatars/Medusa.png"
@@ -62,7 +58,6 @@ public class DbSeeder
         {
             Name = "Arthur",
             Seniority = Employee.EmployeeSeniority.Junior,
-            Status = Employee.EmployeeStatus.NotWorking,
             CurrentRole = Employee.Role.Developer,
             Team = Team.TeamName.FrontEnd,
             AvatarPath = "Avatars/Mummy.png"
@@ -71,7 +66,6 @@ public class DbSeeder
         {
             Name = "Sarah",
             Seniority = Employee.EmployeeSeniority.Junior,
-            Status = Employee.EmployeeStatus.NotWorking,
             CurrentRole = Employee.Role.Tester,
             Team = Team.TeamName.FrontEnd,
             AvatarPath = "Avatars/Wednesday.png"
@@ -80,7 +74,6 @@ public class DbSeeder
         {
             Name = "Andy",
             Seniority = Employee.EmployeeSeniority.Mid,
-            Status = Employee.EmployeeStatus.Working,
             CurrentRole = Employee.Role.HighLevelAnalyzer1,
             Team = Team.TeamName.HighLevelAnalysis,
             AvatarPath = "Avatars/Reaper.png"
@@ -89,7 +82,6 @@ public class DbSeeder
         {
             Name = "Hannah",
             Seniority = Employee.EmployeeSeniority.Mid,
-            Status = Employee.EmployeeStatus.Working,
             CurrentRole = Employee.Role.HighLevelAnalyzer2,
             Team = Team.TeamName.HighLevelAnalysis,
             AvatarPath = "Avatars/Devil.png"
@@ -148,16 +140,22 @@ public class DbSeeder
         {
             Title = "A",
             Description = "Cool Feature about sth",
+            EstimatedMinEarnings = 12,
+            EstimatedMaxEarnings = 18,
         },
         new Feature
         {
             Title = "B",
             Description = "Nice Feature adding cool stuff",
+            EstimatedMinEarnings = 10,
+            EstimatedMaxEarnings = 15,
         },
         new Feature
         {
             Title = "C",
             Description = "Amazing things",
+            EstimatedMinEarnings = 8,
+            EstimatedMaxEarnings = 10,
         },
     };
 

@@ -26,16 +26,32 @@
         <Template>
         @{        
             KanbanGame.Shared.Feature feature = (KanbanGame.Shared.Feature)context;
-            <div class="task-card">
-                <div class="task-h">@feature.Title</div>
-                <div class="task-d">
-                    <div>Id: @feature.Id</div>
-                    @* <div>Desc: @feature.Description</div> *@    
-                    <div>Task count: @feature.KanbanTasks.Count</div>
-                    <div>Delivered: @(Math.Round(feature.DeliveredTaskPercentage*100, 1)) %</div>
-                </div>
+            if(feature.Status == KanbanGame.Shared.Feature.FeatureStatus.ReadyForDevelopment || feature.Status == KanbanGame.Shared.Feature.FeatureStatus.UnderDevelopment)
+            {
+                <div class="task-card">
+                    <div class="task-h">@feature.Title</div>
+                    <div class="task-d">
+                        <b>@($"Est. $: {feature.EstimatedMinEarnings}K-{feature.EstimatedMaxEarnings}K")</b>
+                        <div>Id: @feature.Id</div>
+                        @* <div>Desc: @feature.Description</div> *@    
+                        <div>Task count: @feature.KanbanTasks.Count</div>
+                        <div>Delivered: @(Math.Round(feature.DeliveredTaskPercentage*100, 1)) %</div>
+                    </div>
                 <div class="task-f"></div>
             </div>
+            }
+            else
+            {
+                <div class="task-card">
+                    <div class="task-h">@feature.Title</div>
+                    <div class="task-d">
+                        <div>Id: @feature.Id</div>
+                        <div>Desc: @feature.Description</div>    
+                    </div>
+                <div class="task-f"></div>
+            </div>
+            }
+            
         }
         </Template>
     </KanbanCardSettings>
@@ -46,7 +62,7 @@
     private HubConnection? hubConnection;
     protected override async Task OnInitializedAsync()
     {
-        await FeatureService.GetFeatures();
+        await FeatureService.GetActiveFeatures();
         await Connect();
     }
 
@@ -60,7 +76,7 @@
 
         hubConnection.On<int>("BoardUpdated", async (_) =>
                 {
-                    await FeatureService.GetFeatures();
+                    await FeatureService.GetActiveFeatures();
                     StateHasChanged();
             });
     }

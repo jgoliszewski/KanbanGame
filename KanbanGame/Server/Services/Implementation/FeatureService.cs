@@ -55,6 +55,8 @@ public class FeatureService : IFeatureService
             dbFeature.Status = Feature.Status;
             dbFeature.Assignee = Feature.Assignee;
             dbFeature.Team = Feature.Team;
+            dbFeature.EstimatedMinEarnings = Feature.EstimatedMinEarnings;
+            dbFeature.EstimatedMaxEarnings = Feature.EstimatedMaxEarnings;
             // dbFeature.KanbanTasks = Feature.KanbanTasks;
         }
         return dbFeature;

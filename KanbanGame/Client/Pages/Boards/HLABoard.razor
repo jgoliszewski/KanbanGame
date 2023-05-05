@@ -69,7 +69,9 @@
                 if (feature.Status == KanbanGame.Shared.Feature.FeatureStatus.ReadyForDevelopment)
                 {
                     <div class="task-card">
-                        <div class="task-h">@feature.Title</div>
+                        <div class="task-h">
+                            <div>@feature.Title</div>
+                        </div>
                         <div class="task-d">
                             <div>Card Id: @card.Id</div>
                             <div>Id: @feature.Id</div>
@@ -81,6 +83,7 @@
                                     <li>@t.Title - @t.Type</li>
                                 }
                             }
+                            <b>@($"Est. $: {feature.EstimatedMinEarnings}K-{feature.EstimatedMaxEarnings}K")</b>
                         </div>
                         <div class="task-f">
                             RankId: @card.RankId
