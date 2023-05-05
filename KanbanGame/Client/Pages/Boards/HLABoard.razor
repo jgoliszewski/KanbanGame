@@ -24,7 +24,7 @@
 
 </div>
 <div class="center">
-<SfKanban @ref="kanbanBoard" TValue="Card" KeyField="Column" DataSource="BoardService.Cards" Width="1800px">
+<SfKanban TValue="Card" KeyField="Column" DataSource="BoardService.Cards" Width="1800px">
     <KanbanColumns>
         <KanbanColumn HeaderText="" KeyField="@(new List<string>() {"None"})" TransitionColumns="@(new List<string>() {"Backlog"})" AllowAdding="true"></KanbanColumn>
         <KanbanColumn HeaderText="" KeyField="@(new List<string>() {"Backlog"})" TransitionColumns="@(new List<string>() {"Doing1", "None"})"></KanbanColumn>
@@ -116,20 +116,87 @@
 </div>
 @code {
     private int BoardId = (int)Team.TeamName.HighLevelAnalysis;
-    int EditionCode = 1;
-    public SfKanban<Card> kanbanBoard;
-    protected bool IsForceUpdateDisabled = true;
-    private bool IsReadySelected = true;
-    private bool IsNotReadySelected = false;
-    private HubConnection? hubConnection;
-    private int connectedUserCount = 0;
-    private int readyUserCount = 0;
+
     protected override async Task OnInitializedAsync()
     {
         await BoardService.GetCardsByTeamId(BoardId);
         await Connect();
     }
 
+    private string? columnBeforeDrag;
+    private string? columnAfterDrag;
+    private string[] featureForbiddenSwap = { "Doing1", "Doing2" };
+    private string[] employeeForbidenColumn = { "Backlog" };
+
+    async Task DragStartHandler(DragEventArgs<Card> args)
+    {
+        columnBeforeDrag = args.Data[0].Column;
+    }
+
+    async Task DragStopHandler(DragEventArgs<Card> args)
+    {
+
+        Card draggedCard = args.Data[0];
+        columnAfterDrag = draggedCard.Column;
+
+        if (draggedCard.Feature is not null)
+
+        {
+            if (columnBeforeDrag != draggedCard.Column && featureForbiddenSwap.Contains(columnBeforeDrag) && featureForbiddenSwap.Contains(draggedCard.Column))
+            {
+                args.Cancel = true;
+            }
+            else
+            {
+                await BoardService.UpdateCardLocal(draggedCard.Id, draggedCard);
+                await BoardService.UpdateColumn(columnBeforeDrag);
+                if (columnBeforeDrag != columnAfterDrag)
+                {
+                    await BoardService.UpdateColumn(columnAfterDrag);
+                }
+                if (hubConnection is not null)
+                {
+                    await hubConnection.SendAsync("UpdateBoard", 0);
+                }
+            }
+        }
+        else if (draggedCard.Employee is not null)
+        {
+            if (employeeForbidenColumn.Contains(columnAfterDrag))
+            {
+                args.Cancel = true;
+            }
+            else
+            {
+                await BoardService.UpdateCardLocal(draggedCard.Id, draggedCard);
+                await BoardService.UpdateColumn(columnBeforeDrag);
+                await BoardService.UpdateColumn(columnAfterDrag);
+
+                if (hubConnection is not null)
+                {
+                    await hubConnection.SendAsync("UpdateBoard", 0);
+                }
+            }
+        }
+    }
+
+    async Task SimulateBoard()
+    {
+        await BoardService.SimulateBoard();
+        if (hubConnection is not null)
+        {
+            await hubConnection.SendAsync("UpdateBoard", 0);
+            await hubConnection.SendAsync("ClearReadyUsers", 0);
+        }
+    }
+
+    @* -------------------- Hub -------------------- *@
+    private HubConnection? hubConnection;
+    private int connectedUserCount = 0;
+    private int readyUserCount = 0;
+    protected bool IsForceUpdateDisabled = true;
+    private bool IsReadySelected = true;
+    private bool IsNotReadySelected = false;
     private async Task Connect()
     {
         hubConnection = new HubConnectionBuilder()
@@ -168,73 +235,6 @@
                     IsForceUpdateDisabled = readyUserCount == connectedUserCount ? false : true;
                     StateHasChanged();
                 });
-    }
-
-    private string? columnBeforeDrag;
-    private string? columnAfterDrag;
-    private string[] featureForbiddenSwap = { "Doing1", "Doing2" };
-    private string[] employeeForbidenSwap = { "Backlog" };
-
-    async Task DragStartHandler(DragEventArgs<Card> args)
-    {
-        columnBeforeDrag = args.Data[0].Column;
-    }
-
-    async Task DragStopHandler(DragEventArgs<Card> args)
-    {
-
-        Card draggedCard = args.Data[0];
-        columnAfterDrag = draggedCard.Column;
-
-        if (draggedCard.Feature is not null)
-
-        {
-            if (columnBeforeDrag != columnAfterDrag && (featureForbiddenSwap.Contains(columnBeforeDrag) && featureForbiddenSwap.Contains(columnAfterDrag)))
-            {
-                args.Cancel = true;
-            }
-            else
-            {
-                await BoardService.UpdateCardLocal(draggedCard.Id, draggedCard);
-                await BoardService.UpdateColumn(columnBeforeDrag);
-                if (columnBeforeDrag != columnAfterDrag)
-                {
-                    await BoardService.UpdateColumn(columnAfterDrag);
-                }
-                if (hubConnection is not null)
-                {
-                    await hubConnection.SendAsync("UpdateBoard", 0);
-                }
-            }
-        }
-        else if (draggedCard.Employee is not null)
-        {
-            if (employeeForbidenSwap.Contains(draggedCard.Column))
-            {
-                args.Cancel = true;
-            }
-            else
-            {
-                await BoardService.UpdateCardLocal(draggedCard.Id, draggedCard);
-                await BoardService.UpdateColumn(columnBeforeDrag);
-                await BoardService.UpdateColumn(columnAfterDrag);
-
-                if (hubConnection is not null)
-                {
-                    await hubConnection.SendAsync("UpdateBoard", 0);
-                }
-            }
-        }
-    }
-
-    async Task SimulateBoard()
-    {
-        await BoardService.SimulateBoard();
-        if (hubConnection is not null)
-        {
-            await hubConnection.SendAsync("UpdateBoard", 0);
-            await hubConnection.SendAsync("ClearReadyUsers", 0);
-        }
     }
     private void SetReady()
     {

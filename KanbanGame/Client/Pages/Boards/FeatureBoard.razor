@@ -1,5 +1,6 @@
 @page "/featureBoard"
 @inject IFeatureService FeatureService
+@inject IBoardService BoardService
 @inject NavigationManager NavigationManager
 @implements IAsyncDisposable
 
@@ -7,7 +8,24 @@
     <h3>Feature Board</h3>
 </div>
 <div class="center">
-<SfKanban @ref="kanbanBoard" TValue="Feature" KeyField="SF_PercentageColumn" DataSource="FeatureService.Features" Width="1800px" AllowDragAndDrop="false">
+    @* <button disabled="@IsForceUpdateDisabled" class="btn btn-outline-warning" @onclick="(() => SimulateBoard())">
+            Force Update <i class="oi oi-sun"></i>
+    </button> *@
+    <button class="btn btn-outline-warning" @onclick="(() => SimulateBoard())">
+            Force Update <i class="oi oi-sun"></i>
+    </button>
+
+    <input type="radio" class="btn-check" name="options-outlined" id="danger-outlined" checked="@IsReadySelected">
+    <label class="btn btn-outline-danger" for="danger-outlined" @onclick="(() => StateNotReady())">Not Ready</label>
+
+    <input type="radio" class="btn-check" name="options-outlined" id="success-outlined" checked="@IsNotReadySelected" onchange="@(() => SetReady())">
+    <label class="btn btn-outline-success" for="success-outlined" @onclick="(() => StateReady())">Ready</label>
+
+    <div style="margin:10px;font-size: large;">Users ready: @readyUserCount / @connectedUserCount</div>
+
+</div>
+<div class="center">
+<SfKanban TValue="Feature" KeyField="SF_PercentageColumn" DataSource="FeatureService.Features" Width="1800px" AllowDragAndDrop="false">
     <KanbanColumns>
         <KanbanColumn HeaderText="" KeyField="@(new List<string>() {"None"})"></KanbanColumn>
         <KanbanColumn HeaderText="<20%" KeyField="@(new List<string>() {"Zero_Twenty"})"></KanbanColumn>
@@ -58,14 +76,27 @@
 </SfKanban>
 </div>
 @code {
-    public SfKanban<Feature> kanbanBoard;
-    private HubConnection? hubConnection;
     protected override async Task OnInitializedAsync()
     {
         await FeatureService.GetActiveFeatures();
         await Connect();
     }
-
+    async Task SimulateBoard()
+    {
+        await BoardService.SimulateBoard();
+        if (hubConnection is not null)
+        {
+            await hubConnection.SendAsync("UpdateBoard", 0);
+            await hubConnection.SendAsync("ClearReadyUsers", 0);
+        }
+    }
+    @* -------------------- Hub -------------------- *@
+    private HubConnection? hubConnection;
+    private int connectedUserCount = 0;
+    private int readyUserCount = 0;
+    protected bool IsForceUpdateDisabled = true;
+    private bool IsReadySelected = true;
+    private bool IsNotReadySelected = false;
     private async Task Connect()
     {
         hubConnection = new HubConnectionBuilder()
@@ -79,8 +110,57 @@
                     await FeatureService.GetActiveFeatures();
                     StateHasChanged();
             });
+        hubConnection.On<int>("StateReady", async (numberOfReadyClients) =>
+                {
+                    readyUserCount = numberOfReadyClients;
+                    IsForceUpdateDisabled = readyUserCount == connectedUserCount ? false : true;
+                    StateHasChanged();
+                });
+        hubConnection.On<int>("StateNotReady", async (numberOfReadyClients) =>
+                {
+                    readyUserCount = numberOfReadyClients;
+                    IsForceUpdateDisabled = readyUserCount == connectedUserCount ? false : true;
+                    StateHasChanged();
+                });
+        hubConnection.On<int>("ClearReadyUsers", async (numberOfReadyClients) =>
+                {
+                    readyUserCount = numberOfReadyClients;
+                    ResetReadiness();
+                    IsForceUpdateDisabled = readyUserCount == connectedUserCount ? false : true;
+                    StateHasChanged();
+                });
+        hubConnection.On<int>("UserCount", async (numberOfConnectedClients) =>
+                {
+                    connectedUserCount = numberOfConnectedClients;
+                    IsForceUpdateDisabled = readyUserCount == connectedUserCount ? false : true;
+                    StateHasChanged();
+                });
     }
     
+    private void SetReady()
+    {
+        IsReadySelected = false;
+        IsNotReadySelected = true;
+    }
+    private void ResetReadiness()
+    {
+        IsReadySelected = true;
+        IsNotReadySelected = false;
+    }
+    async Task StateReady()
+    {
+        if (hubConnection is not null)
+        {
+            await hubConnection.SendAsync("StateReady", 0);
+        }
+    }
+    async Task StateNotReady()
+    {
+        if (hubConnection is not null)
+        {
+            await hubConnection.SendAsync("StateNotReady", 0);
+        }
+    }
     public async ValueTask DisposeAsync()
     {
         if (hubConnection != null)
