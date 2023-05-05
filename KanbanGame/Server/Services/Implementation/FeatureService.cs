@@ -8,11 +8,18 @@ public class FeatureService : IFeatureService
     public List<Feature> Features = new List<Feature>();
 
     private int _lastId = 0;
+    private readonly IKanbanTaskService _kanbanTaskService;
+
+    public FeatureService(IKanbanTaskService kanbanTaskService)
+    {
+        _kanbanTaskService = kanbanTaskService;
+    }
 
     public async Task<List<Feature>> GetFeatures()
     {
         return Features;
     }
+
     public async Task<List<Feature>?> GetFeaturesByTeamId(int teamId)
     {
         var dbFeatures = Features.FindAll(f => (int)f.Team == teamId);
@@ -30,6 +37,10 @@ public class FeatureService : IFeatureService
         //todo: better unique id method
         Feature.Id = _lastId++;
         Features.Add(Feature);
+        foreach (var t in Feature.KanbanTasks)
+        {
+            await _kanbanTaskService.CreateKanbanTask(t);
+        }
         return Feature;
     }
 
@@ -42,9 +53,9 @@ public class FeatureService : IFeatureService
             dbFeature.Title = Feature.Title;
             dbFeature.Description = Feature.Description;
             dbFeature.Status = Feature.Status;
-            dbFeature.KanbanTasks = Feature.KanbanTasks;
             dbFeature.Assignee = Feature.Assignee;
             dbFeature.Team = Feature.Team;
+            // dbFeature.KanbanTasks = Feature.KanbanTasks;
         }
         return dbFeature;
     }

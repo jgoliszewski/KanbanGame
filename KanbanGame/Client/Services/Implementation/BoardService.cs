@@ -139,7 +139,7 @@ public class BoardService : IBoardService
                 ColumnCount[e.SF_Column] += 2;
             }
         }
-        
+
         foreach (var f in TempFeatures)
         {
             var card = FeatureToCard(f, ColumnCount[f.SF_Column]);
@@ -213,9 +213,9 @@ public class BoardService : IBoardService
     public async Task SendFeatureTasksToTeams(Feature feature)
     {
         //todo: maybe it's a FeatureService method?
-        foreach(var t in feature.KanbanTasks)
+        foreach (var t in feature.KanbanTasks)
         {
-            switch(t.Type)
+            switch (t.Type)
             {
                 case KanbanTask.TaskType.FrontEnd:
                     t.Team = Team.TeamName.FrontEnd;
@@ -225,7 +225,8 @@ public class BoardService : IBoardService
                     break;
             }
             t.Status = KanbanTask.TaskStatus.Backlog;
-            await _kanbanTaskService.CreateKanbanTask(t);
+            // await _kanbanTaskService.CreateKanbanTask(t);
+            await _kanbanTaskService.UpdateKanbanTask(t.Id, t);
         }
         feature.Team = Team.TeamName.None;
         feature.Status = Feature.FeatureStatus.UnderDevelopment;
@@ -334,7 +335,7 @@ public class BoardService : IBoardService
             { "Delivered", 1 },
             { "Doing1", 1 },
             { "Doing2", 1 },
-            { "ReadyForDevelopment", 1}
+            { "ReadyForDevelopment", 1 }
         };
         DevBoardBuild = new Dictionary<Employee, KanbanTask?>();
         FeatureBoardBuild = new Dictionary<Employee, Feature?>();
