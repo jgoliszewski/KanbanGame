@@ -53,13 +53,13 @@
                     <div class="employee-h">@employee.Name</div>
                     <div class="employee-a"><img src=@(employee.AvatarPath == null ? "Avatars/Default.png" : employee.AvatarPath) style="width:48px" alt="logo" /></div>
                     <div class="employee-d">
-                        <div>Card Id: @card.Id</div>
-                        <div>Id: @employee.Id</div>
+                        @* <div>Card Id: @card.Id</div> *@
+                        @* <div>Id: @employee.Id</div> *@
                         <div>Seniority: @employee.Seniority.ToString()</div>
-                        <div>Status: @employee.Status</div>
+                        @* <div>Status: @employee.Status</div> *@
                         <div>Role: @employee.CurrentRole</div>
-                        <div>Column: @employee.SF_Column</div>
-                        <div>RankId: @card.RankId</div>
+                        @* <div>Column: @employee.SF_Column</div> *@
+                        @* <div>RankId: @card.RankId</div> *@
                     </div>
                 </div>
             }
@@ -73,8 +73,9 @@
                             <div>@feature.Title</div>
                         </div>
                         <div class="task-d">
-                            <div>Card Id: @card.Id</div>
-                            <div>Id: @feature.Id</div>
+                            @* <div>Card Id: @card.Id</div> *@
+                            @* <div>Id: @feature.Id</div> *@
+                            <b>@($"Est. $: {feature.EstimatedMinEarnings}K-{feature.EstimatedMaxEarnings}K")</b>
                             <div>Desc: @feature.Description</div>
                             <div>Tasks:</div>
                             @{
@@ -83,10 +84,9 @@
                                     <li>@t.Title - @t.Type</li>
                                 }
                             }
-                            <b>@($"Est. $: {feature.EstimatedMinEarnings}K-{feature.EstimatedMaxEarnings}K")</b>
                         </div>
                         <div class="task-f">
-                            RankId: @card.RankId
+                            @* RankId: @card.RankId *@
                             <button class="btn btn-primary" style="float:right;"
                                 @onclick="(() => SendFeatureTasksToTeams(feature))">
                                 <i class="oi oi-arrow-circle-right"></i>
@@ -99,13 +99,14 @@
                     <div class="task-card">
                         <div   class="task-h">@feature.Title</div>
                         <div class="task-d">
-                            <div>Card Id: @card.Id</div>
-                            <div>Id: @feature.Id</div>
+                            @* <div>Card Id: @card.Id</div> *@
+                            @* <div>Id: @feature.Id</div> *@
                             <div>Desc: @feature.Description</div>
-                            <div>Ass. Id: @(feature.Assignee is null ? "-" : feature.Assignee.Id)</div>
+                            @* <div>Ass. Id: @(feature.Assignee is null ? "-" : feature.Assignee.Id)</div> *@
                             <div>Assignee.: @(feature.Assignee == null ? "-" : feature.Assignee.Name)</div>
                         </div>
-                        <div class="task-f">RankId: @card.RankId <img src=@(feature.Assignee == null ? "Avatars/Default.png" : feature.Assignee.AvatarPath) style="width:32px; float:right;" alt="logo" /></div>
+                        @* <div class="task-f">RankId: @card.RankId <img src=@(feature.Assignee == null ? "Avatars/Default.png" : feature.Assignee.AvatarPath) style="width:32px; float:right;" alt="logo" /></div> *@
+                        <div class="task-f"><img src=@(feature.Assignee == null ? "Avatars/Default.png" : feature.Assignee.AvatarPath) style="width:32px; float:right;" alt="logo" /></div>
                     </div>
                 }
             }
