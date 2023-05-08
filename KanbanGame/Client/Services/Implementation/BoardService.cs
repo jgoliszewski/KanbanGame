@@ -98,6 +98,7 @@ public class BoardService : IBoardService
             if (cardAbove is not null && cardAbove.Employee is not null)
             {
                 card.KanbanTask.Assignee = cardAbove.Employee;
+                await _kanbanTaskService.UpdateKanbanTask(card.KanbanTask.Id, card.KanbanTask); //todo: can do it better? This solution do not send update to HUB
             }
             Cards.Add(card);
             ColumnCount[t.SF_Column] += 2;
@@ -147,6 +148,7 @@ public class BoardService : IBoardService
             if (cardAbove is not null && cardAbove.Employee is not null)
             {
                 card.Feature.Assignee = cardAbove.Employee;
+                await _featureService.UpdateFeature(card.Feature.Id, card.Feature); //todo: can do it better? This solution do not send update to HUB
             }
             Cards.Add(card);
             ColumnCount[f.SF_Column] += 2;
