@@ -6,6 +6,7 @@ public interface IEmployeeService
 {
     List<Employee> Employees { get; set; }
     Task GetEmployees();
+    Task GetActiveEmployees();
     Task GetEmployeesByTeamId(int teamId);
     Task<Employee?> GetEmployeeById(int employeeId);
     Task CreateEmployee(Employee employee);

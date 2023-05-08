@@ -12,6 +12,11 @@ public class EmployeeService : IEmployeeService
         return Employees;
     }
 
+    public async Task<List<Employee>> GetActiveEmployees()
+    {
+        return Employees.FindAll(e => e.Status != Employee.EmployeeStatus.NotWorking);
+    }
+
     public async Task<List<Employee>?> GetEmployeesByTeamId(int teamId)
     {
         var dbEmployees = Employees.FindAll(t => (int)t.Team == teamId);

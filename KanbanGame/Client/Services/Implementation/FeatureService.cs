@@ -24,14 +24,13 @@ public class FeatureService : IFeatureService
         if (result is not null)
             Features = result;
     }
-    
+
     public async Task GetActiveFeatures() // Features at least in Backlog
     {
-        var result = await _http.GetFromJsonAsync<List<Feature>>("api/Feature");
+        var result = await _http.GetFromJsonAsync<List<Feature>>("api/Feature/active");
         if (result is not null)
         {
-
-            Features = result.FindAll(f => f.Status != Feature.FeatureStatus.None);
+            Features = result;
         }
     }
 

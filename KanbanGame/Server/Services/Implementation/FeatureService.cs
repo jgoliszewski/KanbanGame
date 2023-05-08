@@ -20,6 +20,15 @@ public class FeatureService : IFeatureService
         return Features;
     }
 
+    public async Task<List<Feature>> GetActiveFeatures()
+    {
+        return Features.FindAll(
+            f =>
+                f.Status != Feature.FeatureStatus.None
+                && f.Status != Feature.FeatureStatus.Delivered
+        );
+    }
+
     public async Task<List<Feature>?> GetFeaturesByTeamId(int teamId)
     {
         var dbFeatures = Features.FindAll(f => (int)f.Team == teamId);

@@ -25,6 +25,13 @@ public class KanbanTaskService : IKanbanTaskService
             KanbanTasks = result;
     }
 
+    public async Task GetActiveKanbanTasks()
+    {
+        var result = await _http.GetFromJsonAsync<List<KanbanTask>>("api/kanbanTask/active");
+        if (result is not null)
+            KanbanTasks = result;
+    }
+
     public async Task GetKanbanTasksByTeamId(int teamId)
     {
         var result = await _http.GetFromJsonAsync<List<KanbanTask>>(

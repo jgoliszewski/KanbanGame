@@ -14,6 +14,16 @@ public class KanbanTaskService : IKanbanTaskService
         return KanbanTasks;
     }
 
+    public async Task<List<KanbanTask>> GetActiveKanbanTasks()
+    {
+        return KanbanTasks.FindAll(
+            t =>
+                t.Status != KanbanTask.TaskStatus.Delivered
+                && t.Status != KanbanTask.TaskStatus.None
+                && t.Status != KanbanTask.TaskStatus.ReadyForDevelopment
+        );
+    }
+
     public async Task<List<KanbanTask>?> GetKanbanTasksByTeamId(int teamId)
     {
         var dbTask = KanbanTasks.FindAll(t => (int)t.Team == teamId);

@@ -9,6 +9,7 @@ namespace KanbanGame.Server.Controllers;
 public class FeatureController : ControllerBase
 {
     private readonly IFeatureService _FeatureService;
+
     public FeatureController(IFeatureService FeatureService)
     {
         _FeatureService = FeatureService;
@@ -20,11 +21,18 @@ public class FeatureController : ControllerBase
         return await _FeatureService.GetFeatures();
     }
 
+    [HttpGet("active")]
+    public async Task<List<Feature>> GetActiveFeatures()
+    {
+        return await _FeatureService.GetActiveFeatures();
+    }
+
     [HttpGet("team/{id}")]
     public async Task<List<Feature>?> GetFeatureByTeamId(int id)
     {
         return await _FeatureService.GetFeaturesByTeamId(id);
     }
+
     [HttpGet("{id}")]
     public async Task<Feature?> GetFeatureById(int id)
     {
