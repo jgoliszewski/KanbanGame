@@ -189,27 +189,6 @@ public class BoardService : IBoardService
         return card;
     }
 
-    public async Task SimulateBoard()
-    {
-        foreach (var card in Cards)
-        {
-            if (card.KanbanTask is not null && card.KanbanTask.Assignee is not null)
-            {
-                card.KanbanTask.NextTaskStatus();
-                card.KanbanTask.Assignee = null;
-
-                await _kanbanTaskService.UpdateKanbanTask(card.KanbanTask.Id, card.KanbanTask);
-            }
-            if (card.Feature is not null && card.Feature.Assignee is not null)
-            {
-                card.Feature.NextFeatureStatus();
-                card.Feature.Assignee = null;
-
-                await _featureService.UpdateFeature(card.Feature.Id, card.Feature);
-            }
-        }
-    }
-
     public async Task SendFeatureTasksToTeams(Feature feature)
     {
         //todo: maybe it's a FeatureService method?
@@ -331,7 +310,7 @@ public class BoardService : IBoardService
             { "TestWaiting", 1 },
             { "TestDoing", 1 },
             { "Delivered", 1 },
-            { "None", 1},
+            { "None", 1 },
             { "Doing1", 1 },
             { "Doing2", 1 },
             { "ReadyForDevelopment", 1 }

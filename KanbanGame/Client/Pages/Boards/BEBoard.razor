@@ -1,4 +1,5 @@
 @page "/BackEndboard"
+@inject ISessionService SessionService
 @inject IKanbanTaskService KanbanTaskService
 @inject IEmployeeService EmployeeService
 @inject IBoardService BoardService
@@ -12,7 +13,7 @@
     @* <button disabled="@IsForceUpdateDisabled" class="btn btn-outline-warning" @onclick="(() => SimulateBoard())">
             Force Update <i class="oi oi-sun"></i>
     </button> *@
-    <button class="btn btn-outline-warning" @onclick="(() => SimulateBoard())">
+    <button class="btn btn-outline-warning" @onclick="(() => SimulateDay())">
             Force Update <i class="oi oi-sun"></i>
     </button>
 
@@ -77,6 +78,7 @@
                     <div class="task-d">
                         @* <div>Card Id: @card.Id</div> *@
                         @* <div>Id: @kanbanTask.Id</div> *@
+                        <div>Age: @kanbanTask.Age</div>
                         <div>Desc: @kanbanTask.Description</div>
                         @* <div>Ass. Id: @(kanbanTask.Assignee is null ? "-" : kanbanTask.Assignee.Id)</div> *@
                         <div>Assignee.: @(kanbanTask.Assignee == null ? "-" : kanbanTask.Assignee.Name)</div>
@@ -155,9 +157,9 @@
         }
     }
 
-    async Task SimulateBoard()
+    async Task SimulateDay()
     {
-        await BoardService.SimulateBoard();
+        await SessionService.SimulateDay();
         if (hubConnection is not null)
         {
             await hubConnection.SendAsync("UpdateBoard", 0);

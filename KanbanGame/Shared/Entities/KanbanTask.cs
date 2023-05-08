@@ -5,7 +5,8 @@ public class KanbanTask
     public int Id { get; set; }
     public string Title { get; set; } = "Title";
     public string? Description { get; set; }
-    public TaskType Type {get; set;}
+    public int Age { get; set; } = 0;
+    public TaskType Type { get; set; }
     public Employee? Assignee { get; set; }
     public TaskStatus Status { get; set; } = TaskStatus.None;
     public Team.TeamName Team { get; set; } = Shared.Team.TeamName.None;
@@ -43,6 +44,7 @@ public class KanbanTask
         TestDoing,
         Delivered
     }
+
     public enum TaskType
     {
         FrontEnd,

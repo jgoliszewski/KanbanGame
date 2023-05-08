@@ -1,4 +1,5 @@
 @page "/featureBoard"
+@inject ISessionService SessionService
 @inject IFeatureService FeatureService
 @inject IBoardService BoardService
 @inject NavigationManager NavigationManager
@@ -11,7 +12,7 @@
     @* <button disabled="@IsForceUpdateDisabled" class="btn btn-outline-warning" @onclick="(() => SimulateBoard())">
             Force Update <i class="oi oi-sun"></i>
     </button> *@
-    <button class="btn btn-outline-warning" @onclick="(() => SimulateBoard())">
+    <button class="btn btn-outline-warning" @onclick="(() => SimulateDay())">
             Force Update <i class="oi oi-sun"></i>
     </button>
 
@@ -98,9 +99,9 @@
         await FeatureService.GetActiveFeatures();
         await Connect();
     }
-    async Task SimulateBoard()
+    async Task SimulateDay()
     {
-        await BoardService.SimulateBoard();
+        await SessionService.SimulateDay();
         if (hubConnection is not null)
         {
             await hubConnection.SendAsync("UpdateBoard", 0);
