@@ -1,6 +1,7 @@
 @page "/HighLevelAnalysisboard"
 @inject ISessionService SessionService
 @inject IBoardService BoardService
+@inject IFeatureService FeatureService
 @inject NavigationManager NavigationManager
 @implements IAsyncDisposable
 
@@ -88,6 +89,10 @@
                         </div>
                         <div class="task-f">
                             @* RankId: @card.RankId *@
+                            <button class="btn btn-danger" style="float:leftfs;"
+                                @onclick="(() => DeleteFeature(feature))">
+                                <i class="oi oi-trash"></i>
+                            </button>
                             <button class="btn btn-primary" style="float:right;"
                                 @onclick="(() => SendFeatureTasksToTeams(feature))">
                                 <i class="oi oi-arrow-circle-right"></i>
@@ -192,6 +197,24 @@
         }
     }
 
+    async Task SendFeatureTasksToTeams(Feature feature)
+    {
+        await BoardService.SendFeatureTasksToTeams(feature);
+        if (hubConnection is not null)
+        {
+            await hubConnection.SendAsync("UpdateBoard", 0);
+        }
+    }
+
+    async Task DeleteFeature(Feature feature)
+    {
+        await FeatureService.DeleteFeature(feature.Id);
+        if (hubConnection is not null)
+        {
+            await hubConnection.SendAsync("UpdateBoard", 0);
+        }
+    }
+
     @* -------------------- Hub -------------------- *@
     private HubConnection? hubConnection;
     private int connectedUserCount = 0;
@@ -267,15 +290,6 @@
         if (hubConnection != null)
         {
             await hubConnection.DisposeAsync();
-        }
-    }
-
-    async Task SendFeatureTasksToTeams(Feature feature)
-    {
-        await BoardService.SendFeatureTasksToTeams(feature);
-        if (hubConnection is not null)
-        {
-            await hubConnection.SendAsync("UpdateBoard", 0);
         }
     }
 }

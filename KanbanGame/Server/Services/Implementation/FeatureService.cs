@@ -75,6 +75,10 @@ public class FeatureService : IFeatureService
         var dbFeature = Features.Where(t => t.Id == FeatureId).FirstOrDefault();
         if (dbFeature is not null)
         {
+            foreach (var t in dbFeature.KanbanTasks)
+            {
+                await _kanbanTaskService.DeleteKanbanTask(t.Id);
+            }
             Features.Remove(dbFeature);
             return true;
         }

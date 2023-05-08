@@ -65,6 +65,5 @@ public class FeatureService : IFeatureService
     public async Task DeleteFeature(int FeatureId)
     {
         var result = await _http.DeleteAsync($"api/Feature/{FeatureId}");
-        _navigationManger.NavigateTo("Features");
     }
 }
