@@ -23,9 +23,8 @@ public class FeatureService : IFeatureService
     public async Task<List<Feature>> GetActiveFeatures()
     {
         return Features.FindAll(
-            f =>
-                f.Status != Feature.FeatureStatus.None
-                && f.Status != Feature.FeatureStatus.Delivered
+            f => f.Status != Feature.FeatureStatus.None
+        // && f.Status != Feature.FeatureStatus.Delivered //For FeatureBoard
         );
     }
 

@@ -23,9 +23,11 @@ public class Feature
             return (deliveredTasksCount / tasksCount);
         }
     }
-    public DeliveredPercentage DeliveredTaskPercentageStatus { get => PercentageToStatus(DeliveredTaskPercentage); }
-            
-    
+    public DeliveredPercentage DeliveredTaskPercentageStatus
+    {
+        get => PercentageToStatus(DeliveredTaskPercentage);
+    }
+
     public string SF_PercentageColumn
     {
         get => DeliveredTaskPercentageStatus.ToString();
@@ -97,10 +99,10 @@ public class Feature
             case < 1:
                 return DeliveredPercentage.Eighty_Hundred;
             case 1:
+                Status = FeatureStatus.Delivered;
                 return DeliveredPercentage.Hundred;
             default:
                 return DeliveredPercentage.None;
         }
-
     }
 }
