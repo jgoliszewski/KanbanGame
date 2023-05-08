@@ -47,6 +47,7 @@ public class EmployeeService : IEmployeeService
             dbEmployee.Seniority = employee.Seniority;
             dbEmployee.Status = employee.Status;
             dbEmployee.CurrentRole = employee.CurrentRole;
+            dbEmployee.Productivity = employee.Productivity;
         }
         return dbEmployee;
     }

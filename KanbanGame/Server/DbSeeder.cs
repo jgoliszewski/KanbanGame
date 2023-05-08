@@ -25,7 +25,8 @@ public class DbSeeder
         new Employee()
         {
             Name = "Tom",
-            Seniority = Employee.EmployeeSeniority.Junior,
+            Productivity = 0.6,
+            Seniority = Employee.EmployeeSeniority.Mid,
             CurrentRole = Employee.Role.Analyzer,
             Team = Team.TeamName.BackEnd,
             AvatarPath = "Avatars/Cthulhu.png"
@@ -33,6 +34,7 @@ public class DbSeeder
         new Employee()
         {
             Name = "Olivia",
+            Productivity = 0.9,
             Seniority = Employee.EmployeeSeniority.Senior,
             CurrentRole = Employee.Role.Developer,
             Team = Team.TeamName.BackEnd,
@@ -41,6 +43,7 @@ public class DbSeeder
         new Employee()
         {
             Name = "John",
+            Productivity = 0.25,
             Seniority = Employee.EmployeeSeniority.Junior,
             CurrentRole = Employee.Role.Tester,
             Team = Team.TeamName.BackEnd,
@@ -49,6 +52,7 @@ public class DbSeeder
         new Employee()
         {
             Name = "Emma",
+            Productivity = 0.65,
             Seniority = Employee.EmployeeSeniority.Mid,
             CurrentRole = Employee.Role.Analyzer,
             Team = Team.TeamName.FrontEnd,
@@ -57,7 +61,8 @@ public class DbSeeder
         new Employee()
         {
             Name = "Arthur",
-            Seniority = Employee.EmployeeSeniority.Junior,
+            Productivity = 0.95,
+            Seniority = Employee.EmployeeSeniority.Senior,
             CurrentRole = Employee.Role.Developer,
             Team = Team.TeamName.FrontEnd,
             AvatarPath = "Avatars/Mummy.png"
@@ -65,6 +70,7 @@ public class DbSeeder
         new Employee()
         {
             Name = "Sarah",
+            Productivity = 0.25,
             Seniority = Employee.EmployeeSeniority.Junior,
             CurrentRole = Employee.Role.Tester,
             Team = Team.TeamName.FrontEnd,
@@ -73,6 +79,7 @@ public class DbSeeder
         new Employee()
         {
             Name = "Andy",
+            Productivity = 0.65,
             Seniority = Employee.EmployeeSeniority.Mid,
             CurrentRole = Employee.Role.HighLevelAnalyzer1,
             Team = Team.TeamName.HighLevelAnalysis,
@@ -81,54 +88,62 @@ public class DbSeeder
         new Employee()
         {
             Name = "Hannah",
+            Productivity = 0.60,
             Seniority = Employee.EmployeeSeniority.Mid,
             CurrentRole = Employee.Role.HighLevelAnalyzer2,
             Team = Team.TeamName.HighLevelAnalysis,
             AvatarPath = "Avatars/Devil.png"
         },
     };
-    
+
     private List<KanbanTask> KanbanTasks = new List<KanbanTask>()
     {
         new KanbanTask
         {
             Title = "A1",
+            Effort = 0.5,
             Description = "Task description",
             Type = KanbanTask.TaskType.BackEnd
         },
         new KanbanTask
         {
             Title = "A2",
+            Effort = 0.5,
             Description = "Task description",
             Type = KanbanTask.TaskType.FrontEnd
         },
         new KanbanTask
         {
             Title = "A3",
+            Effort = 0.6,
             Description = "Task description",
             Type = KanbanTask.TaskType.FrontEnd
         },
         new KanbanTask
         {
             Title = "B1",
+            Effort = 0.3,
             Description = "Task description",
             Type = KanbanTask.TaskType.BackEnd
         },
         new KanbanTask
         {
             Title = "B2",
+            Effort = 0.6,
             Description = "Task description",
             Type = KanbanTask.TaskType.FrontEnd
         },
         new KanbanTask
         {
             Title = "C1",
+            Effort = 0.7,
             Description = "Task description",
             Type = KanbanTask.TaskType.BackEnd
         },
         new KanbanTask
         {
             Title = "C2",
+            Effort = 0.4,
             Description = "Task description",
             Type = KanbanTask.TaskType.FrontEnd
         },

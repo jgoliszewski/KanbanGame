@@ -5,6 +5,8 @@ public class Feature
     public int Id { get; set; }
     public string Title { get; set; } = "Title";
     public string? Description { get; set; }
+    public double Effort { get; set; } = 1;
+    public double EffortLeft { get; set; } = 1;
     public int? EstimatedMinEarnings { get; set; }
     public int? EstimatedMaxEarnings { get; set; }
     public List<KanbanTask> KanbanTasks { get; set; } = new List<KanbanTask>();

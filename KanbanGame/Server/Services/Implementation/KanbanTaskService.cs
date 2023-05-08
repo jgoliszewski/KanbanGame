@@ -56,6 +56,9 @@ public class KanbanTaskService : IKanbanTaskService
             dbTask.Status = kanbanTask.Status;
             dbTask.Assignee = kanbanTask.Assignee;
             dbTask.Team = kanbanTask.Team;
+            dbTask.Age = kanbanTask.Age;
+            dbTask.Effort = kanbanTask.Effort;
+            dbTask.EffortLeft = kanbanTask.EffortLeft;
         }
         return dbTask;
     }

@@ -5,6 +5,8 @@ public class KanbanTask
     public int Id { get; set; }
     public string Title { get; set; } = "Title";
     public string? Description { get; set; }
+    public double Effort { get; set; } = 0.5;
+    public double EffortLeft { get; set; } = 0.5;
     public int Age { get; set; } = 0;
     public TaskType Type { get; set; }
     public Employee? Assignee { get; set; }

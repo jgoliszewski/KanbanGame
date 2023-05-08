@@ -61,6 +61,7 @@
                     <div class="employee-d">
                         @* <div>Card Id: @card.Id</div> *@
                         @* <div>Id: @employee.Id</div> *@
+                        <div>Productivity: @employee.Productivity</div>
                         <div>Seniority: @employee.Seniority</div>
                         <div>Status: @employee.Status</div>
                         <div>Role: @employee.CurrentRole</div>
@@ -79,7 +80,8 @@
                         @* <div>Card Id: @card.Id</div> *@
                         @* <div>Id: @kanbanTask.Id</div> *@
                         <div>Age: @kanbanTask.Age</div>
-                        <div>Desc: @kanbanTask.Description</div>
+                        <div>Effort left: @kanbanTask.EffortLeft</div>
+                        @* <div>Desc: @kanbanTask.Description</div> *@
                         @* <div>Ass. Id: @(kanbanTask.Assignee is null ? "-" : kanbanTask.Assignee.Id)</div> *@
                         <div>Assignee.: @(kanbanTask.Assignee == null ? "-" : kanbanTask.Assignee.Name)</div>
                     </div>

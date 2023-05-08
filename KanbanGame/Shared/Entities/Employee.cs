@@ -5,6 +5,7 @@ public class Employee
 {
     public int Id { get; set; }
     public string Name { get; set; }
+    public double Productivity { get; set; } = 0.2;
     public EmployeeSeniority Seniority { get; set; } = EmployeeSeniority.Junior;
     public EmployeeStatus Status { get; set; } = EmployeeStatus.Working;
     public Role CurrentRole { get; set; }
@@ -31,7 +32,7 @@ public class Employee
         switch (column.ToLower())
         {
             case "backlog":
-                if(this.Team == Shared.Team.TeamName.HighLevelAnalysis)
+                if (this.Team == Shared.Team.TeamName.HighLevelAnalysis)
                     return Role.HighLevelAnalyzer1;
                 else
                     return Role.Analyzer;

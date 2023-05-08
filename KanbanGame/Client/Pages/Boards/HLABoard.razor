@@ -57,6 +57,7 @@
                     <div class="employee-d">
                         @* <div>Card Id: @card.Id</div> *@
                         @* <div>Id: @employee.Id</div> *@
+                        <div>Productivity: @employee.Productivity</div>
                         <div>Seniority: @employee.Seniority.ToString()</div>
                         @* <div>Status: @employee.Status</div> *@
                         <div>Role: @employee.CurrentRole</div>
@@ -107,7 +108,8 @@
                         <div class="task-d">
                             @* <div>Card Id: @card.Id</div> *@
                             @* <div>Id: @feature.Id</div> *@
-                            <div>Desc: @feature.Description</div>
+                             <div>Effort left: @feature.EffortLeft</div>
+                            @* <div>Desc: @feature.Description</div> *@
                             @* <div>Ass. Id: @(feature.Assignee is null ? "-" : feature.Assignee.Id)</div> *@
                             <div>Assignee.: @(feature.Assignee == null ? "-" : feature.Assignee.Name)</div>
                         </div>

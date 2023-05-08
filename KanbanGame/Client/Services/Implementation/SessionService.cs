@@ -56,10 +56,15 @@ public class SessionService : ISessionService
             t.Age++;
             if (t.Assignee is not null)
             {
-                t.NextTaskStatus();
-                t.Assignee = null;
-                KanbanTasksToUpdate.Add(t);
+                t.EffortLeft -= t.Assignee.Productivity;
+                if (t.EffortLeft <= 0)
+                {
+                    t.EffortLeft = t.Effort;
+                    t.NextTaskStatus();
+                    t.Assignee = null;
+                }
             }
+            KanbanTasksToUpdate.Add(t);
         }
     }
 
@@ -70,8 +75,13 @@ public class SessionService : ISessionService
         {
             if (f.Assignee is not null)
             {
-                f.NextFeatureStatus();
-                f.Assignee = null;
+                f.EffortLeft -= f.Assignee.Productivity;
+                if (f.EffortLeft <= 0)
+                {
+                    f.EffortLeft = f.Effort;
+                    f.NextFeatureStatus();
+                    f.Assignee = null;
+                }
                 FeaturesToUpdate.Add(f);
             }
         }
