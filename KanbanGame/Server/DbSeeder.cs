@@ -185,11 +185,9 @@ public class DbSeeder
         Features[1].KanbanTasks = new List<KanbanTask>() { KanbanTasks[3], KanbanTasks[4] };
         Features[2].KanbanTasks = new List<KanbanTask>() { KanbanTasks[5], KanbanTasks[6] };
 
-        // foreach (var task in KanbanTasks)
-        // {
-        //     _KanbanTaskService.CreateKanbanTask(task);
-        // }
-
+        KanbanTasks[0].DependencyTask = KanbanTasks[2];
+        KanbanTasks[3].DependencyTask = KanbanTasks[4];
+        KanbanTasks[5].DependencyTask = KanbanTasks[6];
         foreach (var employee in Employees)
         {
             _EmployeeService.CreateEmployee(employee);

@@ -83,6 +83,8 @@
                         <div>Effort left: @kanbanTask.EffortLeft</div>
                         @* <div>Desc: @kanbanTask.Description</div> *@
                         @* <div>Ass. Id: @(kanbanTask.Assignee is null ? "-" : kanbanTask.Assignee.Id)</div> *@
+                        <div>Depends on: <b>@(kanbanTask.DependencyTask == null ? "-" : kanbanTask.DependencyTask.Title)</b></div>
+                        @* <div>DT. Status: @(kanbanTask.DependencyTask == null ? "-" : kanbanTask.DependencyTask.Status)</div> *@
                         <div>Assignee.: @(kanbanTask.Assignee == null ? "-" : kanbanTask.Assignee.Name)</div>
                     </div>
                     @* <div class="task-f">Status: @kanbanTask.SF_Column</div> *@
@@ -112,6 +114,14 @@
     async Task DragStartHandler(DragEventArgs<Card> args)
     {
         columnBeforeDrag = args.Data[0].Column;
+        Card draggedCard = args.Data[0];
+        if (draggedCard.KanbanTask is not null){
+            if (draggedCard.KanbanTask.DependencyTask is not null && draggedCard.KanbanTask.DependencyTask.Status != KanbanTask.TaskStatus.Delivered)
+            {
+                Console.WriteLine("dupa");
+                args.Cancel = true;
+            }
+        }
     }
 
     async Task DragStopHandler(DragEventArgs<Card> args)
@@ -121,7 +131,6 @@
         columnAfterDrag = draggedCard.Column;
 
         if (draggedCard.KanbanTask is not null)
-
         {
             if (columnBeforeDrag != draggedCard.Column && taskForbiddenSwap.Contains(columnBeforeDrag) && taskForbiddenSwap.Contains(draggedCard.Column))
             {

@@ -59,6 +59,7 @@ public class KanbanTaskService : IKanbanTaskService
             dbTask.Age = kanbanTask.Age;
             dbTask.Effort = kanbanTask.Effort;
             dbTask.EffortLeft = kanbanTask.EffortLeft;
+            // dbTask.DependencyTask = kanbanTask.DependencyTask;
         }
         return dbTask;
     }
