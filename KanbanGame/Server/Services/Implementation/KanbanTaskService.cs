@@ -59,7 +59,10 @@ public class KanbanTaskService : IKanbanTaskService
             dbTask.Age = kanbanTask.Age;
             dbTask.Effort = kanbanTask.Effort;
             dbTask.EffortLeft = kanbanTask.EffortLeft;
-            // dbTask.DependencyTask = kanbanTask.DependencyTask;
+            if (kanbanTask.DependencyTask is not null)
+            {
+                await UpdateKanbanTask(kanbanTask.DependencyTask.Id, kanbanTask.DependencyTask);
+            }
         }
         return dbTask;
     }
