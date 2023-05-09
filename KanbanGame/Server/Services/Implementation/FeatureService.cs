@@ -67,7 +67,10 @@ public class FeatureService : IFeatureService
             dbFeature.EstimatedMaxEarnings = Feature.EstimatedMaxEarnings;
             dbFeature.Effort = Feature.Effort;
             dbFeature.EffortLeft = Feature.EffortLeft;
-            // dbFeature.KanbanTasks = Feature.KanbanTasks;
+            foreach (var t in Feature.KanbanTasks)
+            {
+                await _kanbanTaskService.UpdateKanbanTask(t.Id, t);
+            }
         }
         return dbFeature;
     }
