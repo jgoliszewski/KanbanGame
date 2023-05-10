@@ -116,12 +116,7 @@ a, .btn-link {
 }
 
 .bi {
-    font-size: 32px;
-}
-
-.bi:hover {
-    font-size: 36px;
-    transition: 0.1s ease-out;
+    font-size: 20px;
 }
 
 /* -----------------------------------Syncfusion Kanban------––––––––––––––––––––––––------- */
