@@ -69,56 +69,83 @@
             else if (card.Feature is not null)
             {
                 Feature feature = card.Feature;
-                if (feature.Status == Feature.FeatureStatus.ReadyForDevelopment)
-                {
-                    <div class="task-card">
-                        <div class="task-h">
-                            <div>@feature.Title</div>
-                        </div>
-                        <div class="task-d">
-                            @* <div>Card Id: @card.Id</div> *@
-                            @* <div>Id: @feature.Id</div> *@
-                            <b>@($"Est. $: {feature.EstimatedMinEarnings}K-{feature.EstimatedMaxEarnings}K")</b>
-                            <div>Desc: @feature.Description</div>
-                            <div>Tasks:</div>
-                            @{
+                <div class="task-card">
+                    <div class="task-h">
+                        <div>@feature.Title</div>
+                    </div>
+                    <div class="task-d">
+                        @* <div>Card Id: @card.Id</div> *@
+                        @* <div>Id: @feature.Id</div> *@
+                        @{
+                            if (feature.Status == Feature.FeatureStatus.ReadyForDevelopment)
+                            {
+                                <b>@($"Est. $: {feature.EstimatedMinEarnings}K-{feature.EstimatedMaxEarnings}K")</b>
+                                <div>Desc: @feature.Description</div>
+                                <div>Tasks:</div>
                                 foreach (var t in feature.KanbanTasks)
                                 {
                                     <li>@t.Title - @t.Type</li>
                                 }
                             }
-                        </div>
-                        <div class="task-f">
-                            @* RankId: @card.RankId *@
-                            <button class="btn btn-danger" style="float:leftfs;"
-                                @onclick="(() => DeleteFeature(feature))">
-                                <i class="oi oi-trash"></i>
-                            </button>
-                            <button class="btn btn-primary" style="float:right;"
-                                @onclick="(() => SendFeatureTasksToTeams(feature))">
-                                <i class="oi oi-arrow-circle-right"></i>
-                            </button>
-                        </div>
+                            else
+                            {
+                                <div>Effort left: @feature.EffortLeft</div>
+                                @* <div>Desc: @feature.Description</div> *@
+                                @* <div>Ass. Id: @(feature.Assignee is null ? "-" : feature.Assignee.Id)</div> *@
+                                <div>Assignee.: @(feature.Assignee == null ? "-" : feature.Assignee.Name)</div>
+                            }
+                        }
                     </div>
-                }
-                else
-                {
-                    <div class="task-card">
-                        <div   class="task-h">@feature.Title</div>
-                        <div class="task-d">
-                            @* <div>Card Id: @card.Id</div> *@
-                            @* <div>Id: @feature.Id</div> *@
-                             <div>Effort left: @feature.EffortLeft</div>
-                            @* <div>Desc: @feature.Description</div> *@
-                            @* <div>Ass. Id: @(feature.Assignee is null ? "-" : feature.Assignee.Id)</div> *@
-                            <div>Assignee.: @(feature.Assignee == null ? "-" : feature.Assignee.Name)</div>
-                        </div>
-                        @* <div class="task-f">RankId: @card.RankId <img src=@(feature.Assignee == null ? "Avatars/Default.png" : feature.Assignee.AvatarPath) style="width:32px; float:right;" alt="logo" /></div> *@
-                        <div class="task-f"><img src=@(feature.Assignee == null ? "Avatars/Default.png" : feature.Assignee.AvatarPath) style="width:32px; float:right;" alt="logo" /></div>
+                    <div class="task-f">
+                        @* RankId: @card.RankId *@
+                        @{
+                            if (feature.Star)
+                            {
+                                <img class="notifier" src="Icons/star_filled.png" @onclick='(() => ChangeIconState(feature, "star"))'/>
+                            }
+                            else
+                            {
+                                <img class="notifier" src="Icons/star.png" @onclick='(() => ChangeIconState(feature, "star"))'/>
+                            }
+
+                            if (feature.Warning)
+                            {
+                                <img class="notifier" src="Icons/warning_filled.png" @onclick='(() => ChangeIconState(feature, "warning"))'/>
+                            }
+                            else
+                            {
+                                <img class="notifier" src="Icons/warning.png" @onclick='(() => ChangeIconState(feature, "warning"))'/>
+                            } 
+
+                            if (feature.Pause)
+                            {
+                                <img class="notifier" src="Icons/pause_filled.png" @onclick='(() => ChangeIconState(feature, "pause"))'/>
+                            }
+                            else
+                            {
+                                <img class="notifier" src="Icons/pause.png" @onclick='(() => ChangeIconState(feature, "pause"))'/>
+                            }
+                            if (feature.Status == Feature.FeatureStatus.ReadyForDevelopment)
+                            {
+                                <button class="btn btn-primary" style="float:right;"
+                                    @onclick="(() => SendFeatureTasksToTeams(feature))">
+                                    <i class="oi oi-arrow-circle-right"></i>
+                                </button>
+                                <button class="btn btn-danger" style="float:right;"
+                                    @onclick="(() => DeleteFeature(feature))">
+                                    <i class="oi oi-trash"></i>
+                                </button>
+                            }
+                            else
+                            {
+                                <img src=@(feature.Assignee == null ? "Avatars/Default.png" : feature.Assignee.AvatarPath) style="width:32px; float:right;" alt="logo" />
+                            }
+                        }
+                        
                     </div>
+                </div>
                 }
             }
-        }
         </Template>
     </KanbanCardSettings>
 </SfKanban>
@@ -211,6 +238,26 @@
     async Task DeleteFeature(Feature feature)
     {
         await FeatureService.DeleteFeature(feature.Id);
+        if (hubConnection is not null)
+        {
+            await hubConnection.SendAsync("UpdateBoard", 0);
+        }
+    }
+
+    async Task ChangeIconState(Feature feature, string icon)
+    {
+        switch(icon){
+            case "star":
+                feature.Star = !(feature.Star);
+                break;
+            case "warning":
+                feature.Warning = !(feature.Warning);
+                break;
+            case "pause":
+                feature.Pause = !(feature.Pause);
+                break;
+        }
+        await FeatureService.UpdateFeature(feature.Id, feature);
         if (hubConnection is not null)
         {
             await hubConnection.SendAsync("UpdateBoard", 0);

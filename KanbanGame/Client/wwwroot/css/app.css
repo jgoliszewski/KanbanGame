@@ -101,10 +101,28 @@ a, .btn-link {
     inset: calc(20vh + 3.25rem) 0 auto 0.2rem;
 }
 
-    .loading-progress-text:after {
-        content: var(--blazor-load-percentage-text, "Loading");
-    }
+.loading-progress-text:after {
+    content: var(--blazor-load-percentage-text, "Loading");
+}
 
+.notifier{
+    width: 32px;
+    margin-left: 5px;
+    margin-right: 5px;
+}
+
+.notifier:hover{
+    transform: scale(1.2);
+}
+
+.bi {
+    font-size: 32px;
+}
+
+.bi:hover {
+    font-size: 36px;
+    transition: 0.1s ease-out;
+}
 
 /* -----------------------------------Syncfusion Kanban------––––––––––––––––––––––––------- */
 

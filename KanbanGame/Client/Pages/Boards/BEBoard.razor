@@ -66,7 +66,7 @@
                         <div>Status: @employee.Status</div>
                         <div>Role: @employee.CurrentRole</div>
                         @* <div>Column: @employee.SF_Column</div> *@
-                        <div>RankId: @card.RankId</div>
+                        @* <div>RankId: @card.RankId</div> *@
                     </div>
                 </div>
             }
@@ -89,7 +89,37 @@
                     </div>
                     @* <div class="task-f">Status: @kanbanTask.SF_Column</div> *@
                     @* <div class="task-f">RankId: @card.RankId <img src=@(kanbanTask.Assignee == null ? "Avatars/Default.png" : kanbanTask.Assignee.AvatarPath) style="width:32px; float:right;" alt="logo" /></div> *@
-                    <div class="task-f"><img src=@(kanbanTask.Assignee == null ? "Avatars/Default.png" : kanbanTask.Assignee.AvatarPath) style="width:32px; float:right;" alt="logo" /></div>
+                    <div class="task-f">
+                        @{
+                            if (kanbanTask.Star)
+                            {
+                                <img class="notifier" src="Icons/star_filled.png" @onclick='(() => ChangeIconState(kanbanTask, "star"))'/>
+                            }
+                            else
+                            {
+                                <img class="notifier" src="Icons/star.png" @onclick='(() => ChangeIconState(kanbanTask, "star"))'/>
+                            }
+
+                            if (kanbanTask.Warning)
+                            {
+                                <img class="notifier" src="Icons/warning_filled.png" @onclick='(() => ChangeIconState(kanbanTask, "warning"))'/>
+                            }
+                            else
+                            {
+                                <img class="notifier" src="Icons/warning.png" @onclick='(() => ChangeIconState(kanbanTask, "warning"))'/>
+                            } 
+
+                            if (kanbanTask.Pause)
+                            {
+                                <img class="notifier" src="Icons/pause_filled.png" @onclick='(() => ChangeIconState(kanbanTask, "pause"))'/>
+                            }
+                            else
+                            {
+                                <img class="notifier" src="Icons/pause.png" @onclick='(() => ChangeIconState(kanbanTask, "pause"))'/>
+                            }
+                        }
+                        <img src=@(kanbanTask.Assignee == null ? "Avatars/Default.png" : kanbanTask.Assignee.AvatarPath) style="width:32px; float:right;" alt="logo" />
+                    </div>
                 </div>
             }
         }
@@ -175,6 +205,26 @@
         {
             await hubConnection.SendAsync("UpdateBoard", 0);
             await hubConnection.SendAsync("ClearReadyUsers", 0);
+        }
+    }
+
+    async Task ChangeIconState(KanbanTask kanbanTask, string icon)
+    {
+        switch(icon){
+            case "star":
+                kanbanTask.Star = !(kanbanTask.Star);
+                break;
+            case "warning":
+                kanbanTask.Warning = !(kanbanTask.Warning);
+                break;
+            case "pause":
+                kanbanTask.Pause = !(kanbanTask.Pause);
+                break;
+        }
+        await KanbanTaskService.UpdateKanbanTask(kanbanTask.Id, kanbanTask);
+        if (hubConnection is not null)
+        {
+            await hubConnection.SendAsync("UpdateBoard", 0);
         }
     }
 

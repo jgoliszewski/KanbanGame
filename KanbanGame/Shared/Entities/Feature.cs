@@ -9,6 +9,9 @@ public class Feature
     public double EffortLeft { get; set; } = 1;
     public int? EstimatedMinEarnings { get; set; }
     public int? EstimatedMaxEarnings { get; set; }
+    public bool Star { get; set; } = false;
+    public bool Warning { get; set; } = false;
+    public bool Pause { get; set; } = false;
     public List<KanbanTask> KanbanTasks { get; set; } = new List<KanbanTask>();
     public Employee? Assignee { get; set; }
     public FeatureStatus Status { get; set; } = FeatureStatus.None;

@@ -8,6 +8,9 @@ public class KanbanTask
     public double Effort { get; set; } = 0.5;
     public double EffortLeft { get; set; } = 0.5;
     public int Age { get; set; } = 0;
+    public bool Star { get; set; } = false;
+    public bool Warning { get; set; } = false;
+    public bool Pause { get; set; } = false;
     public KanbanTask? DependencyTask { get; set; }
     public TaskType Type { get; set; }
     public Employee? Assignee { get; set; }
