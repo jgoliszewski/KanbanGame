@@ -5,6 +5,29 @@
 @inject NavigationManager NavigationManager
 @implements IAsyncDisposable
 
+<SfDialog Width="300px" ShowCloseIcon="true" IsModal="true" @bind-Visible="@IsShowCardDetailsVisible">
+    <DialogTemplates>
+        <Header> 
+            <h2>Feature: @FeatureToShowDetails.Title</h2>
+        </Header>
+        <Content> 
+            <h5>Feature Info Info:</h5>
+            <li>Id: @FeatureToShowDetails.Id</li>
+            @{
+                <h5>Feature Info:</h5>
+                <li>Id: @FeatureToShowDetails.Id</li>
+                <li>Title: @FeatureToShowDetails.Title</li>
+                <li>Description: @FeatureToShowDetails.Description</li>
+                <li>Status: @FeatureToShowDetails.Status</li>
+                <li>Number of tasks: @FeatureToShowDetails.KanbanTasks.Count</li>
+                <li>Est. earnings: @($"{FeatureToShowDetails.EstimatedMinEarnings}K-{FeatureToShowDetails.EstimatedMaxEarnings}K $")</li>
+                
+            }
+        </Content>
+    </DialogTemplates>
+    <DialogEvents OnOverlayModalClick="@OverlayClick"></DialogEvents>
+</SfDialog>
+
 <div class="center">
     <h3>Feature Board</h3>
 </div>
@@ -41,6 +64,7 @@
         <KanbanStackedHeader Text="Doing" KeyFields="@(new List<string>() {"Zero_Twenty", "Twenty_Forty", "Forty_Sixty", "Sixty_Eighty", "Eighty_Hundred"})"></KanbanStackedHeader>
         <KanbanStackedHeader Text="Delivered" KeyFields="@(new List<string>() {"Hundred"})"></KanbanStackedHeader>
     </KanbanStackedHeaders>
+    <KanbanEvents TValue="Feature" CardDoubleClick="@CardDoubleClickHandler"></KanbanEvents>
     <KanbanCardSettings HeaderField="Id">
         <Template>
         @{        
@@ -68,10 +92,10 @@
                                 }
                             }
                         }
-
+                        <div>Delivered: @(Math.Round(feature.DeliveredTaskPercentage*100, 1)) %</div>
                     </div>
                 <div class="task-f">
-                        <div>Delivered: @(Math.Round(feature.DeliveredTaskPercentage*100, 1)) %</div>
+                    <img class="notifier" src="Icons/questionmark.png" @onclick='(() => ShowFeatureDetails(feature))' />
                 </div>
             </div>
             }
@@ -94,6 +118,8 @@
 </SfKanban>
 </div>
 @code {
+    private bool IsShowCardDetailsVisible { get; set; } = false;
+    private Feature FeatureToShowDetails {get; set;}
     protected override async Task OnInitializedAsync()
     {
         await FeatureService.GetActiveFeatures();
@@ -108,6 +134,23 @@
             await hubConnection.SendAsync("ClearReadyUsers", 0);
         }
     }
+
+    public void CardDoubleClickHandler(CardClickEventArgs<Feature> args)
+    {
+        args.Cancel = true;
+    }
+
+    private void ShowFeatureDetails(Feature feature)
+    {
+        FeatureToShowDetails = feature;
+        this.IsShowCardDetailsVisible = true;
+    }
+
+    private void OverlayClick(OverlayModalClickEventArgs args)
+    {
+        this.IsShowCardDetailsVisible = false;
+    }
+
     @* -------------------- Hub -------------------- *@
     private HubConnection? hubConnection;
     private int connectedUserCount = 0;
