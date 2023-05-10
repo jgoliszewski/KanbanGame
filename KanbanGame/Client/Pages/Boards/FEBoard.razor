@@ -82,13 +82,16 @@
     <DialogEvents OnOverlayModalClick="@OverlayClick"></DialogEvents>
 </SfDialog>
 
+<div class="center">
 <div class="board-page">
     <div class="board-page-h">
         <h3>FrontEnd Team</h3>
     </div>
     <div class="board-page-c">
     <div>
-        <h2>Day: @(SessionService.Session.Day) W@(SessionService.Session.Week)</h2>
+        <div class="center">
+            <h2>Day: @(SessionService.Session.Day) W@(SessionService.Session.Week)</h2>
+        </div>
         @{
             switch(SessionService.Session.Weekday)
             {
@@ -215,7 +218,7 @@
         </SfKanban>
     </div>
 </div>
-
+</div>
 @code {
     private int BoardId = (int) Team.TeamName.FrontEnd;
     private bool IsShowCardDetailsVisible { get; set; } = false;
