@@ -6,6 +6,82 @@
 @inject NavigationManager NavigationManager
 @implements IAsyncDisposable
 
+<SfDialog Width="300px" ShowCloseIcon="true" IsModal="true" @bind-Visible="@IsShowCardDetailsVisible">
+    <DialogTemplates>
+        <Header> 
+            @{
+                if (CardToShowDetails.Employee is not null)
+                {
+                    <h2>Employee: @CardToShowDetails.Employee.Name</h2>
+                }
+                else if (CardToShowDetails.KanbanTask is not null)
+                {
+                    <h2>Task: @CardToShowDetails.KanbanTask.Title</h2>
+                }
+                else if (CardToShowDetails.Feature is not null)
+                {
+                    <h2>Feature: @CardToShowDetails.Feature.Title</h2>
+                }
+            }
+        </Header>
+        <Content> 
+            <h5>Card Info:</h5>
+            <li>Id: @CardToShowDetails.Id</li>
+            <li>RankId: @CardToShowDetails.RankId</li>
+            <li>Team: @CardToShowDetails.Team</li>
+            <li>Column: @CardToShowDetails.Column</li>
+            @{
+                if (CardToShowDetails.Employee is not null)
+                {
+                    var employee = CardToShowDetails.Employee;
+                    <h5>Employee Info:</h5>
+                    <li>Id: @employee.Id</li>
+                    <li>Name: @employee.Name</li>
+                    <li>Seniority: @employee.Seniority</li>
+                    <li>Productivity: @employee.Productivity</li>
+                    <li>Status: @employee.Status</li>
+                    <li>Role: @employee.CurrentRole</li>
+                    <img src=@(employee.AvatarPath == null ? "Avatars/Default.png" : employee.AvatarPath) style="width:48px;float:right;" alt="logo" />
+                }
+                else if (CardToShowDetails.KanbanTask is not null)
+                {
+                    var kanbanTask = CardToShowDetails.KanbanTask;
+                    <h5>Task Info:</h5>
+                    <li>Id: @kanbanTask.Id</li>
+                    <li>Title: @kanbanTask.Title</li>
+                    <li>Description: @kanbanTask.Description</li>
+                    <li>Status: @kanbanTask.Status</li>
+                    <li>Age: @kanbanTask.Age</li>
+                    <li>Base effort: @kanbanTask.Effort</li>
+                    <li>Effort left: @kanbanTask.EffortLeft</li>
+                    <li>Ass. Id: @(kanbanTask.Assignee is null ? "-" : kanbanTask.Assignee.Id)</li>
+                    <li>Assignee: @(kanbanTask.Assignee == null ? "-" : kanbanTask.Assignee.Name)</li>
+                    <li>Depends on: <b>@(kanbanTask.DependencyTask == null ? "-" : kanbanTask.DependencyTask.Title)</b></li>
+                    <li>DT. Status: @(kanbanTask.DependencyTask == null ? "-" : kanbanTask.DependencyTask.Status)</li>
+                    <img src=@(kanbanTask.Assignee == null ? "Avatars/Default.png" : kanbanTask.Assignee.AvatarPath) style="width:32px; float:right;" alt="logo" />
+                }
+                else if (CardToShowDetails.Feature is not null)
+                {
+                    var feature = CardToShowDetails.Feature;
+                    <h5>Feature Info:</h5>
+                    <li>Id: @feature.Id</li>
+                    <li>Title: @feature.Title</li>
+                    <li>Description: @feature.Description</li>
+                    <li>Status: @feature.Status</li>
+                    <li>Number of tasks: @feature.KanbanTasks.Count</li>
+                    <li>Est. earnings: @($"{feature.EstimatedMinEarnings}K-{feature.EstimatedMaxEarnings}K $")</li>
+                    <li>Base effort: @feature.Effort</li>
+                    <li>Effort left: @feature.EffortLeft</li>
+                    <li>Ass. Id: @(feature.Assignee is null ? "-" : feature.Assignee.Id)</li>
+                    <li>Assignee: @(feature.Assignee == null ? "-" : feature.Assignee.Name)</li>
+                    <img src=@(feature.Assignee == null ? "Avatars/Default.png" : feature.Assignee.AvatarPath) style="width:32px; float:right;" alt="logo" />
+                }
+            }
+        </Content>
+    </DialogTemplates>
+    <DialogEvents OnOverlayModalClick="@OverlayClick"></DialogEvents>
+</SfDialog>
+
 <div class="center">
     <h3>BackEnd Team</h3>
 </div>
@@ -45,7 +121,7 @@
         <KanbanStackedHeader Text="Delivered" KeyFields="@(new List<string>() {"Delivered"})"></KanbanStackedHeader>
     </KanbanStackedHeaders>
     <KanbanSortSettings SortBy="SortOrderBy.Index" Field="RankId"></KanbanSortSettings>
-    <KanbanEvents TValue="Card" DragStart="@DragStartHandler" DragStop="@DragStopHandler"></KanbanEvents>
+    <KanbanEvents TValue="Card" DragStart="@DragStartHandler" DragStop="@DragStopHandler" CardDoubleClick="@CardDoubleClickHandler"></KanbanEvents>
     <KanbanCardSettings HeaderField="Id">
         <Template>
         @{
@@ -59,14 +135,10 @@
                     <div class="employee-h">@employee.Name</div>
                     <div class="employee-a"><img src=@(employee.AvatarPath == null ? "Avatars/Default.png" : employee.AvatarPath) style="width:48px" alt="logo" /></div>
                     <div class="employee-d">
-                        @* <div>Card Id: @card.Id</div> *@
-                        @* <div>Id: @employee.Id</div> *@
                         <div>Productivity: @employee.Productivity</div>
                         <div>Seniority: @employee.Seniority</div>
-                        <div>Status: @employee.Status</div>
                         <div>Role: @employee.CurrentRole</div>
-                        @* <div>Column: @employee.SF_Column</div> *@
-                        @* <div>RankId: @card.RankId</div> *@
+                        <img class="notifier" src="Icons/questionmark.png" @onclick='(() => ShowCardDetails(card))' />
                     </div>
                 </div>
             }
@@ -77,48 +149,18 @@
                 <div class="task-card">
                     <div class="task-h">@kanbanTask.Title</div>
                     <div class="task-d">
-                        @* <div>Card Id: @card.Id</div> *@
-                        @* <div>Id: @kanbanTask.Id</div> *@
                         <div>Age: @kanbanTask.Age</div>
                         <div>Effort left: @kanbanTask.EffortLeft</div>
-                        @* <div>Desc: @kanbanTask.Description</div> *@
-                        @* <div>Ass. Id: @(kanbanTask.Assignee is null ? "-" : kanbanTask.Assignee.Id)</div> *@
                         <div>Depends on: <b>@(kanbanTask.DependencyTask == null ? "-" : kanbanTask.DependencyTask.Title)</b></div>
-                        @* <div>DT. Status: @(kanbanTask.DependencyTask == null ? "-" : kanbanTask.DependencyTask.Status)</div> *@
-                        <div>Assignee.: @(kanbanTask.Assignee == null ? "-" : kanbanTask.Assignee.Name)</div>
+                        <img src=@(kanbanTask.Assignee == null ? "Avatars/Default.png" : kanbanTask.Assignee.AvatarPath) style="width:32px; float:right;" alt="logo" />
                     </div>
-                    @* <div class="task-f">Status: @kanbanTask.SF_Column</div> *@
-                    @* <div class="task-f">RankId: @card.RankId <img src=@(kanbanTask.Assignee == null ? "Avatars/Default.png" : kanbanTask.Assignee.AvatarPath) style="width:32px; float:right;" alt="logo" /></div> *@
                     <div class="task-f">
                         @{
-                            if (kanbanTask.Star)
-                            {
-                                <img class="notifier" src="Icons/star_filled.png" @onclick='(() => ChangeIconState(kanbanTask, "star"))'/>
-                            }
-                            else
-                            {
-                                <img class="notifier" src="Icons/star.png" @onclick='(() => ChangeIconState(kanbanTask, "star"))'/>
-                            }
-
-                            if (kanbanTask.Warning)
-                            {
-                                <img class="notifier" src="Icons/warning_filled.png" @onclick='(() => ChangeIconState(kanbanTask, "warning"))'/>
-                            }
-                            else
-                            {
-                                <img class="notifier" src="Icons/warning.png" @onclick='(() => ChangeIconState(kanbanTask, "warning"))'/>
-                            } 
-
-                            if (kanbanTask.Pause)
-                            {
-                                <img class="notifier" src="Icons/pause_filled.png" @onclick='(() => ChangeIconState(kanbanTask, "pause"))'/>
-                            }
-                            else
-                            {
-                                <img class="notifier" src="Icons/pause.png" @onclick='(() => ChangeIconState(kanbanTask, "pause"))'/>
-                            }
+                            <img class="notifier" src=@(kanbanTask.Star ? "Icons/star_filled.png" : "Icons/star.png") @onclick='(() => ChangeIconState(kanbanTask, "star"))'/>
+                            <img class="notifier" src=@(kanbanTask.Warning ? "Icons/warning_filled.png" : "Icons/warning.png") @onclick='(() => ChangeIconState(kanbanTask, "warning"))'/>
+                            <img class="notifier" src=@(kanbanTask.Pause ? "Icons/pause_filled.png" : "Icons/pause.png") @onclick='(() => ChangeIconState(kanbanTask, "pause"))'/>
                         }
-                        <img src=@(kanbanTask.Assignee == null ? "Avatars/Default.png" : kanbanTask.Assignee.AvatarPath) style="width:32px; float:right;" alt="logo" />
+                        <img class="notifier" src="Icons/questionmark.png" @onclick='(() => ShowCardDetails(card))' />
                     </div>
                 </div>
             }
@@ -129,10 +171,13 @@
 </div>
 @code {
     private int BoardId = (int) Team.TeamName.BackEnd;
+    private bool IsShowCardDetailsVisible { get; set; } = false;
+    private Card CardToShowDetails {get; set;}
 
     protected override async Task OnInitializedAsync()
     {
         await BoardService.GetCardsByTeamId(BoardId);
+        CardToShowDetails = BoardService.Cards[0];
         await Connect();
     }
     
@@ -198,6 +243,22 @@
         }
     }
 
+    public void CardDoubleClickHandler(CardClickEventArgs<Card> args)
+    {
+        args.Cancel = true;
+    }
+
+    private void ShowCardDetails(Card card)
+    {
+        CardToShowDetails = card;
+        this.IsShowCardDetailsVisible = true;
+    }
+
+    private void OverlayClick(OverlayModalClickEventArgs args)
+    {
+        this.IsShowCardDetailsVisible = false;
+    }
+    
     async Task SimulateDay()
     {
         await SessionService.SimulateDay();
