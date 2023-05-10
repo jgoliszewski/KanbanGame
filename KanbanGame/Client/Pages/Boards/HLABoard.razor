@@ -86,48 +86,50 @@
         <h3>High Level Analysis Team</h3>
     </div>
     <div class="board-page-c">
-    <div>
-        <h2>Day: @(SessionService.Session.Day) W@(SessionService.Session.Week)</h2>
-        @{
-            switch(SessionService.Session.Weekday)
-            {
-                case Session.DayOfTheWeek.Monday:
-                    <img id=0 class="notifier" src="Icons/letters/letter_m_filled.png"/>
-                    <img class="notifier" src="Icons/letters/letter_t.png"/>
-                    <img class="notifier" src="Icons/letters/letter_w.png"/>
-                    <img class="notifier" src="Icons/letters/letter_t.png"/>
-                    <img class="notifier" src="Icons/letters/letter_f.png"/>
-                    break;
-                case Session.DayOfTheWeek.Tuesday:
-                    <img class="notifier" src="Icons/letters/letter_m.png"/>
-                    <img class="notifier" src="Icons/letters/letter_t_filled.png"/>
-                    <img class="notifier" src="Icons/letters/letter_w.png"/>
-                    <img class="notifier" src="Icons/letters/letter_t.png"/>
-                    <img class="notifier" src="Icons/letters/letter_f.png"/>
-                    break;
-                case Session.DayOfTheWeek.Wednesday:
+        <div>
+            <div class="center">
+                <h4>Day: @(SessionService.Session.Day) Week: @(SessionService.Session.Week)</h4>
+            </div>
+            @{
+                switch(SessionService.Session.Weekday)
+                {
+                    case Session.DayOfTheWeek.Monday:
+                        <img id=0 class="notifier" src="Icons/letters/letter_m_filled.png"/>
+                        <img class="notifier" src="Icons/letters/letter_t.png"/>
+                        <img class="notifier" src="Icons/letters/letter_w.png"/>
+                        <img class="notifier" src="Icons/letters/letter_t.png"/>
+                        <img class="notifier" src="Icons/letters/letter_f.png"/>
+                        break;
+                    case Session.DayOfTheWeek.Tuesday:
                         <img class="notifier" src="Icons/letters/letter_m.png"/>
-                    <img class="notifier" src="Icons/letters/letter_t.png"/>
-                    <img class="notifier" src="Icons/letters/letter_w_filled.png"/>
-                    <img class="notifier" src="Icons/letters/letter_t.png"/>
-                    <img class="notifier" src="Icons/letters/letter_f.png"/>
-                    break;
-                case Session.DayOfTheWeek.Thursday:
-                    <img class="notifier" src="Icons/letters/letter_m.png"/>
-                    <img class="notifier" src="Icons/letters/letter_t.png"/>
-                    <img class="notifier" src="Icons/letters/letter_w.png"/>
-                    <img class="notifier" src="Icons/letters/letter_t_filled.png"/>
-                    <img class="notifier" src="Icons/letters/letter_f.png"/>
-                    break;
-                case Session.DayOfTheWeek.Friday:
-                    <img class="notifier" src="Icons/letters/letter_m.png"/>
-                    <img class="notifier" src="Icons/letters/letter_t.png"/>
-                    <img class="notifier" src="Icons/letters/letter_w.png"/>
-                    <img class="notifier" src="Icons/letters/letter_t.png"/>
-                    <img class="notifier" src="Icons/letters/letter_f_filled.png"/>
-                    break;
+                        <img class="notifier" src="Icons/letters/letter_t_filled.png"/>
+                        <img class="notifier" src="Icons/letters/letter_w.png"/>
+                        <img class="notifier" src="Icons/letters/letter_t.png"/>
+                        <img class="notifier" src="Icons/letters/letter_f.png"/>
+                        break;
+                    case Session.DayOfTheWeek.Wednesday:
+                            <img class="notifier" src="Icons/letters/letter_m.png"/>
+                        <img class="notifier" src="Icons/letters/letter_t.png"/>
+                        <img class="notifier" src="Icons/letters/letter_w_filled.png"/>
+                        <img class="notifier" src="Icons/letters/letter_t.png"/>
+                        <img class="notifier" src="Icons/letters/letter_f.png"/>
+                        break;
+                    case Session.DayOfTheWeek.Thursday:
+                        <img class="notifier" src="Icons/letters/letter_m.png"/>
+                        <img class="notifier" src="Icons/letters/letter_t.png"/>
+                        <img class="notifier" src="Icons/letters/letter_w.png"/>
+                        <img class="notifier" src="Icons/letters/letter_t_filled.png"/>
+                        <img class="notifier" src="Icons/letters/letter_f.png"/>
+                        break;
+                    case Session.DayOfTheWeek.Friday:
+                        <img class="notifier" src="Icons/letters/letter_m.png"/>
+                        <img class="notifier" src="Icons/letters/letter_t.png"/>
+                        <img class="notifier" src="Icons/letters/letter_w.png"/>
+                        <img class="notifier" src="Icons/letters/letter_t.png"/>
+                        <img class="notifier" src="Icons/letters/letter_f_filled.png"/>
+                        break;
+                }
             }
-        }
         </div>
     </div>
     <div class="board-page-a">
