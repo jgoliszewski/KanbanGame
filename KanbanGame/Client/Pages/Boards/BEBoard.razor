@@ -82,92 +82,138 @@
     <DialogEvents OnOverlayModalClick="@OverlayClick"></DialogEvents>
 </SfDialog>
 
-<div class="center">
-    <h3>BackEnd Team</h3>
-</div>
-<div class="center">
-    @* <button disabled="@IsForceUpdateDisabled" class="btn btn-outline-warning" @onclick="(() => SimulateBoard())">
-            Force Update <i class="oi oi-sun"></i>
-    </button> *@
-    <button class="btn btn-outline-warning" @onclick="(() => SimulateDay())">
-            Force Update <i class="oi oi-sun"></i>
-    </button>
-
-    <input type="radio" class="btn-check" name="options-outlined" id="danger-outlined" checked="@IsReadySelected">
-    <label class="btn btn-outline-danger" for="danger-outlined" @onclick="(() => StateNotReady())">Not Ready</label>
-
-    <input type="radio" class="btn-check" name="options-outlined" id="success-outlined" checked="@IsNotReadySelected" onchange="@(() => SetReady())">
-    <label class="btn btn-outline-success" for="success-outlined" @onclick="(() => StateReady())">Ready</label>
-
-    <div style="margin:10px;font-size: large;">Users ready: @readyUserCount / @connectedUserCount</div>
-
-</div>
-<div class="center">
-<SfKanban TValue="Card" KeyField="Column" DataSource="BoardService.Cards" Width="1800px">
-    <KanbanColumns>
-        <KanbanColumn HeaderText="" KeyField="@(new List<string>() {"Backlog"})" TransitionColumns="@(new List<string>() {"AnalysisDoing"})"></KanbanColumn>
-        <KanbanColumn HeaderText="Doing" MaxCount="@BoardService.ColumnMaxCount["AnalysisDoing"]" KeyField="@(new List<string>() {"AnalysisDoing"})" TransitionColumns="@(new List<string>() {"Backlog", "AnalysisDoing", "DevelopmentDoing", "TestDoing"})"></KanbanColumn>
-        <KanbanColumn HeaderText="Waiting" KeyField="@(new List<string>() {"DevelopmentWaiting"})" TransitionColumns="@(new List<string>() {"DevelopmentDoing"})"></KanbanColumn>
-        <KanbanColumn HeaderText="Doing" MaxCount="@BoardService.ColumnMaxCount["DevelopmentDoing"]" KeyField="@(new List<string>() {"DevelopmentDoing"})" TransitionColumns="@(new List<string>() {"DevelopmentWaiting", "AnalysisDoing", "DevelopmentDoing", "TestDoing"})"></KanbanColumn>
-        <KanbanColumn HeaderText="Waiting" KeyField="@(new List<string>() {"TestWaiting"})" TransitionColumns="@(new List<string>() {"TestDoing"})"></KanbanColumn>
-        <KanbanColumn HeaderText="Doing" MaxCount="@BoardService.ColumnMaxCount["TestDoing"]" KeyField="@(new List<string>() {"TestDoing"})" TransitionColumns="@(new List<string>() {"TestWaiting", "AnalysisDoing", "DevelopmentDoing", "TestDoing"})"></KanbanColumn>
-        <KanbanColumn HeaderText="" KeyField="@(new List<string>() {"Delivered"})" AllowDrag="false"></KanbanColumn>
-    </KanbanColumns>
-    <KanbanStackedHeaders>
-        <KanbanStackedHeader Text="Backlog" KeyFields="@(new List<string>() {"Backlog"})"></KanbanStackedHeader>
-        <KanbanStackedHeader Text="Analysis" KeyFields="@(new List<string>() {"AnalysisDoing"})"></KanbanStackedHeader>
-        <KanbanStackedHeader Text="Development" KeyFields="@(new List<string>() {"DevelopmentWaiting", "DevelopmentDoing"})"></KanbanStackedHeader>
-        <KanbanStackedHeader Text="Test" KeyFields="@(new List<string>() {"TestWaiting", "TestDoing"})"></KanbanStackedHeader>
-        <KanbanStackedHeader Text="Delivered" KeyFields="@(new List<string>() {"Delivered"})"></KanbanStackedHeader>
-    </KanbanStackedHeaders>
-    <KanbanSortSettings SortBy="SortOrderBy.Index" Field="RankId"></KanbanSortSettings>
-    <KanbanEvents TValue="Card" DragStart="@DragStartHandler" DragStop="@DragStopHandler" CardDoubleClick="@CardDoubleClickHandler"></KanbanEvents>
-    <KanbanCardSettings HeaderField="Id">
-        <Template>
+<div class="board-page">
+    <div class="board-page-h">
+        <h3>BackEnd Team</h3>
+    </div>
+    <div class="board-page-c">
+    <div>
+        <h2>Day: @(SessionService.Session.Day) W@(SessionService.Session.Week)</h2>
         @{
-            Card card = (Card)context;
-
-            if (card.KanbanTask is null && card.Employee is not null)
+            switch(SessionService.Session.Weekday)
             {
-                Employee employee = card.Employee;
-
-                <div class="employee-card">
-                    <div class="employee-h">@employee.Name</div>
-                    <div class="employee-a"><img src=@(employee.AvatarPath == null ? "Avatars/Default.png" : employee.AvatarPath) style="width:48px" alt="logo" /></div>
-                    <div class="employee-d">
-                        <div>Productivity: @employee.Productivity</div>
-                        <div>Seniority: @employee.Seniority</div>
-                        <div>Role: @employee.CurrentRole</div>
-                        <img class="notifier" src="Icons/questionmark.png" @onclick='(() => ShowCardDetails(card))' />
-                    </div>
-                </div>
-            }
-            else if (card.Employee is null && card.KanbanTask is not null)
-            {
-                KanbanTask kanbanTask = card.KanbanTask;
-
-                <div class="task-card">
-                    <div class="task-h">@kanbanTask.Title</div>
-                    <div class="task-d">
-                        <div>Age: @kanbanTask.Age</div>
-                        <div>Effort left: @kanbanTask.EffortLeft</div>
-                        <div>Depends on: <b>@(kanbanTask.DependencyTask == null ? "-" : kanbanTask.DependencyTask.Title)</b></div>
-                        <img src=@(kanbanTask.Assignee == null ? "Avatars/Default.png" : kanbanTask.Assignee.AvatarPath) style="width:32px; float:right;" alt="logo" />
-                    </div>
-                    <div class="task-f">
-                        @{
-                            <img class="notifier" src=@(kanbanTask.Star ? "Icons/star_filled.png" : "Icons/star.png") @onclick='(() => ChangeIconState(kanbanTask, "star"))'/>
-                            <img class="notifier" src=@(kanbanTask.Warning ? "Icons/warning_filled.png" : "Icons/warning.png") @onclick='(() => ChangeIconState(kanbanTask, "warning"))'/>
-                            <img class="notifier" src=@(kanbanTask.Pause ? "Icons/pause_filled.png" : "Icons/pause.png") @onclick='(() => ChangeIconState(kanbanTask, "pause"))'/>
-                        }
-                        <img class="notifier" src="Icons/questionmark.png" @onclick='(() => ShowCardDetails(card))' />
-                    </div>
-                </div>
+                case Session.DayOfTheWeek.Monday:
+                    <img id=0 class="notifier" src="Icons/letters/letter_m_filled.png"/>
+                    <img class="notifier" src="Icons/letters/letter_t.png"/>
+                    <img class="notifier" src="Icons/letters/letter_w.png"/>
+                    <img class="notifier" src="Icons/letters/letter_t.png"/>
+                    <img class="notifier" src="Icons/letters/letter_f.png"/>
+                    break;
+                case Session.DayOfTheWeek.Tuesday:
+                    <img class="notifier" src="Icons/letters/letter_m.png"/>
+                    <img class="notifier" src="Icons/letters/letter_t_filled.png"/>
+                    <img class="notifier" src="Icons/letters/letter_w.png"/>
+                    <img class="notifier" src="Icons/letters/letter_t.png"/>
+                    <img class="notifier" src="Icons/letters/letter_f.png"/>
+                    break;
+                case Session.DayOfTheWeek.Wednesday:
+                        <img class="notifier" src="Icons/letters/letter_m.png"/>
+                    <img class="notifier" src="Icons/letters/letter_t.png"/>
+                    <img class="notifier" src="Icons/letters/letter_w_filled.png"/>
+                    <img class="notifier" src="Icons/letters/letter_t.png"/>
+                    <img class="notifier" src="Icons/letters/letter_f.png"/>
+                    break;
+                case Session.DayOfTheWeek.Thursday:
+                    <img class="notifier" src="Icons/letters/letter_m.png"/>
+                    <img class="notifier" src="Icons/letters/letter_t.png"/>
+                    <img class="notifier" src="Icons/letters/letter_w.png"/>
+                    <img class="notifier" src="Icons/letters/letter_t_filled.png"/>
+                    <img class="notifier" src="Icons/letters/letter_f.png"/>
+                    break;
+                case Session.DayOfTheWeek.Friday:
+                    <img class="notifier" src="Icons/letters/letter_m.png"/>
+                    <img class="notifier" src="Icons/letters/letter_t.png"/>
+                    <img class="notifier" src="Icons/letters/letter_w.png"/>
+                    <img class="notifier" src="Icons/letters/letter_t.png"/>
+                    <img class="notifier" src="Icons/letters/letter_f_filled.png"/>
+                    break;
             }
         }
-        </Template>
-    </KanbanCardSettings>
-</SfKanban>
+        </div>
+    </div>
+    <div class="board-page-a">
+        @* <button disabled="@IsForceUpdateDisabled" class="btn btn-outline-warning" @onclick="(() => SimulateBoard())">
+            Force Update <i class="oi oi-sun"></i>
+        </button> *@
+        <button class="btn btn-outline-warning" @onclick="(() => SimulateDay())">
+                Force Update <i class="oi oi-sun"></i>
+        </button>
+
+        <input type="radio" class="btn-check" name="options-outlined" id="danger-outlined" checked="@IsReadySelected">
+        <label class="btn btn-outline-danger" for="danger-outlined" @onclick="(() => StateNotReady())">Not Ready</label>
+
+        <input type="radio" class="btn-check" name="options-outlined" id="success-outlined" checked="@IsNotReadySelected" onchange="@(() => SetReady())">
+        <label class="btn btn-outline-success" for="success-outlined" @onclick="(() => StateReady())">Ready</label>
+
+        <div style="margin:10px;font-size: large;">Users ready: @readyUserCount / @connectedUserCount</div>
+    </div>
+    <div class="board-page-b">
+        <SfKanban TValue="Card" KeyField="Column" DataSource="BoardService.Cards" Width="1800px">
+            <KanbanColumns>
+                <KanbanColumn HeaderText="" KeyField="@(new List<string>() {"Backlog"})" TransitionColumns="@(new List<string>() {"AnalysisDoing"})"></KanbanColumn>
+                <KanbanColumn HeaderText="Doing" MaxCount="@BoardService.ColumnMaxCount["AnalysisDoing"]" KeyField="@(new List<string>() {"AnalysisDoing"})" TransitionColumns="@(new List<string>() {"Backlog", "AnalysisDoing", "DevelopmentDoing", "TestDoing"})"></KanbanColumn>
+                <KanbanColumn HeaderText="Waiting" KeyField="@(new List<string>() {"DevelopmentWaiting"})" TransitionColumns="@(new List<string>() {"DevelopmentDoing"})"></KanbanColumn>
+                <KanbanColumn HeaderText="Doing" MaxCount="@BoardService.ColumnMaxCount["DevelopmentDoing"]" KeyField="@(new List<string>() {"DevelopmentDoing"})" TransitionColumns="@(new List<string>() {"DevelopmentWaiting", "AnalysisDoing", "DevelopmentDoing", "TestDoing"})"></KanbanColumn>
+                <KanbanColumn HeaderText="Waiting" KeyField="@(new List<string>() {"TestWaiting"})" TransitionColumns="@(new List<string>() {"TestDoing"})"></KanbanColumn>
+                <KanbanColumn HeaderText="Doing" MaxCount="@BoardService.ColumnMaxCount["TestDoing"]" KeyField="@(new List<string>() {"TestDoing"})" TransitionColumns="@(new List<string>() {"TestWaiting", "AnalysisDoing", "DevelopmentDoing", "TestDoing"})"></KanbanColumn>
+                <KanbanColumn HeaderText="" KeyField="@(new List<string>() {"Delivered"})" AllowDrag="false"></KanbanColumn>
+            </KanbanColumns>
+            <KanbanStackedHeaders>
+                <KanbanStackedHeader Text="Backlog" KeyFields="@(new List<string>() {"Backlog"})"></KanbanStackedHeader>
+                <KanbanStackedHeader Text="Analysis" KeyFields="@(new List<string>() {"AnalysisDoing"})"></KanbanStackedHeader>
+                <KanbanStackedHeader Text="Development" KeyFields="@(new List<string>() {"DevelopmentWaiting", "DevelopmentDoing"})"></KanbanStackedHeader>
+                <KanbanStackedHeader Text="Test" KeyFields="@(new List<string>() {"TestWaiting", "TestDoing"})"></KanbanStackedHeader>
+                <KanbanStackedHeader Text="Delivered" KeyFields="@(new List<string>() {"Delivered"})"></KanbanStackedHeader>
+            </KanbanStackedHeaders>
+            <KanbanSortSettings SortBy="SortOrderBy.Index" Field="RankId"></KanbanSortSettings>
+            <KanbanEvents TValue="Card" DragStart="@DragStartHandler" DragStop="@DragStopHandler" CardDoubleClick="@CardDoubleClickHandler"></KanbanEvents>
+            <KanbanCardSettings HeaderField="Id">
+                <Template>
+                @{
+                    Card card = (Card)context;
+
+                    if (card.KanbanTask is null && card.Employee is not null)
+                    {
+                        Employee employee = card.Employee;
+
+                        <div class="employee-card">
+                            <div class="employee-h">@employee.Name</div>
+                            <div class="employee-a"><img src=@(employee.AvatarPath == null ? "Avatars/Default.png" : employee.AvatarPath) style="width:48px" alt="logo" /></div>
+                            <div class="employee-d">
+                                <div>Productivity: @employee.Productivity</div>
+                                <div>Seniority: @employee.Seniority</div>
+                                <div>Role: @employee.CurrentRole</div>
+                                <img class="notifier" src="Icons/questionmark.png" @onclick='(() => ShowCardDetails(card))' />
+                            </div>
+                        </div>
+                    }
+                    else if (card.Employee is null && card.KanbanTask is not null)
+                    {
+                        KanbanTask kanbanTask = card.KanbanTask;
+
+                        <div class="task-card">
+                            <div class="task-h">@kanbanTask.Title</div>
+                            <div class="task-d">
+                                <div>Age: @kanbanTask.Age</div>
+                                <div>Effort left: @kanbanTask.EffortLeft</div>
+                                <div>Depends on: <b>@(kanbanTask.DependencyTask == null ? "-" : kanbanTask.DependencyTask.Title)</b></div>
+                                <img src=@(kanbanTask.Assignee == null ? "Avatars/Default.png" : kanbanTask.Assignee.AvatarPath) style="width:32px; float:right;" alt="logo" />
+                            </div>
+                            <div class="task-f">
+                                @{
+                                    <img class="notifier" src=@(kanbanTask.Star ? "Icons/star_filled.png" : "Icons/star.png") @onclick='(() => ChangeIconState(kanbanTask, "star"))'/>
+                                    <img class="notifier" src=@(kanbanTask.Warning ? "Icons/warning_filled.png" : "Icons/warning.png") @onclick='(() => ChangeIconState(kanbanTask, "warning"))'/>
+                                    <img class="notifier" src=@(kanbanTask.Pause ? "Icons/pause_filled.png" : "Icons/pause.png") @onclick='(() => ChangeIconState(kanbanTask, "pause"))'/>
+                                }
+                                <img class="notifier" src="Icons/questionmark.png" @onclick='(() => ShowCardDetails(card))' />
+                            </div>
+                        </div>
+                    }
+                }
+                </Template>
+            </KanbanCardSettings>
+        </SfKanban>
+    </div>
 </div>
 @code {
     private int BoardId = (int) Team.TeamName.BackEnd;
@@ -178,6 +224,7 @@
     {
         await BoardService.GetCardsByTeamId(BoardId);
         CardToShowDetails = BoardService.Cards[0];
+        await SessionService.GetSessionInfo();
         await Connect();
     }
     
@@ -307,6 +354,7 @@
         hubConnection.On<int>("BoardUpdated", async (_) =>
                 {
                     await BoardService.GetCardsByTeamId(BoardId);
+                    await SessionService.GetSessionInfo();
                     StateHasChanged();
                 });
         hubConnection.On<int>("StateReady", async (numberOfReadyClients) =>

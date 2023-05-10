@@ -28,95 +28,145 @@
     <DialogEvents OnOverlayModalClick="@OverlayClick"></DialogEvents>
 </SfDialog>
 
-<div class="center">
-    <h3>Feature Board</h3>
-</div>
-<div class="center">
-    @* <button disabled="@IsForceUpdateDisabled" class="btn btn-outline-warning" @onclick="(() => SimulateBoard())">
-            Force Update <i class="oi oi-sun"></i>
-    </button> *@
-    <button class="btn btn-outline-warning" @onclick="(() => SimulateDay())">
-            Force Update <i class="oi oi-sun"></i>
-    </button>
-
-    <input type="radio" class="btn-check" name="options-outlined" id="danger-outlined" checked="@IsReadySelected">
-    <label class="btn btn-outline-danger" for="danger-outlined" @onclick="(() => StateNotReady())">Not Ready</label>
-
-    <input type="radio" class="btn-check" name="options-outlined" id="success-outlined" checked="@IsNotReadySelected" onchange="@(() => SetReady())">
-    <label class="btn btn-outline-success" for="success-outlined" @onclick="(() => StateReady())">Ready</label>
-
-    <div style="margin:10px;font-size: large;">Users ready: @readyUserCount / @connectedUserCount</div>
-
-</div>
-<div class="center">
-<SfKanban TValue="Feature" KeyField="SF_PercentageColumn" DataSource="FeatureService.Features" Width="1800px" AllowDragAndDrop="false">
-    <KanbanColumns>
-        <KanbanColumn HeaderText="" KeyField="@(new List<string>() {"None"})"></KanbanColumn>
-        <KanbanColumn HeaderText="<20%" KeyField="@(new List<string>() {"Zero_Twenty"})"></KanbanColumn>
-        <KanbanColumn HeaderText="<40%" KeyField="@(new List<string>() {"Twenty_Forty"})"></KanbanColumn>
-        <KanbanColumn HeaderText="<60%" KeyField="@(new List<string>() {"Forty_Sixty"})"></KanbanColumn>
-        <KanbanColumn HeaderText="<80%" KeyField="@(new List<string>() {"Sixty_Eighty"})"></KanbanColumn>
-        <KanbanColumn HeaderText="<100%" KeyField="@(new List<string>() {"Eighty_Hundred"})"></KanbanColumn>
-        <KanbanColumn HeaderText="" KeyField="@(new List<string>() {"Hundred"})"></KanbanColumn>
-    </KanbanColumns>
-    <KanbanStackedHeaders>
-        <KanbanStackedHeader Text="Backlog" KeyFields="@(new List<string>() {"None"})"></KanbanStackedHeader>
-        <KanbanStackedHeader Text="Doing" KeyFields="@(new List<string>() {"Zero_Twenty", "Twenty_Forty", "Forty_Sixty", "Sixty_Eighty", "Eighty_Hundred"})"></KanbanStackedHeader>
-        <KanbanStackedHeader Text="Delivered" KeyFields="@(new List<string>() {"Hundred"})"></KanbanStackedHeader>
-    </KanbanStackedHeaders>
-    <KanbanEvents TValue="Feature" CardDoubleClick="@CardDoubleClickHandler"></KanbanEvents>
-    <KanbanCardSettings HeaderField="Id">
-        <Template>
-        @{        
-            Feature feature = (Feature)context;
-            if(feature.Status == Feature.FeatureStatus.ReadyForDevelopment || feature.Status == Feature.FeatureStatus.UnderDevelopment)
+<div class="board-page">
+    <div class="board-page-h">
+        <h3>Feature Board</h3>
+    </div>
+    <div class="board-page-c">
+    <div>
+        <h2>Day: @(SessionService.Session.Day) W@(SessionService.Session.Week)</h2>
+        @{
+            switch(SessionService.Session.Weekday)
             {
-                <div class="task-card">
-                    <div class="task-h">@feature.Title</div>
-                    <div class="task-d">
-                        <div>@($"Est. $: {feature.EstimatedMinEarnings}K-{feature.EstimatedMaxEarnings}K")</div>
-                        @* <div>Id: @feature.Id</div> *@
-                        @* <div>Desc: @feature.Description</div> *@    
-                        @* <div>Task count: @feature.KanbanTasks.Count</div> *@
-                        <div>Tasks:</div>
-                        @{
-                            foreach (var t in feature.KanbanTasks)
-                            {
-                                if(t.Status == KanbanTask.TaskStatus.Delivered)
+                case Session.DayOfTheWeek.Monday:
+                    <img id=0 class="notifier" src="Icons/letters/letter_m_filled.png"/>
+                    <img class="notifier" src="Icons/letters/letter_t.png"/>
+                    <img class="notifier" src="Icons/letters/letter_w.png"/>
+                    <img class="notifier" src="Icons/letters/letter_t.png"/>
+                    <img class="notifier" src="Icons/letters/letter_f.png"/>
+                    break;
+                case Session.DayOfTheWeek.Tuesday:
+                    <img class="notifier" src="Icons/letters/letter_m.png"/>
+                    <img class="notifier" src="Icons/letters/letter_t_filled.png"/>
+                    <img class="notifier" src="Icons/letters/letter_w.png"/>
+                    <img class="notifier" src="Icons/letters/letter_t.png"/>
+                    <img class="notifier" src="Icons/letters/letter_f.png"/>
+                    break;
+                case Session.DayOfTheWeek.Wednesday:
+                        <img class="notifier" src="Icons/letters/letter_m.png"/>
+                    <img class="notifier" src="Icons/letters/letter_t.png"/>
+                    <img class="notifier" src="Icons/letters/letter_w_filled.png"/>
+                    <img class="notifier" src="Icons/letters/letter_t.png"/>
+                    <img class="notifier" src="Icons/letters/letter_f.png"/>
+                    break;
+                case Session.DayOfTheWeek.Thursday:
+                    <img class="notifier" src="Icons/letters/letter_m.png"/>
+                    <img class="notifier" src="Icons/letters/letter_t.png"/>
+                    <img class="notifier" src="Icons/letters/letter_w.png"/>
+                    <img class="notifier" src="Icons/letters/letter_t_filled.png"/>
+                    <img class="notifier" src="Icons/letters/letter_f.png"/>
+                    break;
+                case Session.DayOfTheWeek.Friday:
+                    <img class="notifier" src="Icons/letters/letter_m.png"/>
+                    <img class="notifier" src="Icons/letters/letter_t.png"/>
+                    <img class="notifier" src="Icons/letters/letter_w.png"/>
+                    <img class="notifier" src="Icons/letters/letter_t.png"/>
+                    <img class="notifier" src="Icons/letters/letter_f_filled.png"/>
+                    break;
+            }
+        }
+    </div>
+    </div>
+    <div class="board-page-a">
+        @* <button disabled="@IsForceUpdateDisabled" class="btn btn-outline-warning" @onclick="(() => SimulateBoard())">
+            Force Update <i class="oi oi-sun"></i>
+        </button> *@
+        <button class="btn btn-outline-warning" @onclick="(() => SimulateDay())">
+                Force Update <i class="oi oi-sun"></i>
+        </button>
+
+        <input type="radio" class="btn-check" name="options-outlined" id="danger-outlined" checked="@IsReadySelected">
+        <label class="btn btn-outline-danger" for="danger-outlined" @onclick="(() => StateNotReady())">Not Ready</label>
+
+        <input type="radio" class="btn-check" name="options-outlined" id="success-outlined" checked="@IsNotReadySelected" onchange="@(() => SetReady())">
+        <label class="btn btn-outline-success" for="success-outlined" @onclick="(() => StateReady())">Ready</label>
+
+        <div style="margin:10px;font-size: large;">Users ready: @readyUserCount / @connectedUserCount</div>
+    </div>
+    <div class="board-page-b">
+        <SfKanban TValue="Feature" KeyField="SF_PercentageColumn" DataSource="FeatureService.Features" Width="1800px" AllowDragAndDrop="false">
+        <KanbanColumns>
+            <KanbanColumn HeaderText="" KeyField="@(new List<string>() {"None"})"></KanbanColumn>
+            <KanbanColumn HeaderText="<20%" KeyField="@(new List<string>() {"Zero_Twenty"})"></KanbanColumn>
+            <KanbanColumn HeaderText="<40%" KeyField="@(new List<string>() {"Twenty_Forty"})"></KanbanColumn>
+            <KanbanColumn HeaderText="<60%" KeyField="@(new List<string>() {"Forty_Sixty"})"></KanbanColumn>
+            <KanbanColumn HeaderText="<80%" KeyField="@(new List<string>() {"Sixty_Eighty"})"></KanbanColumn>
+            <KanbanColumn HeaderText="<100%" KeyField="@(new List<string>() {"Eighty_Hundred"})"></KanbanColumn>
+            <KanbanColumn HeaderText="" KeyField="@(new List<string>() {"Hundred"})"></KanbanColumn>
+        </KanbanColumns>
+        <KanbanStackedHeaders>
+            <KanbanStackedHeader Text="Backlog" KeyFields="@(new List<string>() {"None"})"></KanbanStackedHeader>
+            <KanbanStackedHeader Text="Doing" KeyFields="@(new List<string>() {"Zero_Twenty", "Twenty_Forty", "Forty_Sixty", "Sixty_Eighty", "Eighty_Hundred"})"></KanbanStackedHeader>
+            <KanbanStackedHeader Text="Delivered" KeyFields="@(new List<string>() {"Hundred"})"></KanbanStackedHeader>
+        </KanbanStackedHeaders>
+        <KanbanEvents TValue="Feature" CardDoubleClick="@CardDoubleClickHandler"></KanbanEvents>
+        <KanbanCardSettings HeaderField="Id">
+            <Template>
+            @{        
+                Feature feature = (Feature)context;
+                if(feature.Status == Feature.FeatureStatus.ReadyForDevelopment || feature.Status == Feature.FeatureStatus.UnderDevelopment)
+                {
+                    <div class="task-card">
+                        <div class="task-h">@feature.Title</div>
+                        <div class="task-d">
+                            <div>@($"Est. $: {feature.EstimatedMinEarnings}K-{feature.EstimatedMaxEarnings}K")</div>
+                            @* <div>Id: @feature.Id</div> *@
+                            @* <div>Desc: @feature.Description</div> *@    
+                            @* <div>Task count: @feature.KanbanTasks.Count</div> *@
+                            <div>Tasks:</div>
+                            @{
+                                foreach (var t in feature.KanbanTasks)
                                 {
-                                    <li><s>@t.Title</s></li>
-                                }
-                                else
-                                {
-                                    <li>@t.Title</li>
+                                    if(t.Status == KanbanTask.TaskStatus.Delivered)
+                                    {
+                                        <li><s>@t.Title</s></li>
+                                    }
+                                    else
+                                    {
+                                        <li>@t.Title</li>
+                                    }
                                 }
                             }
-                        }
-                        <div>Delivered: @(Math.Round(feature.DeliveredTaskPercentage*100, 1)) %</div>
+                            <div>Delivered: @(Math.Round(feature.DeliveredTaskPercentage*100, 1)) %</div>
+                        </div>
+                    <div class="task-f">
+                        <img class="notifier" src="Icons/questionmark.png" @onclick='(() => ShowFeatureDetails(feature))' />
                     </div>
-                <div class="task-f">
-                    <img class="notifier" src="Icons/questionmark.png" @onclick='(() => ShowFeatureDetails(feature))' />
                 </div>
-            </div>
+                }
+                else
+                {
+                    <div class="task-card">
+                        <div class="task-h">@feature.Title</div>
+                        <div class="task-d">
+                            @* <div>Id: @feature.Id</div> *@
+                            <div>Desc: @feature.Description</div>    
+                            <div>Task count: @feature.KanbanTasks.Count</div>
+                        </div>
+                    <div class="task-f"></div>
+                </div>
+                }
+                
             }
-            else
-            {
-                <div class="task-card">
-                    <div class="task-h">@feature.Title</div>
-                    <div class="task-d">
-                        @* <div>Id: @feature.Id</div> *@
-                        <div>Desc: @feature.Description</div>    
-                        <div>Task count: @feature.KanbanTasks.Count</div>
-                    </div>
-                <div class="task-f"></div>
-            </div>
-            }
-            
-        }
-        </Template>
-    </KanbanCardSettings>
-</SfKanban>
+            </Template>
+        </KanbanCardSettings>
+        </SfKanban>
+    </div>
 </div>
+
+
+
+
 @code {
     private bool IsShowCardDetailsVisible { get; set; } = false;
     private Feature FeatureToShowDetails {get; set;}
@@ -169,6 +219,7 @@
         hubConnection.On<int>("BoardUpdated", async (_) =>
                 {
                     await FeatureService.GetActiveFeatures();
+                    await SessionService.GetSessionInfo();
                     StateHasChanged();
             });
         hubConnection.On<int>("StateReady", async (numberOfReadyClients) =>

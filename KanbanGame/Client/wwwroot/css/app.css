@@ -119,14 +119,65 @@ a, .btn-link {
     font-size: 20px;
 }
 
+.center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+.btn {
+    margin: 5px
+}
+
+.board-page {  
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    /* grid-template-rows: 0.5fr 2fr 0.5fr; */
+    gap: 10px 10px;
+    grid-auto-flow: row;
+    grid-template-areas:
+        "h h"
+        "c a"
+        "b b";
+    padding-top: 10px;
+    padding-bottom: 10px;
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+.board-page-h { 
+    grid-area: h;
+    text-align: center;
+    font-weight: bold;
+}
+
+.board-page-c { 
+    grid-area: c; 
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.board-page-a { 
+    grid-area: a;
+    display: flex;
+    justify-content: center;
+    align-items: center;    
+}
+
+.board-page-b { 
+    grid-area: b;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
 /* -----------------------------------Syncfusion Kanban------––––––––––––––––––––––––------- */
 
 .e-control .e-card { 
     font-family: 'Varela Round' !important;   
 } 
-.e-kanban{
-    margin: 10px
-}
+
 .e-kanban .e-kanban-header .e-header-cells .e-limits .e-max-count{
     content-visibility: hidden;
 }
@@ -217,15 +268,4 @@ a, .btn-link {
 .employee-d { 
     grid-area: d; 
     line-height: 120%;
-}
-
-
-.center {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.btn {
-    margin: 5px
 }
