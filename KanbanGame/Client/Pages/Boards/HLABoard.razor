@@ -91,45 +91,14 @@
                 <h4>Day: @(SessionService.Session.Day) Week: @(SessionService.Session.Week)</h4>
             </div>
             @{
-                switch(SessionService.Session.Weekday)
-                {
-                    case Session.DayOfTheWeek.Monday:
-                        <img id=0 class="notifier" src="Icons/letters/letter_m_filled.png"/>
-                        <img class="notifier" src="Icons/letters/letter_t.png"/>
-                        <img class="notifier" src="Icons/letters/letter_w.png"/>
-                        <img class="notifier" src="Icons/letters/letter_t.png"/>
-                        <img class="notifier" src="Icons/letters/letter_f.png"/>
-                        break;
-                    case Session.DayOfTheWeek.Tuesday:
-                        <img class="notifier" src="Icons/letters/letter_m.png"/>
-                        <img class="notifier" src="Icons/letters/letter_t_filled.png"/>
-                        <img class="notifier" src="Icons/letters/letter_w.png"/>
-                        <img class="notifier" src="Icons/letters/letter_t.png"/>
-                        <img class="notifier" src="Icons/letters/letter_f.png"/>
-                        break;
-                    case Session.DayOfTheWeek.Wednesday:
-                            <img class="notifier" src="Icons/letters/letter_m.png"/>
-                        <img class="notifier" src="Icons/letters/letter_t.png"/>
-                        <img class="notifier" src="Icons/letters/letter_w_filled.png"/>
-                        <img class="notifier" src="Icons/letters/letter_t.png"/>
-                        <img class="notifier" src="Icons/letters/letter_f.png"/>
-                        break;
-                    case Session.DayOfTheWeek.Thursday:
-                        <img class="notifier" src="Icons/letters/letter_m.png"/>
-                        <img class="notifier" src="Icons/letters/letter_t.png"/>
-                        <img class="notifier" src="Icons/letters/letter_w.png"/>
-                        <img class="notifier" src="Icons/letters/letter_t_filled.png"/>
-                        <img class="notifier" src="Icons/letters/letter_f.png"/>
-                        break;
-                    case Session.DayOfTheWeek.Friday:
-                        <img class="notifier" src="Icons/letters/letter_m.png"/>
-                        <img class="notifier" src="Icons/letters/letter_t.png"/>
-                        <img class="notifier" src="Icons/letters/letter_w.png"/>
-                        <img class="notifier" src="Icons/letters/letter_t.png"/>
-                        <img class="notifier" src="Icons/letters/letter_f_filled.png"/>
-                        break;
-                }
+                string[] days = new string[5] { "letter_m", "letter_t", "letter_w", "letter_t", "letter_f" };
+                days[(int)SessionService.Session.Weekday] += "_filled";
             }
+            <img class="notifier" src=@($"Icons/letters/{days[0]}.png")/>
+            <img class="notifier" src=@($"Icons/letters/{days[1]}.png")/>
+            <img class="notifier" src=@($"Icons/letters/{days[2]}.png")/>
+            <img class="notifier" src=@($"Icons/letters/{days[3]}.png")/>
+            <img class="notifier" src=@($"Icons/letters/{days[4]}.png")/>
         </div>
     </div>
     <div class="board-page-a">
@@ -175,13 +144,15 @@
                     Employee employee = card.Employee;
 
                     <div class="employee-card">
-                        <div class="employee-h">@employee.Name</div>
+                        <div class="employee-h">
+                            @employee.Name
+                            <img class="notifier" src="Icons/questionmark.png" @onclick='(() => ShowCardDetails(card))' style="float:right"/>
+                        </div>
                         <div class="employee-a"><img src=@(employee.AvatarPath == null ? "Avatars/Default.png" : employee.AvatarPath) style="width:48px" alt="logo" /></div>
                         <div class="employee-d">
                             <div>Productivity: @employee.Productivity</div>
                             <div>Seniority: @employee.Seniority</div>
                             <div>Role: @employee.CurrentRole</div>
-                            <img class="notifier" src="Icons/questionmark.png" @onclick='(() => ShowCardDetails(card))' />
                         </div>
                     </div>
                 }
@@ -190,7 +161,10 @@
                     Feature feature = card.Feature;
                     <div class="task-card">
                         <div class="task-h">
-                            <div>@feature.Title</div>
+                            <div>
+                                @feature.Title
+                                <img class="notifier" src="Icons/questionmark.png" @onclick='(() => ShowCardDetails(card))' style="float:right"/>
+                            </div>
                         </div>
                         <div class="task-d">
                             @{
@@ -214,7 +188,6 @@
                                 <img class="notifier" src=@(feature.Star ? "Icons/star_filled.png" : "Icons/star.png") @onclick='(() => ChangeIconState(feature, "star"))'/>
                                 <img class="notifier" src=@(feature.Warning ? "Icons/warning_filled.png" : "Icons/warning.png") @onclick='(() => ChangeIconState(feature, "warning"))'/>
                                 <img class="notifier" src=@(feature.Pause ? "Icons/pause_filled.png" : "Icons/pause.png") @onclick='(() => ChangeIconState(feature, "pause"))'/>
-                                <img class="notifier" src="Icons/questionmark.png" @onclick='(() => ShowCardDetails(card))' />
                                 if (feature.Status == Feature.FeatureStatus.ReadyForDevelopment)
                                 {
                                     <button class="btn btn-primary" style="float:right;"

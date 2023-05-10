@@ -39,45 +39,14 @@
                 <h4>Day: @(SessionService.Session.Day) Week: @(SessionService.Session.Week)</h4>
             </div>
             @{
-                switch(SessionService.Session.Weekday)
-                {
-                    case Session.DayOfTheWeek.Monday:
-                        <img id=0 class="notifier" src="Icons/letters/letter_m_filled.png"/>
-                        <img class="notifier" src="Icons/letters/letter_t.png"/>
-                        <img class="notifier" src="Icons/letters/letter_w.png"/>
-                        <img class="notifier" src="Icons/letters/letter_t.png"/>
-                        <img class="notifier" src="Icons/letters/letter_f.png"/>
-                        break;
-                    case Session.DayOfTheWeek.Tuesday:
-                        <img class="notifier" src="Icons/letters/letter_m.png"/>
-                        <img class="notifier" src="Icons/letters/letter_t_filled.png"/>
-                        <img class="notifier" src="Icons/letters/letter_w.png"/>
-                        <img class="notifier" src="Icons/letters/letter_t.png"/>
-                        <img class="notifier" src="Icons/letters/letter_f.png"/>
-                        break;
-                    case Session.DayOfTheWeek.Wednesday:
-                            <img class="notifier" src="Icons/letters/letter_m.png"/>
-                        <img class="notifier" src="Icons/letters/letter_t.png"/>
-                        <img class="notifier" src="Icons/letters/letter_w_filled.png"/>
-                        <img class="notifier" src="Icons/letters/letter_t.png"/>
-                        <img class="notifier" src="Icons/letters/letter_f.png"/>
-                        break;
-                    case Session.DayOfTheWeek.Thursday:
-                        <img class="notifier" src="Icons/letters/letter_m.png"/>
-                        <img class="notifier" src="Icons/letters/letter_t.png"/>
-                        <img class="notifier" src="Icons/letters/letter_w.png"/>
-                        <img class="notifier" src="Icons/letters/letter_t_filled.png"/>
-                        <img class="notifier" src="Icons/letters/letter_f.png"/>
-                        break;
-                    case Session.DayOfTheWeek.Friday:
-                        <img class="notifier" src="Icons/letters/letter_m.png"/>
-                        <img class="notifier" src="Icons/letters/letter_t.png"/>
-                        <img class="notifier" src="Icons/letters/letter_w.png"/>
-                        <img class="notifier" src="Icons/letters/letter_t.png"/>
-                        <img class="notifier" src="Icons/letters/letter_f_filled.png"/>
-                        break;
-                }
+                string[] days = new string[5] { "letter_m", "letter_t", "letter_w", "letter_t", "letter_f" };
+                days[(int)SessionService.Session.Weekday] += "_filled";
             }
+            <img class="notifier" src=@($"Icons/letters/{days[0]}.png")/>
+            <img class="notifier" src=@($"Icons/letters/{days[1]}.png")/>
+            <img class="notifier" src=@($"Icons/letters/{days[2]}.png")/>
+            <img class="notifier" src=@($"Icons/letters/{days[3]}.png")/>
+            <img class="notifier" src=@($"Icons/letters/{days[4]}.png")/>
         </div>
     </div>
     <div class="board-page-a">
@@ -120,7 +89,10 @@
                 if(feature.Status == Feature.FeatureStatus.ReadyForDevelopment || feature.Status == Feature.FeatureStatus.UnderDevelopment)
                 {
                     <div class="task-card">
-                        <div class="task-h">@feature.Title</div>
+                        <div class="task-h">
+                            @feature.Title
+                            <img class="notifier" src="Icons/questionmark.png" @onclick='(() => ShowFeatureDetails(feature))' style="float:right"/>
+                        </div>
                         <div class="task-d">
                             <div>@($"Est. $: {feature.EstimatedMinEarnings}K-{feature.EstimatedMaxEarnings}K")</div>
                             @* <div>Id: @feature.Id</div> *@
@@ -143,7 +115,6 @@
                             <div>Delivered: @(Math.Round(feature.DeliveredTaskPercentage*100, 1)) %</div>
                         </div>
                     <div class="task-f">
-                        <img class="notifier" src="Icons/questionmark.png" @onclick='(() => ShowFeatureDetails(feature))' />
                     </div>
                 </div>
                 }
