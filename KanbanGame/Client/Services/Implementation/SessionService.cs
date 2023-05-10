@@ -32,15 +32,7 @@ public class SessionService : ISessionService
 
     public async Task SimulateDay()
     {
-        EmployeesToUpdate = new List<Employee>();
-        KanbanTasksToUpdate = new List<KanbanTask>();
-        FeaturesToUpdate = new List<Feature>();
-        await UpdateEmployeesLocally();
-        await UpdateFeaturesLocally();
-        await UpdateKanbanTasksLocally();
-
-        await UpdateEntities();
-        await IncreaseCurrentDay();
+        await _http.PostAsync("api/session/simulateDay", null);
     }
 
     public async Task GetSessionInfo()
@@ -53,68 +45,5 @@ public class SessionService : ISessionService
     private async Task IncreaseCurrentDay()
     {
         await _http.PostAsync("api/session/increaseCurrentDay", null);
-    }
-
-    private async Task SimulateDayAPI() //todo: change name
-    {
-        await _http.PostAsync("api/session/simulateDay", null);
-    }
-
-    private async Task UpdateEmployeesLocally()
-    {
-        await _employeeService.GetActiveEmployees();
-
-        foreach (var e in _employeeService.Employees) { }
-    }
-
-    private async Task UpdateKanbanTasksLocally()
-    {
-        await _kanbanTaskService.GetActiveKanbanTasks();
-        foreach (var t in _kanbanTaskService.KanbanTasks)
-        {
-            t.Age++;
-            if (t.Assignee is not null)
-            {
-                t.EffortLeft -= t.Assignee.Productivity;
-                if (t.EffortLeft <= 0)
-                {
-                    t.EffortLeft = t.Effort;
-                    t.NextTaskStatus();
-                    t.Assignee = null;
-                }
-            }
-            KanbanTasksToUpdate.Add(t);
-        }
-    }
-
-    private async Task UpdateFeaturesLocally()
-    {
-        await _featureService.GetActiveFeatures();
-        foreach (var f in _featureService.Features)
-        {
-            if (f.Assignee is not null)
-            {
-                f.EffortLeft -= f.Assignee.Productivity;
-                if (f.EffortLeft <= 0)
-                {
-                    f.EffortLeft = f.Effort;
-                    f.NextFeatureStatus();
-                    f.Assignee = null;
-                }
-                FeaturesToUpdate.Add(f);
-            }
-        }
-    }
-
-    private async Task UpdateEntities()
-    {
-        foreach (var e in EmployeesToUpdate)
-            await _employeeService.UpdateEmployee(e.Id, e);
-
-        foreach (var f in FeaturesToUpdate)
-            await _featureService.UpdateFeature(f.Id, f);
-
-        foreach (var t in KanbanTasksToUpdate)
-            await _kanbanTaskService.UpdateKanbanTask(t.Id, t);
     }
 }
