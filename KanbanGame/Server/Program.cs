@@ -12,11 +12,13 @@ builder.Services.AddRazorPages();
 builder.Services.AddSingleton<IKanbanTaskService, KanbanTaskService>();
 builder.Services.AddSingleton<IEmployeeService, EmployeeService>();
 builder.Services.AddSingleton<IFeatureService, FeatureService>();
+builder.Services.AddSingleton<ISessionService, SessionService>();
 builder.Services.AddSignalR();
-builder.Services.AddResponseCompression(options =>
-    options.MimeTypes = ResponseCompressionDefaults
-    .MimeTypes
-    .Concat(new[] { "application/octet-stream" })
+builder.Services.AddResponseCompression(
+    options =>
+        options.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(
+            new[] { "application/octet-stream" }
+        )
 );
 builder.Services.AddScoped<DbSeeder>();
 
@@ -44,14 +46,12 @@ using (var scope = scopedFactory.CreateScope())
     service.Seed();
 }
 
-
 app.UseHttpsRedirection();
 
 app.UseBlazorFrameworkFiles();
 app.UseStaticFiles();
 
 app.UseRouting();
-
 
 app.MapRazorPages();
 app.MapControllers();

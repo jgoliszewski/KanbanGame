@@ -28,6 +28,7 @@ public class SessionService : ISessionService
     private List<Employee> EmployeesToUpdate;
     private List<KanbanTask> KanbanTasksToUpdate;
     private List<Feature> FeaturesToUpdate;
+    public Session Session { get; set; } = new Session { Day = 1 };
 
     public async Task SimulateDay()
     {
@@ -39,6 +40,24 @@ public class SessionService : ISessionService
         await UpdateKanbanTasksLocally();
 
         await UpdateEntities();
+        await IncreaseCurrentDay();
+    }
+
+    public async Task GetSessionInfo()
+    {
+        var result = await _http.GetFromJsonAsync<Session>("api/session/GetSessionInfo");
+        if (result is not null)
+            Session = result;
+    }
+
+    private async Task IncreaseCurrentDay()
+    {
+        await _http.PostAsync("api/session/increaseCurrentDay", null);
+    }
+
+    private async Task SimulateDayAPI() //todo: change name
+    {
+        await _http.PostAsync("api/session/simulateDay", null);
     }
 
     private async Task UpdateEmployeesLocally()
