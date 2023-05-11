@@ -21,6 +21,7 @@
                 <li>Status: @FeatureToShowDetails.Status</li>
                 <li>Number of tasks: @FeatureToShowDetails.KanbanTasks.Count</li>
                 <li>Est. earnings: @($"{FeatureToShowDetails.EstimatedMinEarnings}K-{FeatureToShowDetails.EstimatedMaxEarnings}K $")</li>
+                <li>Delivered: @(Math.Round(FeatureToShowDetails.DeliveredTaskPercentage*100, 1)) %</li>
                 
             }
         </Content>
@@ -88,12 +89,12 @@
                 Feature feature = (Feature)context;
                 if(feature.Status == Feature.FeatureStatus.ReadyForDevelopment || feature.Status == Feature.FeatureStatus.UnderDevelopment)
                 {
-                    <div class="task-card">
-                        <div class="task-h">
+                    <div class="feature-card-2">
+                        <div class="feature-h-2">
                             @feature.Title
                             <img class="notifier" src="Icons/info.png" @onclick='(() => ShowFeatureDetails(feature))' style="float:right"/>
                         </div>
-                        <div class="task-d">
+                        <div class="feature-t-2">
                             <div>@($"Est. $: {feature.EstimatedMinEarnings}K-{feature.EstimatedMaxEarnings}K")</div>
                             @* <div>Id: @feature.Id</div> *@
                             @* <div>Desc: @feature.Description</div> *@    
@@ -112,21 +113,18 @@
                                     }
                                 }
                             }
-                            <div>Delivered: @(Math.Round(feature.DeliveredTaskPercentage*100, 1)) %</div>
                         </div>
-                    <div class="task-f">
-                    </div>
                 </div>
                 }
                 else
                 {
-                    <div class="task-card">
-                        <div class="task-h">@feature.Title</div>
-                        <div class="task-d">
+                    <div class="feature-card-2">
+                        <div class="feature-h-2">@feature.Title</div>
+                        <div class="feature-t-2">
                             @* <div>Id: @feature.Id</div> *@
                             <div>Desc: @feature.Description</div>    
                         </div>
-                    <div class="task-f"></div>
+        
                 </div>
                 }
                 

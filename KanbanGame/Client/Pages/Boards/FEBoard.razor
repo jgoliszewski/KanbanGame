@@ -156,7 +156,6 @@
                         <div class="employee-a"><img src=@(employee.AvatarPath == null ? "Avatars/Default.png" : employee.AvatarPath) style="width:48px" alt="logo" /></div>
                         <div class="employee-d">
                             <div>Seniority: @employee.Seniority</div>
-                            <div>Role: @employee.CurrentRole</div>
                         </div>
                         <div class="employee-f">
                             <img class="notifier" src=@(!employee.IsHighLevelAnalyzer.HasValue ? "Icons/roles/letter_h_crossed.png" : employee.IsHighLevelAnalyzer.Value == true ? "Icons/roles/letter_h_filled.png" : "Icons/roles/letter_h_filled_light.png") />
@@ -175,10 +174,18 @@
                             @{
                                 if (kanbanTask.Status != KanbanTask.TaskStatus.Delivered)
                                 {
-                                    <img src=@(kanbanTask.Assignee == null ? "Avatars/Default.png" : kanbanTask.Assignee.AvatarPath) style="width:32px; float:left;" alt="avatar" />
+                                    if (kanbanTask.DependencyTask is not null && kanbanTask.DependencyTask.Status != KanbanTask.TaskStatus.Delivered)
+                                    {
+                                        <img class="notifier" src="Icons/block.png" style="float:left"/>
+                                    }
+                                    else
+                                    {
+                                        <img src=@(kanbanTask.Assignee == null ? "Avatars/Default.png" : kanbanTask.Assignee.AvatarPath) style="width:32px; float:left;" alt="avatar" />
+                                    }
                                 }
                             }
-                            @kanbanTask.Title
+                            
+                            <b>@kanbanTask.Title</b>
                             <img class="notifier" src="Icons/info.png" @onclick='(() => ShowCardDetails(card))' style="float:right"/>
                         </div>
                         <div class="task-d">

@@ -152,7 +152,6 @@
                         <div class="employee-a"><img src=@(employee.AvatarPath == null ? "Avatars/Default.png" : employee.AvatarPath) style="width:48px" alt="logo" /></div>
                         <div class="employee-d">
                             <div>Seniority: @employee.Seniority</div>
-                            <div>Role: @employee.CurrentRole</div>
                         </div>
                         <div class="employee-f">
                                 <img class="notifier" src=@(!employee.IsHighLevelAnalyzer.HasValue ? "Icons/roles/letter_h_crossed.png" : employee.IsHighLevelAnalyzer.Value == true ? "Icons/roles/letter_h_filled.png" : "Icons/roles/letter_h_filled_light.png") />
@@ -165,8 +164,8 @@
                 else if (card.Feature is not null)
                 {
                     Feature feature = card.Feature;
-                    <div class="task-card">
-                        <div class="task-h">
+                    <div class="feature-card">
+                        <div class="feature-h">
                             <div>
                                 @{
                                     if(feature.Status != Feature.FeatureStatus.ReadyForDevelopment && feature.Status != Feature.FeatureStatus.None)
@@ -178,7 +177,7 @@
                                 <img class="notifier" src="Icons/info.png" @onclick='(() => ShowCardDetails(card))' style="float:right"/>
                             </div>
                         </div>
-                        <div class="task-d">
+                        <div class="feature-d">
                             @{
                                 if (feature.Status == Feature.FeatureStatus.ReadyForDevelopment)
                                 {
@@ -195,24 +194,20 @@
                                 }
                             }
                         </div>
-                        <div class="task-f">
+                        <div class="feature-f">
                             @{
+                                if (feature.Status == Feature.FeatureStatus.ReadyForDevelopment || feature.Status == Feature.FeatureStatus.Doing2)
+                                {
+                                    <img class="notifier" src="Icons/trash.png" @onclick='(() => DeleteFeature(feature))'/>
+                                }
                                 <img class="notifier" src=@(feature.Star ? "Icons/star_filled.png" : "Icons/star.png") @onclick='(() => ChangeIconState(feature, "star"))'/>
                                 <img class="notifier" src=@(feature.Warning ? "Icons/warning_filled.png" : "Icons/warning.png") @onclick='(() => ChangeIconState(feature, "warning"))'/>
                                 <img class="notifier" src=@(feature.Pause ? "Icons/pause_filled.png" : "Icons/pause.png") @onclick='(() => ChangeIconState(feature, "pause"))'/>
                                 if (feature.Status == Feature.FeatureStatus.ReadyForDevelopment)
                                 {
-                                    <button class="btn btn-primary" style="float:right;"
-                                        @onclick="(() => SendFeatureTasksToTeams(feature))">
-                                        <i class="oi oi-arrow-circle-right"></i>
-                                    </button>
-                                    <button class="btn btn-danger" style="float:right;"
-                                        @onclick="(() => DeleteFeature(feature))">
-                                        <i class="oi oi-trash"></i>
-                                    </button>
+                                    <img class="notifier" src="Icons/arrow_right.png" @onclick='(() => SendFeatureTasksToTeams(feature))'/>
                                 }
                             }
-                            
                         </div>
                     </div>
                     }
