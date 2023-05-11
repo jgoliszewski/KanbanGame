@@ -81,6 +81,7 @@
     </DialogTemplates>
     <DialogEvents OnOverlayModalClick="@OverlayClick"></DialogEvents>
 </SfDialog>
+
 <div class="center">
 <div class="board-page">
     <div class="board-page-h">
@@ -143,42 +144,64 @@
                 @{
                     Card card = (Card)context;
 
-                    if (card.KanbanTask is null && card.Employee is not null)
+                    if (card.Employee is not null)
                     {
                         Employee employee = card.Employee;
 
                         <div class="employee-card">
                             <div class="employee-h">
                                 @employee.Name
-                                <img class="notifier" src="Icons/questionmark.png" @onclick='(() => ShowCardDetails(card))' style="float:right"/>
+                                <img class="notifier" src="Icons/info.png" @onclick='(() => ShowCardDetails(card))' style="float:right"/>
                             </div>
                             <div class="employee-a"><img src=@(employee.AvatarPath == null ? "Avatars/Default.png" : employee.AvatarPath) style="width:48px" alt="logo" /></div>
                             <div class="employee-d">
-                                <div>Productivity: @employee.Productivity</div>
                                 <div>Seniority: @employee.Seniority</div>
                                 <div>Role: @employee.CurrentRole</div>
                             </div>
+                            <div class="employee-f">
+                                <img class="notifier" src=@(!employee.IsHighLevelAnalyzer.HasValue ? "Icons/roles/letter_h_crossed.png" : employee.IsHighLevelAnalyzer.Value == true ? "Icons/roles/letter_h_filled.png" : "Icons/roles/letter_h_filled_light.png") />
+                                <img class="notifier" src=@(!employee.IsAnalyzer.HasValue ? "Icons/roles/letter_a_crossed.png" : employee.IsAnalyzer.Value == true ? "Icons/roles/letter_a_filled.png" : "Icons/roles/letter_a_filled_light.png") />
+                                <img class="notifier" src=@(!employee.IsDeveloper.HasValue ? "Icons/roles/letter_d_crossed.png" : employee.IsDeveloper.Value == true ? "Icons/roles/letter_d_filled.png" : "Icons/roles/letter_d_filled_light.png") />
+                                <img class="notifier" src=@(!employee.IsTester.HasValue ? "Icons/roles/letter_t_crossed.png" : employee.IsTester.Value == true ? "Icons/roles/letter_t_filled.png" : "Icons/roles/letter_t_filled_light.png") />
+                            </div>
                         </div>
                     }
-                    else if (card.Employee is null && card.KanbanTask is not null)
+                    else if (card.KanbanTask is not null)
                     {
                         KanbanTask kanbanTask = card.KanbanTask;
 
                         <div class="task-card">
                             <div class="task-h">
-                                @kanbanTask.Title
-                                <img class="notifier" src="Icons/questionmark.png" @onclick='(() => ShowCardDetails(card))' style="float:right"/>
+                                @{
+                                    if (kanbanTask.Status != KanbanTask.TaskStatus.Delivered)
+                                    {
+                                        <img src=@(kanbanTask.Assignee == null ? "Avatars/Default.png" : kanbanTask.Assignee.AvatarPath) style="width:32px; float:left;" alt="avatar" />
+                                    }
+                                    if (kanbanTask.DependencyTask is not null && kanbanTask.DependencyTask.Status != KanbanTask.TaskStatus.Delivered)
+                                    {
+                                        <b>@kanbanTask.Title</b>
+                                    }
+                                    else
+                                    {
+                                        <b>@kanbanTask.Title</b>
+                                    }
+                                }
+                                
+                                <img class="notifier" src="Icons/info.png" @onclick='(() => ShowCardDetails(card))' style="float:right"/>
                             </div>
                             <div class="task-d">
                                 <div>Age: @kanbanTask.Age</div>
-                                <div>Effort left: @kanbanTask.EffortLeft</div>
                                 <div>Depends on: <b>@(kanbanTask.DependencyTask == null ? "-" : kanbanTask.DependencyTask.Title)</b></div>
                             </div>
                             <div class="task-f">
-                                <img class="notifier" src=@(kanbanTask.Star ? "Icons/star_filled.png" : "Icons/star.png") @onclick='(() => ChangeIconState(kanbanTask, "star"))'/>
-                                <img class="notifier" src=@(kanbanTask.Warning ? "Icons/warning_filled.png" : "Icons/warning.png") @onclick='(() => ChangeIconState(kanbanTask, "warning"))'/>
-                                <img class="notifier" src=@(kanbanTask.Pause ? "Icons/pause_filled.png" : "Icons/pause.png") @onclick='(() => ChangeIconState(kanbanTask, "pause"))'/>
-                                <img src=@(kanbanTask.Assignee == null ? "Avatars/Default.png" : kanbanTask.Assignee.AvatarPath) style="width:32px; float:right;" alt="logo" />
+                            @{
+                                if (kanbanTask.Status != KanbanTask.TaskStatus.Delivered)
+                                {
+                                    <img class="notifier" src=@(kanbanTask.Star ? "Icons/star_filled.png" : "Icons/star.png") @onclick='(() => ChangeIconState(kanbanTask, "star"))'/>
+                                    <img class="notifier" src=@(kanbanTask.Warning ? "Icons/warning_filled.png" : "Icons/warning.png") @onclick='(() => ChangeIconState(kanbanTask, "warning"))'/>
+                                    <img class="notifier" src=@(kanbanTask.Pause ? "Icons/pause_filled.png" : "Icons/pause.png") @onclick='(() => ChangeIconState(kanbanTask, "pause"))'/>
+                                }
+                            }
                             </div>
                         </div>
                     }

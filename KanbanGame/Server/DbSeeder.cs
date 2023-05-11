@@ -29,7 +29,11 @@ public class DbSeeder
             Seniority = Employee.EmployeeSeniority.Mid,
             CurrentRole = Employee.Role.Analyzer,
             Team = Team.TeamName.BackEnd,
-            AvatarPath = "Avatars/Cthulhu.png"
+            AvatarPath = "Avatars/Cthulhu.png",
+            IsHighLevelAnalyzer = true,
+            IsAnalyzer = true,
+            IsDeveloper = null,
+            IsTester = false
         },
         new Employee()
         {
@@ -38,7 +42,11 @@ public class DbSeeder
             Seniority = Employee.EmployeeSeniority.Senior,
             CurrentRole = Employee.Role.Developer,
             Team = Team.TeamName.BackEnd,
-            AvatarPath = "Avatars/Witch.png"
+            AvatarPath = "Avatars/Witch.png",
+            IsHighLevelAnalyzer = false,
+            IsAnalyzer = true,
+            IsDeveloper = true,
+            IsTester = false
         },
         new Employee()
         {
@@ -47,7 +55,11 @@ public class DbSeeder
             Seniority = Employee.EmployeeSeniority.Junior,
             CurrentRole = Employee.Role.Tester,
             Team = Team.TeamName.BackEnd,
-            AvatarPath = "Avatars/Yeti.png"
+            AvatarPath = "Avatars/Yeti.png",
+            IsHighLevelAnalyzer = null,
+            IsAnalyzer = null,
+            IsDeveloper = false,
+            IsTester = true
         },
         new Employee()
         {
@@ -56,7 +68,11 @@ public class DbSeeder
             Seniority = Employee.EmployeeSeniority.Mid,
             CurrentRole = Employee.Role.Analyzer,
             Team = Team.TeamName.FrontEnd,
-            AvatarPath = "Avatars/Medusa.png"
+            AvatarPath = "Avatars/Medusa.png",
+            IsHighLevelAnalyzer = false,
+            IsAnalyzer = true,
+            IsDeveloper = false,
+            IsTester = null
         },
         new Employee()
         {
@@ -65,7 +81,11 @@ public class DbSeeder
             Seniority = Employee.EmployeeSeniority.Senior,
             CurrentRole = Employee.Role.Developer,
             Team = Team.TeamName.FrontEnd,
-            AvatarPath = "Avatars/Mummy.png"
+            AvatarPath = "Avatars/Mummy.png",
+            IsHighLevelAnalyzer = false,
+            IsAnalyzer = false,
+            IsDeveloper = true,
+            IsTester = false
         },
         new Employee()
         {
@@ -74,7 +94,11 @@ public class DbSeeder
             Seniority = Employee.EmployeeSeniority.Junior,
             CurrentRole = Employee.Role.Tester,
             Team = Team.TeamName.FrontEnd,
-            AvatarPath = "Avatars/Wednesday.png"
+            AvatarPath = "Avatars/Wednesday.png",
+            IsHighLevelAnalyzer = null,
+            IsAnalyzer = null,
+            IsDeveloper = false,
+            IsTester = true
         },
         new Employee()
         {
@@ -83,7 +107,11 @@ public class DbSeeder
             Seniority = Employee.EmployeeSeniority.Mid,
             CurrentRole = Employee.Role.HighLevelAnalyzer1,
             Team = Team.TeamName.HighLevelAnalysis,
-            AvatarPath = "Avatars/Reaper.png"
+            AvatarPath = "Avatars/Reaper.png",
+            IsHighLevelAnalyzer = true,
+            IsAnalyzer = true,
+            IsDeveloper = null,
+            IsTester = false
         },
         new Employee()
         {
@@ -92,7 +120,11 @@ public class DbSeeder
             Seniority = Employee.EmployeeSeniority.Mid,
             CurrentRole = Employee.Role.HighLevelAnalyzer2,
             Team = Team.TeamName.HighLevelAnalysis,
-            AvatarPath = "Avatars/Devil.png"
+            AvatarPath = "Avatars/Devil.png",
+            IsHighLevelAnalyzer = true,
+            IsAnalyzer = true,
+            IsDeveloper = false,
+            IsTester = null
         },
     };
 
@@ -185,9 +217,10 @@ public class DbSeeder
         Features[1].KanbanTasks = new List<KanbanTask>() { KanbanTasks[3], KanbanTasks[4] };
         Features[2].KanbanTasks = new List<KanbanTask>() { KanbanTasks[5], KanbanTasks[6] };
 
-        KanbanTasks[0].DependencyTask = KanbanTasks[2];
-        KanbanTasks[3].DependencyTask = KanbanTasks[4];
-        KanbanTasks[5].DependencyTask = KanbanTasks[6];
+        KanbanTasks[1].DependencyTask = KanbanTasks[0];
+        KanbanTasks[2].DependencyTask = KanbanTasks[0];
+        KanbanTasks[4].DependencyTask = KanbanTasks[3];
+        KanbanTasks[6].DependencyTask = KanbanTasks[5];
         foreach (var employee in Employees)
         {
             _EmployeeService.CreateEmployee(employee);

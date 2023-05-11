@@ -91,14 +91,14 @@
                     <div class="task-card">
                         <div class="task-h">
                             @feature.Title
-                            <img class="notifier" src="Icons/questionmark.png" @onclick='(() => ShowFeatureDetails(feature))' style="float:right"/>
+                            <img class="notifier" src="Icons/info.png" @onclick='(() => ShowFeatureDetails(feature))' style="float:right"/>
                         </div>
                         <div class="task-d">
                             <div>@($"Est. $: {feature.EstimatedMinEarnings}K-{feature.EstimatedMaxEarnings}K")</div>
                             @* <div>Id: @feature.Id</div> *@
                             @* <div>Desc: @feature.Description</div> *@    
                             @* <div>Task count: @feature.KanbanTasks.Count</div> *@
-                            <div>Tasks:</div>
+                            <div>Tasks(@(feature.KanbanTasks.Count)):</div>
                             @{
                                 foreach (var t in feature.KanbanTasks)
                                 {
@@ -125,7 +125,6 @@
                         <div class="task-d">
                             @* <div>Id: @feature.Id</div> *@
                             <div>Desc: @feature.Description</div>    
-                            <div>Task count: @feature.KanbanTasks.Count</div>
                         </div>
                     <div class="task-f"></div>
                 </div>

@@ -6,6 +6,10 @@ public class Employee
     public int Id { get; set; }
     public string Name { get; set; }
     public double Productivity { get; set; } = 0.2;
+    public bool? IsHighLevelAnalyzer { get; set; } = false;
+    public bool? IsAnalyzer { get; set; } = false;
+    public bool? IsDeveloper { get; set; } = false;
+    public bool? IsTester { get; set; } = false;
     public EmployeeSeniority Seniority { get; set; } = EmployeeSeniority.Junior;
     public EmployeeStatus Status { get; set; } = EmployeeStatus.Working;
     public Role CurrentRole { get; set; }
