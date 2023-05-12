@@ -26,105 +26,129 @@ public class DbSeeder
         {
             Name = "Tom",
             Productivity = 0.6,
-            Seniority = Employee.EmployeeSeniority.Mid,
-            CurrentRole = Employee.Role.Analyzer,
             Team = Team.TeamName.BackEnd,
             AvatarPath = "Avatars/Cthulhu.png",
-            IsHighLevelAnalyzer = true,
-            IsAnalyzer = true,
-            IsDeveloper = null,
-            IsTester = false
+            Roles = new Role()
+            {
+                Seniority = Role.EmployeeSeniority.Mid,
+                CurrentRole = Role.EmployeeRole.Analyzer,
+                IsHighLevelAnalyzer = true,
+                IsAnalyzer = true,
+                IsDeveloper = null,
+                IsTester = false
+            }
         },
         new Employee()
         {
             Name = "Olivia",
             Productivity = 0.9,
-            Seniority = Employee.EmployeeSeniority.Senior,
-            CurrentRole = Employee.Role.Developer,
             Team = Team.TeamName.BackEnd,
             AvatarPath = "Avatars/Witch.png",
-            IsHighLevelAnalyzer = false,
-            IsAnalyzer = true,
-            IsDeveloper = true,
-            IsTester = false
+            Roles = new Role()
+            {
+                Seniority = Role.EmployeeSeniority.Senior,
+                CurrentRole = Role.EmployeeRole.Developer,
+                IsHighLevelAnalyzer = false,
+                IsAnalyzer = false,
+                IsDeveloper = true,
+                IsTester = false
+            }
         },
         new Employee()
         {
             Name = "John",
             Productivity = 0.25,
-            Seniority = Employee.EmployeeSeniority.Junior,
-            CurrentRole = Employee.Role.Tester,
             Team = Team.TeamName.BackEnd,
             AvatarPath = "Avatars/Yeti.png",
-            IsHighLevelAnalyzer = null,
-            IsAnalyzer = null,
-            IsDeveloper = false,
-            IsTester = true
+            Roles = new Role()
+            {
+                Seniority = Role.EmployeeSeniority.Junior,
+                CurrentRole = Role.EmployeeRole.Tester,
+                IsHighLevelAnalyzer = null,
+                IsAnalyzer = null,
+                IsDeveloper = false,
+                IsTester = true
+            }
         },
         new Employee()
         {
             Name = "Emma",
             Productivity = 0.65,
-            Seniority = Employee.EmployeeSeniority.Mid,
-            CurrentRole = Employee.Role.Analyzer,
             Team = Team.TeamName.FrontEnd,
             AvatarPath = "Avatars/Medusa.png",
-            IsHighLevelAnalyzer = false,
-            IsAnalyzer = true,
-            IsDeveloper = false,
-            IsTester = null
+            Roles = new Role()
+            {
+                Seniority = Role.EmployeeSeniority.Mid,
+                CurrentRole = Role.EmployeeRole.Analyzer,
+                IsHighLevelAnalyzer = true,
+                IsAnalyzer = true,
+                IsDeveloper = null,
+                IsTester = false
+            }
         },
         new Employee()
         {
             Name = "Arthur",
             Productivity = 0.95,
-            Seniority = Employee.EmployeeSeniority.Senior,
-            CurrentRole = Employee.Role.Developer,
             Team = Team.TeamName.FrontEnd,
             AvatarPath = "Avatars/Mummy.png",
-            IsHighLevelAnalyzer = false,
-            IsAnalyzer = false,
-            IsDeveloper = true,
-            IsTester = false
+            Roles = new Role()
+            {
+                Seniority = Role.EmployeeSeniority.Senior,
+                CurrentRole = Role.EmployeeRole.Developer,
+                IsHighLevelAnalyzer = false,
+                IsAnalyzer = false,
+                IsDeveloper = true,
+                IsTester = false
+            }
         },
         new Employee()
         {
             Name = "Sarah",
             Productivity = 0.25,
-            Seniority = Employee.EmployeeSeniority.Junior,
-            CurrentRole = Employee.Role.Tester,
             Team = Team.TeamName.FrontEnd,
             AvatarPath = "Avatars/Wednesday.png",
-            IsHighLevelAnalyzer = null,
-            IsAnalyzer = null,
-            IsDeveloper = false,
-            IsTester = true
+            Roles = new Role()
+            {
+                Seniority = Role.EmployeeSeniority.Junior,
+                CurrentRole = Role.EmployeeRole.Tester,
+                IsHighLevelAnalyzer = null,
+                IsAnalyzer = null,
+                IsDeveloper = false,
+                IsTester = true
+            }
         },
         new Employee()
         {
             Name = "Andy",
             Productivity = 0.65,
-            Seniority = Employee.EmployeeSeniority.Mid,
-            CurrentRole = Employee.Role.HighLevelAnalyzer1,
             Team = Team.TeamName.HighLevelAnalysis,
             AvatarPath = "Avatars/Reaper.png",
-            IsHighLevelAnalyzer = true,
-            IsAnalyzer = true,
-            IsDeveloper = null,
-            IsTester = false
+            Roles = new Role()
+            {
+                Seniority = Role.EmployeeSeniority.Mid,
+                CurrentRole = Role.EmployeeRole.HighLevelAnalyzer1,
+                IsHighLevelAnalyzer = true,
+                IsAnalyzer = true,
+                IsDeveloper = null,
+                IsTester = false
+            }
         },
         new Employee()
         {
             Name = "Hannah",
             Productivity = 0.60,
-            Seniority = Employee.EmployeeSeniority.Mid,
-            CurrentRole = Employee.Role.HighLevelAnalyzer2,
             Team = Team.TeamName.HighLevelAnalysis,
             AvatarPath = "Avatars/Devil.png",
-            IsHighLevelAnalyzer = true,
-            IsAnalyzer = true,
-            IsDeveloper = false,
-            IsTester = null
+            Roles = new Role()
+            {
+                Seniority = Role.EmployeeSeniority.Mid,
+                CurrentRole = Role.EmployeeRole.HighLevelAnalyzer2,
+                IsHighLevelAnalyzer = true,
+                IsAnalyzer = true,
+                IsDeveloper = false,
+                IsTester = null
+            }
         },
     };
 
@@ -218,7 +242,6 @@ public class DbSeeder
         Features[2].KanbanTasks = new List<KanbanTask>() { KanbanTasks[5], KanbanTasks[6] };
 
         KanbanTasks[1].DependencyTask = KanbanTasks[0];
-        KanbanTasks[2].DependencyTask = KanbanTasks[0];
         KanbanTasks[4].DependencyTask = KanbanTasks[3];
         KanbanTasks[6].DependencyTask = KanbanTasks[5];
         foreach (var employee in Employees)

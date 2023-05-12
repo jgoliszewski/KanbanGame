@@ -41,8 +41,9 @@
                                     <li>Productivity: @employee.Productivity</li>
                                     <li>Status: @employee.Roles.Status</li>
                                     <li>Role: @employee.Roles.CurrentRole</li>
+                                    <li>Learning days left: @employee.Roles.LearningDaysLeft Days</li>
+                                    <li>Transitioning days left: @employee.Roles.TransitioningDaysLeft Days</li>
                                     <img src=@(employee.AvatarPath == null ? "Avatars/Default.png" : employee.AvatarPath) style="width:48px;float:right;" alt="logo" />
-                                    <li>Blocked: @employee.Roles.TrainingDaysLeft Days</li>
                 }
                 else if (CardToShowDetails.KanbanTask is not null)
                 {
@@ -170,7 +171,15 @@
                             {
                                 <div class="employee-l">
                                     <img class="notifier" src="Icons/block.png" style="float:left"/>
-                                    <div>@employee.Roles.TrainingDaysLeft Days left</div>
+                                    <div>@employee.Roles.LearningDaysLeft Days Left</div>
+                                    <img class="notifier" src="Icons/block.png" style="float:left"/>
+                                </div>
+                            }
+                            if (employee.Roles.Status == Role.EmployeeStatus.Transitioning)
+                            {
+                                <div class="employee-l">
+                                    <img class="notifier" src="Icons/block.png" style="float:left"/>
+                                    <div>@employee.Roles.TransitioningDaysLeft Days Left</div>
                                     <img class="notifier" src="Icons/block.png" style="float:left"/>
                                 </div>
                             }

@@ -62,41 +62,35 @@ public class SessionService : ISessionService
         {
             if (e.Roles.Status == Role.EmployeeStatus.Learning)
             {
-                switch (e.Roles.CurrentRole)
+                e.Roles.LearningDaysLeft--;
+                if (e.Roles.LearningDaysLeft <= 0)
                 {
-                    case Role.EmployeeRole.Analyzer:
-                        e.Roles.AnalyzerTrainingDaysLeft--;
-                        if (e.Roles.AnalyzerTrainingDaysLeft <= 0)
-                        {
+                    e.Roles.Status = Role.EmployeeStatus.Working;
+                    switch (e.Roles.CurrentRole)
+                    {
+                        case Role.EmployeeRole.Analyzer:
                             e.Roles.IsAnalyzer = true;
-                            e.Roles.Status = Role.EmployeeStatus.Working;
-                        }
-                        break;
-                    case Role.EmployeeRole.Developer:
-                        e.Roles.DeveloperTrainingDaysLeft--;
-                        if (e.Roles.DeveloperTrainingDaysLeft <= 0)
-                        {
+                            break;
+                        case Role.EmployeeRole.Developer:
                             e.Roles.IsDeveloper = true;
-                            e.Roles.Status = Role.EmployeeStatus.Working;
-                        }
-                        break;
-                    case Role.EmployeeRole.Tester:
-                        e.Roles.TesterTrainingDaysLeft--;
-                        if (e.Roles.TesterTrainingDaysLeft <= 0)
-                        {
+                            break;
+                        case Role.EmployeeRole.Tester:
                             e.Roles.IsTester = true;
-                            e.Roles.Status = Role.EmployeeStatus.Working;
-                        }
-                        break;
-                    case Role.EmployeeRole.HighLevelAnalyzer1:
-                    case Role.EmployeeRole.HighLevelAnalyzer2:
-                        e.Roles.HLAnalyzerTrainingDaysLeft--;
-                        if (e.Roles.HLAnalyzerTrainingDaysLeft <= 0)
-                        {
+                            break;
+                        case Role.EmployeeRole.HighLevelAnalyzer1:
+                        case Role.EmployeeRole.HighLevelAnalyzer2:
                             e.Roles.IsHighLevelAnalyzer = true;
-                            e.Roles.Status = Role.EmployeeStatus.Working;
-                        }
-                        break;
+                            break;
+                    }
+                }
+            }
+
+            if (e.Roles.Status == Role.EmployeeStatus.Transitioning)
+            {
+                e.Roles.TransitioningDaysLeft--;
+                if (e.Roles.TransitioningDaysLeft <= 0)
+                {
+                    e.Roles.Status = Role.EmployeeStatus.Working;
                 }
             }
         }

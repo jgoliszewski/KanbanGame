@@ -3,19 +3,13 @@ using System.ComponentModel.DataAnnotations;
 
 public class Role
 {
-    public int TrainingDaysLeft
-    {
-        get => GetTrainingDaysLeft();
-    }
+    public int LearningDaysLeft { get; set; } = 0;
+    public int TransitioningDaysLeft { get; set; } = 0;
 
     public bool? IsHighLevelAnalyzer { get; set; } = false;
-    public int HLAnalyzerTrainingDaysLeft { get; set; } = 5;
     public bool? IsAnalyzer { get; set; } = false;
-    public int AnalyzerTrainingDaysLeft { get; set; } = 5;
     public bool? IsDeveloper { get; set; } = false;
-    public int DeveloperTrainingDaysLeft { get; set; } = 5;
     public bool? IsTester { get; set; } = false;
-    public int TesterTrainingDaysLeft { get; set; } = 5;
 
     public EmployeeSeniority Seniority { get; set; } = EmployeeSeniority.Junior;
     public EmployeeStatus Status { get; set; } = EmployeeStatus.Working;
@@ -23,25 +17,7 @@ public class Role
     public Team.TeamName Team { get; set; }
     public string AvatarPath { get; set; } = "Avatars/Default.png";
 
-    private int GetTrainingDaysLeft()
-    {
-        switch (CurrentRole)
-        {
-            case EmployeeRole.HighLevelAnalyzer1:
-                return HLAnalyzerTrainingDaysLeft;
-            case EmployeeRole.HighLevelAnalyzer2:
-                return HLAnalyzerTrainingDaysLeft;
-            case EmployeeRole.Analyzer:
-                return AnalyzerTrainingDaysLeft;
-            case EmployeeRole.Developer:
-                return DeveloperTrainingDaysLeft;
-            case EmployeeRole.Tester:
-                return TesterTrainingDaysLeft;
-            default:
-                return 0;
-        }
-    }
-
+    //todo: refactor this monster
     public EmployeeRole ColumnToRole(string column)
     {
         switch (column.ToLower())
@@ -49,58 +25,94 @@ public class Role
             case "backlog":
                 return CurrentRole;
             case "analysisdoing":
-                if (IsAnalyzer is not null)
+                if (IsAnalyzer is not null && CurrentRole != EmployeeRole.Analyzer)
                 {
                     if (!IsAnalyzer.Value)
+                    {
                         Status = EmployeeStatus.Learning;
+                        LearningDaysLeft = 5;
+                    }
                     else
-                        Status = EmployeeStatus.Working;
+                    {
+                        Status = EmployeeStatus.Transitioning;
+                        TransitioningDaysLeft = 2;
+                    }
                     return EmployeeRole.Analyzer;
                 }
                 else
                     return CurrentRole;
             case "developmentwaiting":
             case "developmentdoing":
-                if (IsDeveloper is not null)
+                if (IsDeveloper is not null && CurrentRole != EmployeeRole.Developer)
                 {
                     if (!IsDeveloper.Value)
+                    {
                         Status = EmployeeStatus.Learning;
+                        LearningDaysLeft = 5;
+                    }
                     else
-                        Status = EmployeeStatus.Working;
+                    {
+                        Status = EmployeeStatus.Transitioning;
+                        TransitioningDaysLeft = 2;
+                    }
                     return EmployeeRole.Developer;
                 }
                 else
                     return CurrentRole;
             case "testwaiting":
             case "testdoing":
-                if (IsTester is not null)
+                if (IsTester is not null && CurrentRole != EmployeeRole.Tester)
                 {
                     if (!IsTester.Value)
+                    {
                         Status = EmployeeStatus.Learning;
+                        LearningDaysLeft = 5;
+                    }
                     else
-                        Status = EmployeeStatus.Working;
+                    {
+                        Status = EmployeeStatus.Transitioning;
+                        TransitioningDaysLeft = 2;
+                    }
                     return EmployeeRole.Tester;
                 }
                 else
                     return CurrentRole;
             case "doing1":
-                if (IsHighLevelAnalyzer is not null)
+                if (
+                    IsHighLevelAnalyzer is not null
+                    && CurrentRole != EmployeeRole.HighLevelAnalyzer1
+                )
                 {
                     if (!IsHighLevelAnalyzer.Value)
+                    {
                         Status = EmployeeStatus.Learning;
+                        LearningDaysLeft = 5;
+                    }
                     else
-                        Status = EmployeeStatus.Working;
+                    {
+                        Status = EmployeeStatus.Transitioning;
+                        TransitioningDaysLeft = 2;
+                    }
                     return EmployeeRole.HighLevelAnalyzer1;
                 }
                 else
                     return CurrentRole;
             case "doing2":
-                if (IsHighLevelAnalyzer is not null)
+                if (
+                    IsHighLevelAnalyzer is not null
+                    && CurrentRole != EmployeeRole.HighLevelAnalyzer2
+                )
                 {
                     if (!IsHighLevelAnalyzer.Value)
+                    {
                         Status = EmployeeStatus.Learning;
+                        LearningDaysLeft = 5;
+                    }
                     else
-                        Status = EmployeeStatus.Working;
+                    {
+                        Status = EmployeeStatus.Transitioning;
+                        TransitioningDaysLeft = 2;
+                    }
                     return EmployeeRole.HighLevelAnalyzer2;
                 }
                 else
@@ -140,6 +152,7 @@ public class Role
     {
         Working,
         Learning,
+        Transitioning,
         NotWorking
     }
 
