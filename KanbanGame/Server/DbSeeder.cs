@@ -32,6 +32,7 @@ public class DbSeeder
             {
                 Seniority = Role.EmployeeSeniority.Mid,
                 CurrentRole = Role.EmployeeRole.Analyzer,
+                PreviousRole = Role.EmployeeRole.Analyzer,
                 IsHighLevelAnalyzer = true,
                 IsAnalyzer = true,
                 IsDeveloper = null,
@@ -48,6 +49,7 @@ public class DbSeeder
             {
                 Seniority = Role.EmployeeSeniority.Senior,
                 CurrentRole = Role.EmployeeRole.Developer,
+                PreviousRole = Role.EmployeeRole.Developer,
                 IsHighLevelAnalyzer = false,
                 IsAnalyzer = false,
                 IsDeveloper = true,
@@ -64,6 +66,7 @@ public class DbSeeder
             {
                 Seniority = Role.EmployeeSeniority.Junior,
                 CurrentRole = Role.EmployeeRole.Tester,
+                PreviousRole = Role.EmployeeRole.Tester,
                 IsHighLevelAnalyzer = null,
                 IsAnalyzer = null,
                 IsDeveloper = false,
@@ -80,6 +83,7 @@ public class DbSeeder
             {
                 Seniority = Role.EmployeeSeniority.Mid,
                 CurrentRole = Role.EmployeeRole.Analyzer,
+                PreviousRole = Role.EmployeeRole.Analyzer,
                 IsHighLevelAnalyzer = true,
                 IsAnalyzer = true,
                 IsDeveloper = null,
@@ -96,6 +100,7 @@ public class DbSeeder
             {
                 Seniority = Role.EmployeeSeniority.Senior,
                 CurrentRole = Role.EmployeeRole.Developer,
+                PreviousRole = Role.EmployeeRole.Developer,
                 IsHighLevelAnalyzer = false,
                 IsAnalyzer = false,
                 IsDeveloper = true,
@@ -112,6 +117,7 @@ public class DbSeeder
             {
                 Seniority = Role.EmployeeSeniority.Junior,
                 CurrentRole = Role.EmployeeRole.Tester,
+                PreviousRole = Role.EmployeeRole.Tester,
                 IsHighLevelAnalyzer = null,
                 IsAnalyzer = null,
                 IsDeveloper = false,
@@ -128,6 +134,7 @@ public class DbSeeder
             {
                 Seniority = Role.EmployeeSeniority.Mid,
                 CurrentRole = Role.EmployeeRole.HighLevelAnalyzer1,
+                PreviousRole = Role.EmployeeRole.HighLevelAnalyzer1,
                 IsHighLevelAnalyzer = true,
                 IsAnalyzer = true,
                 IsDeveloper = null,
@@ -144,6 +151,7 @@ public class DbSeeder
             {
                 Seniority = Role.EmployeeSeniority.Mid,
                 CurrentRole = Role.EmployeeRole.HighLevelAnalyzer2,
+                PreviousRole = Role.EmployeeRole.HighLevelAnalyzer2,
                 IsHighLevelAnalyzer = true,
                 IsAnalyzer = true,
                 IsDeveloper = false,

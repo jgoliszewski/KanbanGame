@@ -60,6 +60,7 @@ public class SessionService : ISessionService
         var EmployeesToUpdate = await _employeeService.GetActiveEmployees();
         foreach (var e in EmployeesToUpdate)
         {
+            e.Roles.PreviousRole = e.Roles.CurrentRole;
             if (e.Roles.Status == Role.EmployeeStatus.Learning)
             {
                 e.Roles.LearningDaysLeft--;

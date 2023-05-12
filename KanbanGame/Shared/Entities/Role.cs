@@ -14,6 +14,7 @@ public class Role
     public EmployeeSeniority Seniority { get; set; } = EmployeeSeniority.Junior;
     public EmployeeStatus Status { get; set; } = EmployeeStatus.Working;
     public EmployeeRole CurrentRole { get; set; }
+    public EmployeeRole PreviousRole { get; set; }
     public Team.TeamName Team { get; set; }
     public string AvatarPath { get; set; } = "Avatars/Default.png";
 
@@ -32,10 +33,16 @@ public class Role
                         Status = EmployeeStatus.Learning;
                         LearningDaysLeft = 5;
                     }
-                    else
+                    else if (PreviousRole != EmployeeRole.Analyzer)
                     {
                         Status = EmployeeStatus.Transitioning;
                         TransitioningDaysLeft = 2;
+                    }
+                    else
+                    {
+                        LearningDaysLeft = 0;
+                        TransitioningDaysLeft = 0;
+                        Status = EmployeeStatus.Working;
                     }
                     return EmployeeRole.Analyzer;
                 }
@@ -50,10 +57,16 @@ public class Role
                         Status = EmployeeStatus.Learning;
                         LearningDaysLeft = 5;
                     }
-                    else
+                    else if (PreviousRole != EmployeeRole.Developer)
                     {
                         Status = EmployeeStatus.Transitioning;
                         TransitioningDaysLeft = 2;
+                    }
+                    else
+                    {
+                        LearningDaysLeft = 0;
+                        TransitioningDaysLeft = 0;
+                        Status = EmployeeStatus.Working;
                     }
                     return EmployeeRole.Developer;
                 }
@@ -68,10 +81,16 @@ public class Role
                         Status = EmployeeStatus.Learning;
                         LearningDaysLeft = 5;
                     }
-                    else
+                    else if (PreviousRole != EmployeeRole.Tester)
                     {
                         Status = EmployeeStatus.Transitioning;
                         TransitioningDaysLeft = 2;
+                    }
+                    else
+                    {
+                        LearningDaysLeft = 0;
+                        TransitioningDaysLeft = 0;
+                        Status = EmployeeStatus.Working;
                     }
                     return EmployeeRole.Tester;
                 }
@@ -88,10 +107,16 @@ public class Role
                         Status = EmployeeStatus.Learning;
                         LearningDaysLeft = 5;
                     }
-                    else
+                    else if (PreviousRole != EmployeeRole.HighLevelAnalyzer1)
                     {
                         Status = EmployeeStatus.Transitioning;
                         TransitioningDaysLeft = 2;
+                    }
+                    else
+                    {
+                        LearningDaysLeft = 0;
+                        TransitioningDaysLeft = 0;
+                        Status = EmployeeStatus.Working;
                     }
                     return EmployeeRole.HighLevelAnalyzer1;
                 }
@@ -108,10 +133,16 @@ public class Role
                         Status = EmployeeStatus.Learning;
                         LearningDaysLeft = 5;
                     }
-                    else
+                    else if (PreviousRole != EmployeeRole.HighLevelAnalyzer2)
                     {
                         Status = EmployeeStatus.Transitioning;
                         TransitioningDaysLeft = 2;
+                    }
+                    else
+                    {
+                        LearningDaysLeft = 0;
+                        TransitioningDaysLeft = 0;
+                        Status = EmployeeStatus.Working;
                     }
                     return EmployeeRole.HighLevelAnalyzer2;
                 }
