@@ -120,6 +120,13 @@
         <div style="margin:10px;font-size: large;">Users ready: @readyUserCount / @connectedUserCount</div>
     </div>
     <div class="board-page-b">
+        <div class="stacked-header" style="width: 1788px">
+            <div class="stacked-header-title" style="flex-grow: 245;background:var(--gray-dark)">Backlog</div>
+            <div class="stacked-header-title" style="flex-grow: 245;background:var(--green)">Analysis</div>
+            <div class="stacked-header-title" style="flex-grow: 500;background:var(--blue)">Development</div>
+            <div class="stacked-header-title" style="flex-grow: 498;background:var(--red)">Test</div>
+            <div class="stacked-header-title" style="flex-grow: 245;background:var(--gray-darker)">Delivered</div>
+        </div>
         <SfKanban TValue="Card" KeyField="Column" DataSource="BoardService.Cards" Width="1800px">
         <KanbanColumns>
             <KanbanColumn HeaderText="" KeyField="@(new List<string>() {"Backlog"})" TransitionColumns="@(new List<string>() {"AnalysisDoing"})"></KanbanColumn>
@@ -130,13 +137,6 @@
             <KanbanColumn HeaderText="Doing" MaxCount="@BoardService.ColumnMaxCount["TestDoing"]" KeyField="@(new List<string>() {"TestDoing"})" TransitionColumns="@(new List<string>() {"TestWaiting", "AnalysisDoing", "DevelopmentDoing", "TestDoing"})"></KanbanColumn>
             <KanbanColumn HeaderText="" KeyField="@(new List<string>() {"Delivered"})" AllowDrag="false"></KanbanColumn>
         </KanbanColumns>
-        <KanbanStackedHeaders>
-            <KanbanStackedHeader Text="Backlog" KeyFields="@(new List<string>() {"Backlog"})"></KanbanStackedHeader>
-            <KanbanStackedHeader Text="Analysis" KeyFields="@(new List<string>() {"AnalysisDoing"})"></KanbanStackedHeader>
-            <KanbanStackedHeader Text="Development" KeyFields="@(new List<string>() {"DevelopmentWaiting", "DevelopmentDoing"})"></KanbanStackedHeader>
-            <KanbanStackedHeader Text="Test" KeyFields="@(new List<string>() {"TestWaiting", "TestDoing"})"></KanbanStackedHeader>
-            <KanbanStackedHeader Text="Delivered" KeyFields="@(new List<string>() {"Delivered"})"></KanbanStackedHeader>
-        </KanbanStackedHeaders>
         <KanbanSortSettings SortBy="SortOrderBy.Index" Field="RankId"></KanbanSortSettings>
         <KanbanEvents TValue="Card" DragStart="@DragStartHandler" DragStop="@DragStopHandler" CardDoubleClick="@CardDoubleClickHandler"></KanbanEvents>
         <KanbanCardSettings HeaderField="Id">

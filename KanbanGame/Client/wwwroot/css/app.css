@@ -8,9 +8,17 @@
 
 :root{
     --red: #F44336;
+    --red-light: #FDDDDA;
     --green: #4CAF50;
+    --green-light: #DEF0DF;
     --blue: #2196F3;
+    --blue-light: #D7ECFD;
     --yellow: #FFC107;
+    --yellow-light: #FFF4D2;
+    --gray-light: #D1D1D1;
+    --gray-lighter: #e4e4e4;
+    --gray-dark: #8B8B8B;
+    --gray-darker: #464646;
 }
 
 html, body {
@@ -181,6 +189,7 @@ a, .btn-link {
 .board-page-b { 
     grid-area: b;
     display: flex;
+    flex-wrap: wrap;
     justify-content: center;
     align-items: center;
 }
@@ -189,19 +198,144 @@ a, .btn-link {
 
 .e-control .e-card { 
     font-family: 'Varela Round' !important;   
+}
+.e-kanban { 
+    font-family: 'Varela Round' !important;   
 } 
+
+
+.e-kanban .e-kanban-header .e-header-cells .e-header-text {
+    font-size: 20px !important;
+    color: white !important;
+}
+
+.e-kanban .e-kanban-header .e-header-cells .e-header-wrap .e-header-title{
+    justify-content: center !important;
+}
+
+.e-kanban .e-kanban-header .e-header-cells.e-stacked-header-cell {
+    background-color: var(--gray-dark);
+    text-align: center;
+}
 
 .e-kanban .e-kanban-header .e-header-cells .e-limits .e-max-count{
     content-visibility: hidden;
 }
+
 .e-item-count{
     content-visibility: hidden;
 }
 
-/* .e-kanban .e-kanban-table.e-header-table .e-header-row:not(.e-swimlane-row) th[data-key="Backlog"] {
-    background-color: #79c8f7;
-} */
-    
+/* ----------------Headers---------------- */
+.e-kanban .e-kanban-table.e-header-table .e-header-row:not(.e-swimlane-row) th[data-key="Backlog"] {
+    background-color: var(--gray-dark);
+}
+.e-kanban .e-kanban-table.e-header-table .e-header-row:not(.e-swimlane-row) th[data-key="AnalysisDoing"] {
+    background-color: var(--green);
+}
+.e-kanban .e-kanban-table.e-header-table .e-header-row:not(.e-swimlane-row) th[data-key="DevelopmentWaiting"] {
+    background-color: var(--blue);
+}
+.e-kanban .e-kanban-table.e-header-table .e-header-row:not(.e-swimlane-row) th[data-key="DevelopmentDoing"] {
+    background-color: var(--blue);
+}
+.e-kanban .e-kanban-table.e-header-table .e-header-row:not(.e-swimlane-row) th[data-key="TestWaiting"] {
+    background-color: var(--red);
+}
+.e-kanban .e-kanban-table.e-header-table .e-header-row:not(.e-swimlane-row) th[data-key="TestDoing"] {
+    background-color: var(--red);
+}
+.e-kanban .e-kanban-table.e-header-table .e-header-row:not(.e-swimlane-row) th[data-key="Doing1"] {
+    background-color: var(--yellow);
+}
+.e-kanban .e-kanban-table.e-header-table .e-header-row:not(.e-swimlane-row) th[data-key="Doing2"] {
+    background-color: var(--yellow);
+}
+.e-kanban .e-kanban-table.e-header-table .e-header-row:not(.e-swimlane-row) th[data-key="Delivered"] {
+    background-color: var(--gray-darker);
+}
+.e-kanban .e-kanban-table.e-header-table .e-header-row:not(.e-swimlane-row) th[data-key="ReadyForDevelopment"] {
+    background-color: var(--gray-darker);
+}
+.e-kanban .e-kanban-table.e-header-table .e-header-row:not(.e-swimlane-row) th[data-key="None"] {
+    background-color: var(--gray-light);
+}
+.e-kanban .e-kanban-table.e-header-table .e-header-row:not(.e-swimlane-row) th[data-key="Zero_Twenty"] {
+    background-color: var(--gray-light);
+}
+.e-kanban .e-kanban-table.e-header-table .e-header-row:not(.e-swimlane-row) th[data-key="Twenty_Forty"] {
+    background-color: var(--gray-light);
+}
+.e-kanban .e-kanban-table.e-header-table .e-header-row:not(.e-swimlane-row) th[data-key="Forty_Sixty"] {
+    background-color: var(--gray-light);
+}
+.e-kanban .e-kanban-table.e-header-table .e-header-row:not(.e-swimlane-row) th[data-key="Sixty_Eighty"] {
+    background-color: var(--gray-light);
+}
+.e-kanban .e-kanban-table.e-header-table .e-header-row:not(.e-swimlane-row) th[data-key="Eighty_Hundred"] {
+    background-color: var(--gray-light);
+}
+.e-kanban .e-kanban-table.e-header-table .e-header-row:not(.e-swimlane-row) th[data-key="Hundred"] {
+    background-color: var(--gray-light);
+}
+
+/* ----------------Columns---------------- */
+.e-kanban .e-kanban-table.e-content-table .e-content-row:not(.e-swimlane-row) td[data-key="TestWaiting"]{
+    background-color: var(--red-light);
+}
+.e-kanban .e-kanban-table.e-content-table .e-content-row:not(.e-swimlane-row) td[data-key="TestDoing"] {
+    background-color: var(--red-light);
+}
+.e-kanban .e-kanban-table.e-content-table .e-content-row:not(.e-swimlane-row) td[data-key="DevelopmentWaiting"] {
+    background-color: var(--blue-light);
+}
+.e-kanban .e-kanban-table.e-content-table .e-content-row:not(.e-swimlane-row) td[data-key="DevelopmentDoing"] {
+    background-color: var(--blue-light);
+}
+.e-kanban .e-kanban-table.e-content-table .e-content-row:not(.e-swimlane-row) td[data-key="AnalysisDoing"] {
+    background-color: var(--green-light);
+}
+.e-kanban .e-kanban-table.e-content-table .e-content-row:not(.e-swimlane-row) td[data-key="Doing1"] {
+    background-color: var(--yellow-light);
+}
+.e-kanban .e-kanban-table.e-content-table .e-content-row:not(.e-swimlane-row) td[data-key="Doing2"] {
+    background-color: var(--yellow-light);
+}
+.e-kanban .e-kanban-table.e-content-table .e-content-row:not(.e-swimlane-row) td[data-key="Delivered"] {
+    background-color: var(--gray-dark);
+}
+.e-kanban .e-kanban-table.e-content-table .e-content-row:not(.e-swimlane-row) td[data-key="ReadyForDevelopment"] {
+    background-color: var(--gray-dark);
+}
+.e-kanban .e-kanban-table.e-content-table .e-content-row:not(.e-swimlane-row) td[data-key="Backlog"] {
+    background-color: var(--gray-light);
+}
+.e-kanban .e-kanban-table.e-content-table .e-content-row:not(.e-swimlane-row) td[data-key="None"] {
+    background-color: var(--gray-lighter);
+}
+.e-kanban .e-kanban-table.e-content-table .e-content-row:not(.e-swimlane-row) td[data-key="Hundred"] {
+    background-color: var(--gray-lighter);
+}
+
+.stacked-header {
+    display: flex;
+    flex-wrap: nowrap;
+    justify-self: space-around;
+    align-items: stretch;
+    color: white !important;
+    font-size: 20px !important;
+}
+.stacked-header-title {
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 48px;
+    margin-left: 4px;
+    margin-right: 4px;
+    border-radius: 4px;
+    flex: 1 0 0;
+}
 
 .task-card {  
     display: grid;
