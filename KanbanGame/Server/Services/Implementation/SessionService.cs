@@ -107,7 +107,7 @@ public class SessionService : ISessionService
             else
                 t.Age++;
 
-            if (t.Assignee is not null)
+            if (t.Assignee is not null && t.Assignee.Roles.Status == Role.EmployeeStatus.Working)
             {
                 t.EffortLeft -= t.Assignee.Productivity;
                 if (t.EffortLeft <= 0)

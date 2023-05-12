@@ -95,7 +95,11 @@ public class BoardService : IBoardService
         {
             var card = TaskToCard(t, ColumnCount[t.SF_Column]);
             var cardAbove = FindCardAbove(card);
-            if (cardAbove is not null && cardAbove.Employee is not null)
+            if (
+                cardAbove is not null
+                && cardAbove.Employee is not null
+                && cardAbove.Employee.Roles.Status == Role.EmployeeStatus.Working
+            )
             {
                 card.KanbanTask.Assignee = cardAbove.Employee;
                 await _kanbanTaskService.UpdateKanbanTask(card.KanbanTask.Id, card.KanbanTask); //todo: can do it better? This solution do not send update to HUB
@@ -145,7 +149,11 @@ public class BoardService : IBoardService
         {
             var card = FeatureToCard(f, ColumnCount[f.SF_Column]);
             var cardAbove = FindCardAbove(card);
-            if (cardAbove is not null && cardAbove.Employee is not null)
+            if (
+                cardAbove is not null
+                && cardAbove.Employee is not null
+                && cardAbove.Employee.Roles.Status == Role.EmployeeStatus.Working
+            )
             {
                 card.Feature.Assignee = cardAbove.Employee;
                 await _featureService.UpdateFeature(card.Feature.Id, card.Feature); //todo: can do it better? This solution do not send update to HUB
@@ -252,8 +260,9 @@ public class BoardService : IBoardService
 
                 if (cardAbove is not null && cardAbove.Employee is not null)
                 {
-                    card.KanbanTask.Assignee = cardAbove.Employee;
                     card.KanbanTask.SF_Column = cardAbove.Employee.SF_Column;
+                    if (cardAbove.Employee.Roles.Status == Role.EmployeeStatus.Working)
+                        card.KanbanTask.Assignee = cardAbove.Employee;
                 }
                 else
                 {
@@ -266,8 +275,9 @@ public class BoardService : IBoardService
 
                 if (cardAbove is not null && cardAbove.Employee is not null)
                 {
-                    card.Feature.Assignee = cardAbove.Employee;
                     card.Feature.SF_Column = cardAbove.Employee.SF_Column;
+                    if (cardAbove.Employee.Roles.Status == Role.EmployeeStatus.Working)
+                        card.Feature.Assignee = cardAbove.Employee;
                 }
                 else
                 {
