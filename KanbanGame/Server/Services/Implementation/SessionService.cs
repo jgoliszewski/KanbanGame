@@ -58,7 +58,48 @@ public class SessionService : ISessionService
     private async Task UpdateEmployeesLocally()
     {
         var EmployeesToUpdate = await _employeeService.GetActiveEmployees();
-        foreach (var e in EmployeesToUpdate) { }
+        foreach (var e in EmployeesToUpdate)
+        {
+            if (e.Roles.Status == Role.EmployeeStatus.Learning)
+            {
+                switch (e.Roles.CurrentRole)
+                {
+                    case Role.EmployeeRole.Analyzer:
+                        e.Roles.AnalyzerTrainingDaysLeft--;
+                        if (e.Roles.AnalyzerTrainingDaysLeft <= 0)
+                        {
+                            e.Roles.IsAnalyzer = true;
+                            e.Roles.Status = Role.EmployeeStatus.Working;
+                        }
+                        break;
+                    case Role.EmployeeRole.Developer:
+                        e.Roles.DeveloperTrainingDaysLeft--;
+                        if (e.Roles.DeveloperTrainingDaysLeft <= 0)
+                        {
+                            e.Roles.IsDeveloper = true;
+                            e.Roles.Status = Role.EmployeeStatus.Working;
+                        }
+                        break;
+                    case Role.EmployeeRole.Tester:
+                        e.Roles.TesterTrainingDaysLeft--;
+                        if (e.Roles.TesterTrainingDaysLeft <= 0)
+                        {
+                            e.Roles.IsTester = true;
+                            e.Roles.Status = Role.EmployeeStatus.Working;
+                        }
+                        break;
+                    case Role.EmployeeRole.HighLevelAnalyzer1:
+                    case Role.EmployeeRole.HighLevelAnalyzer2:
+                        e.Roles.HLAnalyzerTrainingDaysLeft--;
+                        if (e.Roles.HLAnalyzerTrainingDaysLeft <= 0)
+                        {
+                            e.Roles.IsHighLevelAnalyzer = true;
+                            e.Roles.Status = Role.EmployeeStatus.Working;
+                        }
+                        break;
+                }
+            }
+        }
     }
 
     private async Task UpdateKanbanTasksLocally()
@@ -66,7 +107,11 @@ public class SessionService : ISessionService
         KanbanTasksToUpdate = await _kanbanTaskService.GetActiveKanbanTasks();
         foreach (var t in KanbanTasksToUpdate)
         {
-            t.Age++;
+            if (CurrentSession.Day % 7 == 5)
+                t.Age += 3;
+            else
+                t.Age++;
+
             if (t.Assignee is not null)
             {
                 t.EffortLeft -= t.Assignee.Productivity;

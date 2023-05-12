@@ -37,10 +37,10 @@
                     <h5>Employee Info:</h5>
                     <li>Id: @employee.Id</li>
                     <li>Name: @employee.Name</li>
-                    <li>Seniority: @employee.Seniority</li>
+                    <li>Seniority: @employee.Roles.Seniority</li>
                     <li>Productivity: @employee.Productivity</li>
-                    <li>Status: @employee.Status</li>
-                    <li>Role: @employee.CurrentRole</li>
+                    <li>Status: @employee.Roles.Status</li>
+                    <li>Role: @employee.Roles.CurrentRole</li>
                     <img src=@(employee.AvatarPath == null ? "Avatars/Default.png" : employee.AvatarPath) style="width:48px;float:right;" alt="logo" />
                 }
                 else if (CardToShowDetails.KanbanTask is not null)
@@ -155,13 +155,14 @@
                         </div>
                         <div class="employee-a"><img src=@(employee.AvatarPath == null ? "Avatars/Default.png" : employee.AvatarPath) style="width:48px" alt="logo" /></div>
                         <div class="employee-d">
-                            <div>Seniority: @employee.Seniority</div>
+                            <div>Seniority: @employee.Roles.Seniority</div>
+                            <div>Status: @employee.Roles.Status</div>
                         </div>
                         <div class="employee-f">
-                            <img class="notifier" src=@(!employee.IsHighLevelAnalyzer.HasValue ? "Icons/roles/letter_h_crossed.png" : employee.IsHighLevelAnalyzer.Value == true ? "Icons/roles/letter_h_filled.png" : "Icons/roles/letter_h_filled_light.png") />
-                            <img class="notifier" src=@(!employee.IsAnalyzer.HasValue ? "Icons/roles/letter_a_crossed.png" : employee.IsAnalyzer.Value == true ? "Icons/roles/letter_a_filled.png" : "Icons/roles/letter_a_filled_light.png") />
-                            <img class="notifier" src=@(!employee.IsDeveloper.HasValue ? "Icons/roles/letter_d_crossed.png" : employee.IsDeveloper.Value == true ? "Icons/roles/letter_d_filled.png" : "Icons/roles/letter_d_filled_light.png") />
-                            <img class="notifier" src=@(!employee.IsTester.HasValue ? "Icons/roles/letter_t_crossed.png" : employee.IsTester.Value == true ? "Icons/roles/letter_t_filled.png" : "Icons/roles/letter_t_filled_light.png") />
+                            <img class="notifier" src=@(!employee.Roles.IsHighLevelAnalyzer.HasValue ? "Icons/roles/letter_h_crossed.png" : employee.Roles.IsHighLevelAnalyzer.Value == true ? "Icons/roles/letter_h_filled.png" : "Icons/roles/letter_h_filled_light.png") />
+                            <img class="notifier" src=@(!employee.Roles.IsAnalyzer.HasValue ? "Icons/roles/letter_a_crossed.png" : employee.Roles.IsAnalyzer.Value == true ? "Icons/roles/letter_a_filled.png" : "Icons/roles/letter_a_filled_light.png") />
+                            <img class="notifier" src=@(!employee.Roles.IsDeveloper.HasValue ? "Icons/roles/letter_d_crossed.png" : employee.Roles.IsDeveloper.Value == true ? "Icons/roles/letter_d_filled.png" : "Icons/roles/letter_d_filled_light.png") />
+                            <img class="notifier" src=@(!employee.Roles.IsTester.HasValue ? "Icons/roles/letter_t_crossed.png" : employee.Roles.IsTester.Value == true ? "Icons/roles/letter_t_filled.png" : "Icons/roles/letter_t_filled_light.png") />
                         </div>
                     </div>
                 }
@@ -192,16 +193,16 @@
                             <div>Age: @kanbanTask.Age</div>
                             <div>Depends on: <b>@(kanbanTask.DependencyTask == null ? "-" : kanbanTask.DependencyTask.Title)</b></div>
                         </div>
-                        <div class="task-f">
-                            @{
-                                if (kanbanTask.Status != KanbanTask.TaskStatus.Delivered)
-                                {
+                        @{
+                            if (kanbanTask.Status != KanbanTask.TaskStatus.Delivered)
+                            {
+                                <div class="task-f">
                                     <img class="notifier" src=@(kanbanTask.Star ? "Icons/star_filled.png" : "Icons/star.png") @onclick='(() => ChangeIconState(kanbanTask, "star"))'/>
                                     <img class="notifier" src=@(kanbanTask.Warning ? "Icons/warning_filled.png" : "Icons/warning.png") @onclick='(() => ChangeIconState(kanbanTask, "warning"))'/>
                                     <img class="notifier" src=@(kanbanTask.Pause ? "Icons/pause_filled.png" : "Icons/pause.png") @onclick='(() => ChangeIconState(kanbanTask, "pause"))'/>
-                                }
+                                </div>
                             }
-                            </div>
+                        }
                     </div>
                 }
             }

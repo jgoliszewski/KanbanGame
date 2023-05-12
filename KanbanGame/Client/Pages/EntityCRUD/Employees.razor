@@ -24,9 +24,9 @@
                 <td>@employee.Id</td>
                 <td><img src=@(employee.AvatarPath == null ? "Avatars/Default.png" : employee.AvatarPath) style="width:32px"></td>
                 <td>@employee.Name</td>
-                <td>@employee.CurrentRole</td>
-                <td>@employee.Seniority</td>
-                <td>@employee.Status</td>
+                <td>@employee.Roles.CurrentRole</td>
+                <td>@employee.Roles.Seniority</td>
+                <td>@employee.Roles.Status</td>
                 <td>
                     <button class="btn btn-primary"
                         @onclick="(() => ShowEmployee(employee.Id))">
