@@ -138,6 +138,15 @@ public class SessionService : ISessionService
                     f.EffortLeft = f.Effort;
                     f.NextFeatureStatus();
                     f.Assignee = null;
+
+                    if (
+                        f.Status == Feature.FeatureStatus.ReadyForDevelopment
+                        && !CurrentSession.IsFeatureExtraColumnUnlocked
+                    )
+                    {
+                        await _featureService.SendFeatureTasksToTeams(f.Id);
+                        f.NextFeatureStatus();
+                    }
                 }
                 FeaturesToUpdate.Add(f);
             }
