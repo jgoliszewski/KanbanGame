@@ -154,12 +154,12 @@ a, .btn-link {
 .board-page {  
     display: grid;
     gap: 10px 10px;
+    grid-template-columns: 1fr 1fr 1fr;
     max-width: 1860px;
     grid-auto-flow: row;
     grid-template-areas:
-        "h h"
-        "c a"
-        "b b";
+        "c h a"
+        "b b b";
     padding-top: 10px;
     padding-bottom: 10px;
     padding-left: 15px;
@@ -168,7 +168,9 @@ a, .btn-link {
 
 .board-page-h { 
     grid-area: h;
-    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     font-weight: bold;
 }
 
