@@ -1,0 +1,28 @@
+﻿@page "/"
+@inject ISessionService SessionService
+<PageTitle>Index</PageTitle>
+
+<h1>Kanban methodology game!</h1>
+
+<h3>Unlocked Features</h3>
+<div>
+    Feature Board
+    <input type="checkbox" checked="@IsChecked" @oninput="CheckboxChanged">
+</div>
+
+
+@code
+{
+    private bool IsChecked;
+    protected override async Task OnInitializedAsync()
+    {
+        await SessionService.GetSessionInfo();
+        IsChecked = SessionService.Session.IsFeatureBoardUnlocked;
+    }
+    private async Task CheckboxChanged(ChangeEventArgs e)
+    {
+        IsChecked = (bool)e.Value;
+        SessionService.Session.IsFeatureBoardUnlocked = IsChecked;
+        await SessionService.UpdateSessionInfo(SessionService.Session);
+    }
+}

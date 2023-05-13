@@ -21,6 +21,12 @@ public class SessionController : ControllerBase
         return await _sessionService.GetSessionInfo();
     }
 
+    [HttpPut]
+    public async Task UpdateSessionInfo(Session session)
+    {
+        await _sessionService.UpdateSession(session);
+    }
+
     [HttpPost("increaseCurrentDay")]
     public async Task IncreaseCurrentDay()
     {

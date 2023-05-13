@@ -11,6 +11,7 @@ public class Session
     {
         get => (DayOfTheWeek)(Day % 7 - 1);
     }
+    public bool IsFeatureBoardUnlocked { get; set; } = false;
 
     public enum DayOfTheWeek
     {

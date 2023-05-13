@@ -26,6 +26,11 @@ public class SessionService : ISessionService
         return CurrentSession;
     }
 
+    public async Task UpdateSession(Session session)
+    {
+        CurrentSession = session;
+    }
+
     public async Task IncreaseCurrentDay()
     {
         if (CurrentSession.Day % 7 == 5)

@@ -7,4 +7,5 @@ public interface ISessionService
     Task<Session> GetSessionInfo();
     Task IncreaseCurrentDay();
     Task SimulateDay();
+    Task UpdateSession(Session session);
 }

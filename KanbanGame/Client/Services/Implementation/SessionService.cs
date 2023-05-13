@@ -42,6 +42,11 @@ public class SessionService : ISessionService
             Session = result;
     }
 
+    public async Task UpdateSessionInfo(Session session)
+    {
+        await _http.PutAsJsonAsync("api/session", Session);
+    }
+
     private async Task IncreaseCurrentDay()
     {
         await _http.PostAsync("api/session/increaseCurrentDay", null);

@@ -6,5 +6,6 @@ public interface ISessionService
 {
     Task SimulateDay();
     Task GetSessionInfo();
+    Task UpdateSessionInfo(Session session);
     Session Session { get; set; }
 }
