@@ -16,20 +16,7 @@
         <KanbanGame.Client.Pages.Components.Calendar Session=SessionService.Session/>
     </div>
     <div class="board-page-a">
-            @* <button disabled="@IsForceUpdateDisabled" class="btn btn-outline-warning" @onclick="(() => SimulateBoard())">
-            Force Update <i class="oi oi-sun"></i>
-        </button> *@
-        <button class="btn btn-outline-warning" @onclick="(() => SimulateDay())">
-                Force Update <i class="oi oi-sun"></i>
-        </button>
-
-        <input type="radio" class="btn-check" name="options-outlined" id="danger-outlined" checked="@IsReadySelected">
-        <label class="btn btn-outline-danger" for="danger-outlined" @onclick="(() => StateNotReady())">Not Ready</label>
-
-        <input type="radio" class="btn-check" name="options-outlined" id="success-outlined" checked="@IsNotReadySelected" onchange="@(() => SetReady())">
-        <label class="btn btn-outline-success" for="success-outlined" @onclick="(() => StateReady())">Ready</label>
-
-        <div style="margin:10px;font-size: large;">Users ready: @readyUserCount / @connectedUserCount</div>
+        <KanbanGame.Client.Pages.Components.SimulationButtons @ref="SimulationButtons" IsUpdateDisabled="isUpdateDisabled" ReadyUserCount="readyUserCount" ConnectedUserCount="connectedUserCount" OnSimulateDay="SimulateDay" OnStateReady="StateReady" OnStateNotReady="StateNotReady"/>
     </div>
     <div class="board-page-b">
         <div class="stacked-header" style="width: 1788px">
@@ -73,6 +60,7 @@
 </div>
 @code {
     private int BoardId = (int)Team.TeamName.BackEnd;
+    private SimulationButtons SimulationButtons;
 
     protected override async Task OnInitializedAsync()
     {
@@ -164,9 +152,7 @@
     private HubConnection? hubConnection;
     private int connectedUserCount = 0;
     private int readyUserCount = 0;
-    protected bool IsForceUpdateDisabled = true;
-    private bool IsReadySelected = true;
-    private bool IsNotReadySelected = false;
+    protected bool isUpdateDisabled = true;
     private async Task Connect()
     {
         hubConnection = new HubConnectionBuilder()
@@ -184,26 +170,26 @@
         hubConnection.On<int>("StateReady", async (numberOfReadyClients) =>
                 {
                     readyUserCount = numberOfReadyClients;
-                    IsForceUpdateDisabled = readyUserCount == connectedUserCount ? false : true;
+                    isUpdateDisabled = readyUserCount == connectedUserCount ? false : true;
                     StateHasChanged();
                 });
         hubConnection.On<int>("StateNotReady", async (numberOfReadyClients) =>
                 {
                     readyUserCount = numberOfReadyClients;
-                    IsForceUpdateDisabled = readyUserCount == connectedUserCount ? false : true;
+                    isUpdateDisabled = readyUserCount == connectedUserCount ? false : true;
                     StateHasChanged();
                 });
         hubConnection.On<int>("ClearReadyUsers", async (numberOfReadyClients) =>
                 {
                     readyUserCount = numberOfReadyClients;
-                    ResetReadiness();
-                    IsForceUpdateDisabled = readyUserCount == connectedUserCount ? false : true;
+                    SimulationButtons.ResetReadiness();
+                    isUpdateDisabled = readyUserCount == connectedUserCount ? false : true;
                     StateHasChanged();
                 });
         hubConnection.On<int>("UserCount", async (numberOfConnectedClients) =>
                 {
                     connectedUserCount = numberOfConnectedClients;
-                    IsForceUpdateDisabled = readyUserCount == connectedUserCount ? false : true;
+                    isUpdateDisabled = readyUserCount == connectedUserCount ? false : true;
                     StateHasChanged();
                 });
     }
@@ -215,16 +201,7 @@
             await hubConnection.SendAsync("UpdateBoard", 0);
         }
     }
-    private void SetReady()
-    {
-        IsReadySelected = false;
-        IsNotReadySelected = true;
-    }
-    private void ResetReadiness()
-    {
-        IsReadySelected = true;
-        IsNotReadySelected = false;
-    }
+
     async Task StateReady()
     {
         if (hubConnection is not null)
