@@ -216,19 +216,20 @@
                         </div>
                         <div class="feature-f">
                             @{
-                                if (feature.Status == Feature.FeatureStatus.ReadyForDevelopment || feature.Status == Feature.FeatureStatus.Doing2)
-                                {
-                                    <img class="notifier" src="Icons/trash.png" @onclick='(() => DeleteFeature(feature))'/>
-                                }
                                 <img class="notifier" src=@(feature.Star ? "Icons/star_filled.png" : "Icons/star.png") @onclick='(() => ChangeIconState(feature, "star"))'/>
                                 <img class="notifier" src=@(feature.Warning ? "Icons/warning_filled.png" : "Icons/warning.png") @onclick='(() => ChangeIconState(feature, "warning"))'/>
                                 <img class="notifier" src=@(feature.Pause ? "Icons/pause_filled.png" : "Icons/pause.png") @onclick='(() => ChangeIconState(feature, "pause"))'/>
-                                if (feature.Status == Feature.FeatureStatus.ReadyForDevelopment)
-                                {
-                                    <img class="notifier" src="Icons/arrow_right.png" @onclick='(() => SendFeatureTasksToTeams(feature))'/>
-                                }
                             }
                         </div>
+                        @{
+                            if (feature.Status == Feature.FeatureStatus.ReadyForDevelopment)
+                            {
+                                <div class="feature-b">
+                                    <img class="notifier" src="Icons/trash.png" @onclick='(() => DeleteFeature(feature))' style="float:left"/>
+                                    <img class="notifier" src="Icons/arrow_right.png" @onclick='(() => SendFeatureTasksToTeams(feature))' style="float:right"/>
+                                </div>
+                            }
+                        }
                     </div>
                     }
                 }
