@@ -11,4 +11,5 @@ public interface IFeatureService
     Task<Feature> CreateFeature(Feature Feature);
     Task<Feature?> UpdateFeature(int FeatureId, Feature Feature);
     Task<bool> DeleteFeature(int FeatureId);
+    Task SendFeatureTasksToTeams(int FeatureId);
 }

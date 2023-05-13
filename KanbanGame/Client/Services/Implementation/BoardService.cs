@@ -199,28 +199,6 @@ public class BoardService : IBoardService
         return card;
     }
 
-    public async Task SendFeatureTasksToTeams(Feature feature)
-    {
-        //todo: maybe it's a FeatureService method?
-        foreach (var t in feature.KanbanTasks)
-        {
-            switch (t.Type)
-            {
-                case KanbanTask.TaskType.FrontEnd:
-                    t.Team = Team.TeamName.FrontEnd;
-                    break;
-                case KanbanTask.TaskType.BackEnd:
-                    t.Team = Team.TeamName.BackEnd;
-                    break;
-            }
-            t.Status = KanbanTask.TaskStatus.Backlog;
-            await _kanbanTaskService.UpdateKanbanTask(t.Id, t);
-        }
-        feature.Team = Team.TeamName.None;
-        feature.Status = Feature.FeatureStatus.UnderDevelopment;
-        await _featureService.UpdateFeature(feature.Id, feature);
-    }
-
     public async Task UpdateCard(int cardId, Card card)
     {
         if (card.KanbanTask is not null)

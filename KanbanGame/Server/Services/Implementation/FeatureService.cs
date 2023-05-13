@@ -92,4 +92,28 @@ public class FeatureService : IFeatureService
         }
         return false;
     }
+
+    public async Task SendFeatureTasksToTeams(int FeatureId)
+    {
+        var dbFeature = Features.Where(t => t.Id == FeatureId).FirstOrDefault();
+        if (dbFeature is not null)
+        {
+            foreach (var t in dbFeature.KanbanTasks)
+            {
+                switch (t.Type)
+                {
+                    case KanbanTask.TaskType.FrontEnd:
+                        t.Team = Team.TeamName.FrontEnd;
+                        break;
+                    case KanbanTask.TaskType.BackEnd:
+                        t.Team = Team.TeamName.BackEnd;
+                        break;
+                }
+                t.Status = KanbanTask.TaskStatus.Backlog;
+                await _kanbanTaskService.UpdateKanbanTask(t.Id, t);
+            }
+            dbFeature.Team = Team.TeamName.None;
+            dbFeature.Status = Feature.FeatureStatus.UnderDevelopment;
+        }
+    }
 }

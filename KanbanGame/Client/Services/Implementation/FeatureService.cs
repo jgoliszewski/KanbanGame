@@ -8,12 +8,18 @@ namespace KanbanGame.Client.Services;
 public class FeatureService : IFeatureService
 {
     private readonly HttpClient _http;
+    private readonly IKanbanTaskService _kanbanTaskService;
     private readonly NavigationManager _navigationManger;
 
-    public FeatureService(HttpClient http, NavigationManager navigationManger)
+    public FeatureService(
+        HttpClient http,
+        IKanbanTaskService kanbanTaskService,
+        NavigationManager navigationManger
+    )
     {
         _http = http;
         _navigationManger = navigationManger;
+        _kanbanTaskService = kanbanTaskService;
     }
 
     public List<Feature> Features { get; set; } = new List<Feature>();
@@ -65,5 +71,10 @@ public class FeatureService : IFeatureService
     public async Task DeleteFeature(int FeatureId)
     {
         var result = await _http.DeleteAsync($"api/Feature/{FeatureId}");
+    }
+
+    public async Task SendFeatureTasksToTeams(int FeatureId)
+    {
+        await _http.PutAsJsonAsync("api/Feature/sendFeatureTasksToTeams", FeatureId);
     }
 }
