@@ -1,0 +1,81 @@
+@inject IFeatureService FeatureService
+@inject IBoardService BoardService
+@inject NavigationManager NavigationManager
+
+<SfDialog Width="300px" ShowCloseIcon="true" IsModal="true" @bind-Visible="@IsShowCardDetailsVisible">
+    <DialogTemplates>
+        <Header> 
+            <h2>Feature: @feature.Title</h2>
+        </Header>
+        <Content> 
+            <h5>Feature Info:</h5>
+            <li>Id: @feature.Id</li>
+            <li>Title: @feature.Title</li>
+            <li>Description: @feature.Description</li>
+            <li>Status: @feature.Status</li>
+            <li>Number of tasks: @feature.KanbanTasks.Count</li>
+            <li>Est. earnings: @($"{feature.EstimatedMinEarnings}K-{feature.EstimatedMaxEarnings}K $")</li>
+            <li>Delivered: @(Math.Round(feature.DeliveredTaskPercentage*100, 1)) %</li>
+        </Content>
+    </DialogTemplates>
+    <DialogEvents OnOverlayModalClick="@OverlayClick"></DialogEvents>
+</SfDialog>
+
+@if(feature.Status == Feature.FeatureStatus.ReadyForDevelopment || feature.Status == Feature.FeatureStatus.UnderDevelopment)
+{
+    <div class="feature-card-2">
+        <div class="feature-h-2">
+            @feature.Title
+            <img class="notifier" src="Icons/info.png" @onclick='(() => ShowCardDetails())' style="float:right"/>
+        </div>
+        <div class="feature-t-2">
+            <div>@($"Est. $: {feature.EstimatedMinEarnings}K-{feature.EstimatedMaxEarnings}K")</div>
+            @* <div>Id: @feature.Id</div> *@
+            @* <div>Desc: @feature.Description</div> *@    
+            @* <div>Task count: @feature.KanbanTasks.Count</div> *@
+            <div>Tasks(@(feature.KanbanTasks.Count)):</div>
+            @{
+                foreach (var t in feature.KanbanTasks)
+                {
+                    if(t.Status == KanbanTask.TaskStatus.Delivered)
+                    {
+                        <li><s>@t.Title</s></li>
+                    }
+                    else
+                    {
+                        <li>@t.Title</li>
+                    }
+                }
+            }
+        </div>
+    </div>  
+}
+else
+{
+    <div class="feature-card-2">
+        <div class="feature-h-2">@feature.Title</div>
+        <div class="feature-t-2">
+            @* <div>Id: @feature.Id</div> *@
+            <div>Desc: @feature.Description</div>    
+        </div>
+
+</div>
+}
+                
+@code {
+    private bool IsShowCardDetailsVisible { get; set; } = false;
+    [Parameter]
+    public Feature feature { get; set; }
+    [Parameter]
+    public EventCallback OnFeatureChanged { get; set; }
+
+    private void ShowCardDetails()
+    {
+        this.IsShowCardDetailsVisible = true;
+    }
+
+    private void OverlayClick(OverlayModalClickEventArgs args)
+    {
+        this.IsShowCardDetailsVisible = false;
+    }
+}

@@ -1,0 +1,79 @@
+<SfDialog Width="300px" ShowCloseIcon="true" IsModal="true" @bind-Visible="@IsShowCardDetailsVisible">
+    <DialogTemplates>
+        <Header> 
+            <h2>Employee: @employee.Name</h2>
+        </Header>
+        <Content> 
+            <h5>Employee Info:</h5>
+            <li>Id: @employee.Id</li>
+            <li>Name: @employee.Name</li>
+            <li>Seniority: @employee.Roles.Seniority</li>
+            <li>Productivity: @employee.Productivity</li>
+            <li>Status: @employee.Roles.Status</li>
+            <li>Role: @employee.Roles.CurrentRole</li>
+            <li>P. Role: @employee.Roles.PreviousRole</li>
+            <li>Learning days left: @employee.Roles.LearningDaysLeft Days</li>
+            <li>Transitioning days left: @employee.Roles.TransitioningDaysLeft Days</li>
+            <img src=@(employee.AvatarPath == null ? "Avatars/Default.png" : employee.AvatarPath) style="width:48px;float:right;" alt="logo" />
+        </Content>
+    </DialogTemplates>
+    <DialogEvents OnOverlayModalClick="@OverlayClick"></DialogEvents>
+</SfDialog>
+
+<div class="employee-card">
+    <div class="employee-h">
+        @employee.Name
+        <img class="notifier" src="Icons/info.png" @onclick='(() => ShowCardDetails())' style="float:right"/>
+    </div>
+    <div class="employee-a"><img src=@(employee.AvatarPath == null ? "Avatars/Default.png" : employee.AvatarPath) style="width:48px" alt="logo" /></div>
+    <div class="employee-d">
+        <div>Seniority: @employee.Roles.Seniority</div>
+    </div>
+    <div class="employee-f">
+        
+        <img class="notifier" src=@(!employee.Roles.IsHighLevelAnalyzer.HasValue ? "Icons/roles/letter_h_crossed.png" : employee.Roles.IsHighLevelAnalyzer.Value == true ? "Icons/roles/letter_h_filled.png" : "Icons/roles/letter_h_filled_light.png") />
+        <img class="notifier" src=@(!employee.Roles.IsAnalyzer.HasValue ? "Icons/roles/letter_a_crossed.png" : employee.Roles.IsAnalyzer.Value == true ? "Icons/roles/letter_a_filled.png" : "Icons/roles/letter_a_filled_light.png") />
+        <img class="notifier" src=@(!employee.Roles.IsDeveloper.HasValue ? "Icons/roles/letter_d_crossed.png" : employee.Roles.IsDeveloper.Value == true ? "Icons/roles/letter_d_filled.png" : "Icons/roles/letter_d_filled_light.png") />
+        <img class="notifier" src=@(!employee.Roles.IsTester.HasValue ? "Icons/roles/letter_t_crossed.png" : employee.Roles.IsTester.Value == true ? "Icons/roles/letter_t_filled.png" : "Icons/roles/letter_t_filled_light.png") />
+    </div>
+    @{
+        if (employee.Roles.Status == Role.EmployeeStatus.Learning)
+        {
+            <div class="employee-l">
+                <img class="notifier" src="Icons/block.png" style="float:left"/>
+                <div>@employee.Roles.LearningDaysLeft Days Left</div>
+                <img class="notifier" src="Icons/block.png" style="float:left"/>
+            </div>
+        }
+        if (employee.Roles.Status == Role.EmployeeStatus.Transitioning)
+        {
+            <div class="employee-l">
+                <img class="notifier" src="Icons/block.png" style="float:left"/>
+                <div>@employee.Roles.TransitioningDaysLeft Days Left</div>
+                <img class="notifier" src="Icons/block.png" style="float:left"/>
+            </div>
+        }
+    }
+</div>
+                
+@code {
+    private bool IsShowCardDetailsVisible { get; set; } = false;
+    [Parameter]
+    public Employee employee { get; set; }
+    [Parameter]
+    public EventCallback OnEmployeeChanged { get; set; }
+    protected async Task OnEmployeeChangedHandler()
+    {
+        await OnEmployeeChanged.InvokeAsync();
+    }
+
+    private void ShowCardDetails()
+    {
+        this.IsShowCardDetailsVisible = true;
+    }
+
+    private void OverlayClick(OverlayModalClickEventArgs args)
+    {
+        this.IsShowCardDetailsVisible = false;
+    }
+}
