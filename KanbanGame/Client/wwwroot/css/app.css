@@ -253,6 +253,9 @@ a, .btn-link {
 .e-kanban .e-kanban-table.e-header-table .e-header-row:not(.e-swimlane-row) th[data-key="Doing1"] {
     background-color: var(--yellow);
 }
+.e-kanban .e-kanban-table.e-header-table .e-header-row:not(.e-swimlane-row) th[data-key="Doing2Waiting"] {
+    background-color: var(--yellow);
+}
 .e-kanban .e-kanban-table.e-header-table .e-header-row:not(.e-swimlane-row) th[data-key="Doing2"] {
     background-color: var(--yellow);
 }
@@ -301,6 +304,9 @@ a, .btn-link {
     background-color: var(--green-light);
 }
 .e-kanban .e-kanban-table.e-content-table .e-content-row:not(.e-swimlane-row) td[data-key="Doing1"] {
+    background-color: var(--yellow-light);
+}
+.e-kanban .e-kanban-table.e-content-table .e-content-row:not(.e-swimlane-row) td[data-key="Doing2Waiting"] {
     background-color: var(--yellow-light);
 }
 .e-kanban .e-kanban-table.e-content-table .e-content-row:not(.e-swimlane-row) td[data-key="Doing2"] {

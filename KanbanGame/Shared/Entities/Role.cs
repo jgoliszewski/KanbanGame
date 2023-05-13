@@ -122,6 +122,7 @@ public class Role
                 }
                 else
                     return CurrentRole;
+            case "doing2waiting":
             case "doing2":
                 if (
                     IsHighLevelAnalyzer is not null

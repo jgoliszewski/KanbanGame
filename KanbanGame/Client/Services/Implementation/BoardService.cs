@@ -324,6 +324,7 @@ public class BoardService : IBoardService
             { "Delivered", 1 },
             { "None", 1 },
             { "Doing1", 1 },
+            { "Doing2Waiting", 1 },
             { "Doing2", 1 },
             { "ReadyForDevelopment", 1 }
         };

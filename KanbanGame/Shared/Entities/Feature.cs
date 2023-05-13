@@ -48,6 +48,7 @@ public class Feature
         None,
         Backlog,
         Doing1,
+        Doing2Waiting,
         Doing2,
         ReadyForDevelopment,
         UnderDevelopment,
@@ -70,7 +71,7 @@ public class Feature
         switch (Status)
         {
             case FeatureStatus.Doing1:
-                Status = FeatureStatus.Doing2;
+                Status = FeatureStatus.Doing2Waiting;
                 break;
             case FeatureStatus.Doing2:
                 Status = FeatureStatus.ReadyForDevelopment;
