@@ -75,6 +75,6 @@ public class FeatureService : IFeatureService
 
     public async Task SendFeatureTasksToTeams(int FeatureId)
     {
-        await _http.PutAsJsonAsync("api/Feature/sendFeatureTasksToTeams", FeatureId);
+        await _http.PutAsync($"api/Feature/sendFeatureTasksToTeams/{FeatureId}", null);
     }
 }

@@ -57,7 +57,7 @@ public class FeatureController : ControllerBase
         return await _FeatureService.DeleteFeature(id);
     }
 
-    [HttpPut("sendFeatureTasksToTeams")]
+    [HttpPut("sendFeatureTasksToTeams/{id}")]
     public async Task SendFeatureTasksToTeams(int id)
     {
         await _FeatureService.SendFeatureTasksToTeams(id);
