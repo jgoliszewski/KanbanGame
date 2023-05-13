@@ -11,20 +11,7 @@
         <h3>High Level Analysis Team</h3>
     </div>
     <div class="board-page-c">
-        <div>
-            <div class="center">
-                <h4>Day: @(SessionService.Session.Day) Week: @(SessionService.Session.Week)</h4>
-            </div>
-            @{
-                string[] days = new string[5] { "letter_m", "letter_t", "letter_w", "letter_t", "letter_f" };
-                days[(int)SessionService.Session.Weekday] += "_filled";
-            }
-            <img class="notifier" src=@($"Icons/letters/{days[0]}.png")/>
-            <img class="notifier" src=@($"Icons/letters/{days[1]}.png")/>
-            <img class="notifier" src=@($"Icons/letters/{days[2]}.png")/>
-            <img class="notifier" src=@($"Icons/letters/{days[3]}.png")/>
-            <img class="notifier" src=@($"Icons/letters/{days[4]}.png")/>
-        </div>
+        <KanbanGame.Client.Pages.Components.Calendar Session=SessionService.Session/>
     </div>
     <div class="board-page-a">
         @* <button disabled="@IsForceUpdateDisabled" class="btn btn-outline-warning" @onclick="(() => SimulateBoard())">
