@@ -7,22 +7,34 @@
 <h3>Unlocked Features</h3>
 <div>
     Feature Board
-    <input type="checkbox" checked="@IsChecked" @oninput="CheckboxChanged">
+    <input type="checkbox" checked="@IsFeatureBoardUnlocked" @oninput="FeatureBoardLocker">
+</div>
+<div>
+    Start or Delete analyzed Feature
+    <input type="checkbox" checked="@IsFeatureExtraColumnUnlocked" @oninput="FeatureExtraColumnLocker">
 </div>
 
 
 @code
 {
-    private bool IsChecked;
+    private bool IsFeatureBoardUnlocked;
+    private bool IsFeatureExtraColumnUnlocked;
     protected override async Task OnInitializedAsync()
     {
         await SessionService.GetSessionInfo();
-        IsChecked = SessionService.Session.IsFeatureBoardUnlocked;
+        IsFeatureBoardUnlocked = SessionService.Session.IsFeatureBoardUnlocked;
+        IsFeatureExtraColumnUnlocked = SessionService.Session.IsFeatureExtraColumnUnlocked;
     }
-    private async Task CheckboxChanged(ChangeEventArgs e)
+    private async Task FeatureBoardLocker(ChangeEventArgs e)
     {
-        IsChecked = (bool)e.Value;
-        SessionService.Session.IsFeatureBoardUnlocked = IsChecked;
+        IsFeatureBoardUnlocked = (bool)e.Value;
+        SessionService.Session.IsFeatureBoardUnlocked = IsFeatureBoardUnlocked;
+        await SessionService.UpdateSessionInfo(SessionService.Session);
+    }
+    private async Task FeatureExtraColumnLocker(ChangeEventArgs e)
+    {
+        IsFeatureExtraColumnUnlocked = (bool)e.Value;
+        SessionService.Session.IsFeatureExtraColumnUnlocked = IsFeatureExtraColumnUnlocked;
         await SessionService.UpdateSessionInfo(SessionService.Session);
     }
 }
