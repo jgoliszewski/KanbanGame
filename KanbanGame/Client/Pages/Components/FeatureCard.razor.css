@@ -1,0 +1,44 @@
+.feature-card {  
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 10px 10px;
+    grid-auto-flow: row;
+    grid-template-areas:
+        "h"
+        "d"
+        "f"
+        "b";
+    padding-top: 10px;
+    padding-bottom: 10px;
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+.feature-h { 
+    grid-area: h;
+    text-align: center;
+    justify-content: space-between;
+    font-weight: bold;
+    font-size: 20px;
+}
+
+.feature-d { 
+    grid-area: d;
+    line-height: 2ch;
+}
+
+.feature-f { 
+    grid-area: f;
+    display: flex;
+    justify-content: center;
+    align-items: center;  
+}
+
+.feature-b {
+    grid-area: b;
+    display: flex;
+    justify-content: space-between;
+    align-items: center; 
+    padding-top: 5px;
+    border-top: 2px solid var(--gray-dark);
+}

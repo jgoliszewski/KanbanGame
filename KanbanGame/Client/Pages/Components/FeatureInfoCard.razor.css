@@ -1,0 +1,26 @@
+.feature-tasks-card {  
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 10px 10px;
+    grid-auto-flow: row;
+    grid-template-areas:
+        "h h"
+        "t t";
+    padding-top: 10px;
+    padding-bottom: 10px;
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+.feature-tasks-h { 
+    grid-area: h;
+    text-align: center;
+    justify-content: space-between;
+    font-weight: bold;
+    font-size: 20px;
+}
+
+.feature-tasks-t { 
+    grid-area: t;
+    line-height: 2ch;
+}

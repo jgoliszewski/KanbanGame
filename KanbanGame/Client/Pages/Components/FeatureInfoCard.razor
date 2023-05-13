@@ -23,12 +23,12 @@
 
 @if(feature.Status == Feature.FeatureStatus.ReadyForDevelopment || feature.Status == Feature.FeatureStatus.UnderDevelopment)
 {
-    <div class="feature-card-2">
-        <div class="feature-h-2">
+    <div class="feature-tasks-card">
+        <div class="feature-tasks-h">
             @feature.Title
             <img class="notifier" src="Icons/info.png" @onclick='(() => ShowCardDetails())' style="float:right"/>
         </div>
-        <div class="feature-t-2">
+        <div class="feature-tasks-t">
             <div>@($"Est. $: {feature.EstimatedMinEarnings}K-{feature.EstimatedMaxEarnings}K")</div>
             @* <div>Id: @feature.Id</div> *@
             @* <div>Desc: @feature.Description</div> *@    
@@ -52,9 +52,9 @@
 }
 else
 {
-    <div class="feature-card-2">
-        <div class="feature-h-2">@feature.Title</div>
-        <div class="feature-t-2">
+    <div class="feature-tasks-card">
+        <div class="feature-tasks-h">@feature.Title</div>
+        <div class="feature-tasks-t">
             @* <div>Id: @feature.Id</div> *@
             <div>Desc: @feature.Description</div>    
         </div>
