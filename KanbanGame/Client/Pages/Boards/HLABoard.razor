@@ -17,82 +17,47 @@
     <div class="board-page-a">
         <KanbanGame.Client.Pages.Components.SimulationButtons @ref="SimulationButtons" IsUpdateDisabled="isUpdateDisabled" ReadyUserCount="readyUserCount" ConnectedUserCount="connectedUserCount" OnSimulateDay="SimulateDay" OnStateReady="StateReady" OnStateNotReady="StateNotReady"/>
     </div>
-    @if (!SessionService.Session.IsFeatureExtraColumnUnlocked)
-    {
-        <div class="board-page-b">
-            <div class="stacked-header" style="width: 1272px">
-                <div class="stacked-header-title" style="flex-grow: 245;background:var(--gray-dark)"><span>FeaturePool</span></div>
-                <div class="stacked-header-title" style="flex-grow: 245;background:var(--gray-dark)"><span>Backlog</span></div>
-                <div class="stacked-header-title" style="flex-grow: 750;background:var(--yellow)">High Level Analysis</div>
-            </div>
-            <SfKanban TValue="Card" KeyField="Column" DataSource="BoardService.Cards" Width="1285px">
-            <KanbanColumns>
-                <KanbanColumn HeaderText="" KeyField="@(new List<string>() {"None"})" TransitionColumns="@(new List<string>() {"Backlog"})" AllowAdding="true"></KanbanColumn>
-                <KanbanColumn HeaderText="" KeyField="@(new List<string>() {"Backlog"})" TransitionColumns="@(new List<string>() {"Doing1", "None"})"></KanbanColumn>
-                <KanbanColumn HeaderText="Doing1" MaxCount="@BoardService.ColumnMaxCount["Doing1"]" KeyField="@(new List<string>() {"Doing1"})" TransitionColumns="@(new List<string>() {"Backlog", "Doing2"})"></KanbanColumn>
-                <KanbanColumn HeaderText="Waiting" KeyField="@(new List<string>() {"Doing2Waiting"})" TransitionColumns="@(new List<string>() {"Doing2Waiting", "Doing2"})"></KanbanColumn>
-                <KanbanColumn HeaderText="Doing2" MaxCount="@BoardService.ColumnMaxCount["Doing2"]" KeyField="@(new List<string>() {"Doing2"})" TransitionColumns="@(new List<string>() {"Doing1", "Doing2Waiting"})"></KanbanColumn>
-            </KanbanColumns>
-            <KanbanSortSettings SortBy="SortOrderBy.Index" Field="RankId"></KanbanSortSettings>
-            <KanbanEvents TValue="Card" DragStart="@DragStartHandler" DragStop="@DragStopHandler" CardDoubleClick="@CardDoubleClickHandler"></KanbanEvents>
-            <KanbanCardSettings HeaderField="Id">
-                <Template>
-                @{
-                    Card card = (Card)context;
 
-                    if (card.Employee is not null)
-                    {
-                        <KanbanGame.Client.Pages.Components.EmployeeCard employee=card.Employee OnEmployeeChanged="UpdateBoard"/>
-                    }
-                    else if (card.Feature is not null)
-                    {
-                        <KanbanGame.Client.Pages.Components.FeatureCard feature=card.Feature OnFeatureChanged="UpdateBoard"/>
-                    }
-                }
-                </Template>
-            </KanbanCardSettings>
-        </SfKanban>
-        </div>
-    }
-    else
-    {
-        <div class="board-page-b">
-            <div class="stacked-header" style="width: 1528px">
-                <div class="stacked-header-title" style="flex-grow: 245;background:var(--gray-dark)"><span>FeaturePool</span></div>
-                <div class="stacked-header-title" style="flex-grow: 245;background:var(--gray-dark)"><span>Backlog</span></div>
-                <div class="stacked-header-title" style="flex-grow: 750;background:var(--yellow)">High Level Analysis</div>
+    <div class="board-page-b">
+        <div class="stacked-header" style=@($"width: {@HeaderWidthPx}px")>
+            <div class="stacked-header-title" style="flex-grow: 245;background:var(--gray-dark)"><span>FeaturePool</span></div>
+            <div class="stacked-header-title" style="flex-grow: 245;background:var(--gray-dark)"><span>Backlog</span></div>
+            <div class="stacked-header-title" style="flex-grow: 750;background:var(--yellow)">High Level Analysis</div>
+            @if (SessionService.Session.IsFeatureExtraColumnUnlocked)
+            {
                 <div class="stacked-header-title" style="flex-grow: 245;background:var(--gray-darker)">ReadyForDevelopment</div>
-            </div>
-            <SfKanban TValue="Card" KeyField="Column" DataSource="BoardService.Cards" Width="1540px">
-            <KanbanColumns>
-                <KanbanColumn HeaderText="" KeyField="@(new List<string>() {"None"})" TransitionColumns="@(new List<string>() {"Backlog"})" AllowAdding="true"></KanbanColumn>
-                <KanbanColumn HeaderText="" KeyField="@(new List<string>() {"Backlog"})" TransitionColumns="@(new List<string>() {"Doing1", "None"})"></KanbanColumn>
-                <KanbanColumn HeaderText="Doing1" MaxCount="@BoardService.ColumnMaxCount["Doing1"]" KeyField="@(new List<string>() {"Doing1"})" TransitionColumns="@(new List<string>() {"Backlog", "Doing2"})"></KanbanColumn>
-                <KanbanColumn HeaderText="Waiting" KeyField="@(new List<string>() {"Doing2Waiting"})" TransitionColumns="@(new List<string>() {"Doing2Waiting", "Doing2"})"></KanbanColumn>
-                <KanbanColumn HeaderText="Doing2" MaxCount="@BoardService.ColumnMaxCount["Doing2"]" KeyField="@(new List<string>() {"Doing2"})" TransitionColumns="@(new List<string>() {"Doing1", "Doing2Waiting"})"></KanbanColumn>
-                <KanbanColumn HeaderText="" KeyField="@(new List<string>() {"ReadyForDevelopment"})" TransitionColumns="@(new List<string>() {"ReadyForDevelopment"})" AllowDrag="false"></KanbanColumn>
-            </KanbanColumns>
-            <KanbanSortSettings SortBy="SortOrderBy.Index" Field="RankId"></KanbanSortSettings>
-            <KanbanEvents TValue="Card" DragStart="@DragStartHandler" DragStop="@DragStopHandler" CardDoubleClick="@CardDoubleClickHandler"></KanbanEvents>
-            <KanbanCardSettings HeaderField="Id">
-                <Template>
-                @{
-                    Card card = (Card)context;
-
-                    if (card.Employee is not null)
-                    {
-                        <KanbanGame.Client.Pages.Components.EmployeeCard employee=card.Employee OnEmployeeChanged="UpdateBoard"/>
-                    }
-                    else if (card.Feature is not null)
-                    {
-                        <KanbanGame.Client.Pages.Components.FeatureCard feature=card.Feature OnFeatureChanged="UpdateBoard"/>
-                    }
-                }
-                </Template>
-            </KanbanCardSettings>
-        </SfKanban>
+            }
         </div>
-    }
+        <SfKanban TValue="Card" KeyField="Column" DataSource="BoardService.Cards" Width=@($"{@BoardWidthPx}px")>
+        <KanbanColumns>
+            <KanbanColumn HeaderText="" KeyField="@(new List<string>() {"None"})" TransitionColumns="@(new List<string>() {"Backlog"})" AllowAdding="true"></KanbanColumn>
+            <KanbanColumn HeaderText="" KeyField="@(new List<string>() {"Backlog"})" TransitionColumns="@(new List<string>() {"Doing1", "None"})"></KanbanColumn>
+            <KanbanColumn HeaderText="Doing1" MaxCount="@BoardService.ColumnMaxCount["Doing1"]" KeyField="@(new List<string>() {"Doing1"})" TransitionColumns="@(new List<string>() {"Backlog", "Doing2"})"></KanbanColumn>
+            <KanbanColumn HeaderText="Waiting" KeyField="@(new List<string>() {"Doing2Waiting"})" TransitionColumns="@(new List<string>() {"Doing2Waiting", "Doing2"})"></KanbanColumn>
+            <KanbanColumn HeaderText="Doing2" MaxCount="@BoardService.ColumnMaxCount["Doing2"]" KeyField="@(new List<string>() {"Doing2"})" TransitionColumns="@(new List<string>() {"Doing1", "Doing2Waiting"})"></KanbanColumn>
+            <KanbanColumn HeaderText="" KeyField="@(new List<string>() {"ReadyForDevelopment"})" TransitionColumns="@(new List<string>() {"ReadyForDevelopment"})" AllowDrag="false" Visible="RFDVisibility"></KanbanColumn>
+        </KanbanColumns>
+        <KanbanSortSettings SortBy="SortOrderBy.Index" Field="RankId"></KanbanSortSettings>
+        <KanbanEvents TValue="Card" DragStart="@DragStartHandler" DragStop="@DragStopHandler" CardDoubleClick="@CardDoubleClickHandler"></KanbanEvents>
+        <KanbanCardSettings HeaderField="Id">
+            <Template>
+            @{
+                Card card = (Card)context;
+
+                if (card.Employee is not null)
+                {
+                    <KanbanGame.Client.Pages.Components.EmployeeCard employee=card.Employee OnEmployeeChanged="UpdateBoard"/>
+                }
+                else if (card.Feature is not null)
+                {
+                    <KanbanGame.Client.Pages.Components.FeatureCard feature=card.Feature OnFeatureChanged="UpdateBoard"/>
+                }
+            }
+            </Template>
+        </KanbanCardSettings>
+    </SfKanban>
+    </div>
+    
     
 </div>
 </div>
@@ -101,10 +66,21 @@
 @code {
     private int BoardId = (int)Team.TeamName.HighLevelAnalysis;
     private SimulationButtons SimulationButtons;
+    private int BoardWidthPx = 1285;
+    private int HeaderWidthPx = 1272;
+    private bool RFDVisibility = false;
 
     protected override async Task OnInitializedAsync()
     {
         await BoardService.GetCardsByTeamId(BoardId);
+        await SessionService.GetSessionInfo();
+        if (SessionService.Session.IsFeatureExtraColumnUnlocked)
+        {
+            BoardWidthPx = 1540;
+            HeaderWidthPx = 1528;
+            RFDVisibility = true;
+        }
+
         await Connect();
     }
 
