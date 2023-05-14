@@ -52,6 +52,11 @@
     protected override async Task OnInitializedAsync()
     {
         await FeatureService.GetActiveFeatures();
+        await SessionService.GetSessionInfo();
+        if(!SessionService.Session.IsFeatureBoardUnlocked)
+        {
+            NavigationManager.NavigateTo("");
+        }
         await Connect();
     }
     async Task SimulateDay()
