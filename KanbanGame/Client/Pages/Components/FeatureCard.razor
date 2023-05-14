@@ -31,7 +31,7 @@
             @{
                 if(feature.Status != Feature.FeatureStatus.ReadyForDevelopment && feature.Status != Feature.FeatureStatus.None)
                 {
-                    <img src=@(feature.Assignee == null ? "Avatars/Default.png" : feature.Assignee.AvatarPath) style="width:32px; float:left;" alt="avatar" />
+                    <img src=@(feature.Assignee == null ? "Avatars/Default.png" : feature.Assignee.AvatarPath) style="width:32px; float:left; pointer-events: none;" alt="avatar" />
                 }
             }
             <b>@feature.Title</b>

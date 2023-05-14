@@ -36,7 +36,7 @@
             }
             else
             {
-                <img src=@(kanbanTask.Assignee == null ? "Avatars/Default.png" : kanbanTask.Assignee.AvatarPath) style="width:32px; float:left;" alt="avatar" />
+                <img src=@(kanbanTask.Assignee == null ? "Avatars/Default.png" : kanbanTask.Assignee.AvatarPath) style="width:32px; float:left; pointer-events: none;" alt="avatar" />
             }
         }
     }
