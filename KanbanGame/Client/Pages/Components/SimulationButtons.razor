@@ -7,28 +7,24 @@
     <div class="center">
         <h4 style="center">Users ready: @ReadyUserCount / @ConnectedUserCount</h4>
     </div>
-    
-    <button disabled="@IsUpdateDisabled" class="btn btn-outline-warning" @onclick="(() => OnSimulateDayHandler())">
-        Update <i class="oi oi-sun"></i>
-    </button>
+    <div class="center">
+        <button disabled="@IsUpdateDisabled" class="btn btn-warning" @onclick="(() => OnSimulateDayHandler())">
+            Update <i class="oi oi-sun"></i>
+        </button>
 
-    <input type="radio" class="btn-check" name="options-outlined" id="danger-outlined" checked="@IsReadySelected">
-    <label class="btn btn-outline-danger" for="danger-outlined" @onclick="(() => OnStateReadyNotHandler())">Not Ready</label>
+        <SfSwitch CssClass="e-big" @bind-Checked="IsReadySelected" OffLabel="Not Ready" OnLabel="Ready!" ValueChange="ChangeReadiness" TChecked="bool?" ></SfSwitch>
 
-    <input type="radio" class="btn-check" name="options-outlined" id="success-outlined" checked="@IsNotReadySelected" onchange="@(() => SetReady())">
-    <label class="btn btn-outline-success" for="success-outlined" @onclick="(() => OnStateReadyHandler())">Ready</label>
-
-    <button class="btn btn-outline-primary" @onclick="(() => OnSimulateDayHandler())">
-            Force Update
-    </button>
+        <button class="btn btn-primary" @onclick="(() => OnSimulateDayHandler())">
+                Force Update
+        </button>
+    </div>
 </div>
 
 
 @code {
-    private bool IsReadySelected = true;
+    private bool? IsReadySelected = false;
     [Parameter]
     public bool IsUpdateDisabled { get; set; }
-    private bool IsNotReadySelected = false;
     [Parameter]
     public int ReadyUserCount { get; set; }
     [Parameter]
@@ -36,33 +32,88 @@
 
     [Parameter]
     public EventCallback OnSimulateDay { get; set; }
+    [Parameter]
+    public EventCallback OnStateReady { get; set; }
+    [Parameter]
+    public EventCallback OnStateNotReady { get; set; }
+
     protected async Task OnSimulateDayHandler()
     {
         await OnSimulateDay.InvokeAsync();
     }
-
-    [Parameter]
-    public EventCallback OnStateReady { get; set; }
+ 
     protected async Task OnStateReadyHandler()
     {
         await OnStateReady.InvokeAsync();
     }
 
-    [Parameter]
-    public EventCallback OnStateNotReady { get; set; }
     protected async Task OnStateReadyNotHandler()
     {
         await OnStateNotReady.InvokeAsync();
     }
 
-    private void SetReady()
-    {
-        IsReadySelected = false;
-        IsNotReadySelected = true;
-    }
     public void ResetReadiness()
     {
-        IsReadySelected = true;
-        IsNotReadySelected = false;
+        IsReadySelected = false;
+    }
+
+    private async Task ChangeReadiness(Syncfusion.Blazor.Buttons.ChangeEventArgs<bool?> args)
+    {
+        IsReadySelected = (bool)args.Checked;
+        if (IsReadySelected.HasValue)
+        {
+            if(IsReadySelected.Value)
+            {
+                await OnStateReadyHandler();
+            }
+            else
+            {
+                await OnStateReadyNotHandler();
+            }
+        }
+        
     }
 }
+
+<style>
+    .e-switch-wrapper, .e-css.e-switch-wrapper {
+        height: 38px;
+        width: 120px
+    }
+    .e-switch-wrapper .e-switch-on, .e-css.e-switch-wrapper .e-switch-on,
+    .e-switch-wrapper .e-switch-off, .e-css.e-switch-wrapper .e-switch-of {
+        font-size: 16px;
+    }
+
+    .e-switch-wrapper .e-switch-inner,
+    .e-switch-wrapper .e-switch-handle {
+        border-radius: 5px;
+    }
+
+    .e-switch-wrapper .e-switch-on, .e-css.e-switch-wrapper .e-switch-on {
+        background-color: #28A745;
+        color: white;
+        border-radius: 0%;
+    }
+
+    .e-switch-wrapper .e-switch-off, .e-css.e-switch-wrapper .e-switch-of {
+        background-color: #dc3545;
+        color: white;
+        border-radius: 0%;
+    }
+
+    .e-switch-wrapper .e-switch-inner.e-switch-active, .e-css.e-switch-wrapper .e-switch-inner.e-switch-active,
+    .e-switch-wrapper:hover .e-switch-inner.e-switch-active, .e-css.e-switch-wrapper .e-switch-inner.e-switch-active {
+        border-color: #28A745;
+    }
+    
+    .e-switch-wrapper .e-switch-inner, .e-switch-wrapper .e-switch-handle,
+    .e-switch-wrapper:hover .e-switch-inner, .e-switch-wrapper .e-switch-handle {
+        border-color: #dc3545;
+    }
+
+    .e-switch-wrapper:hover .e-switch-inner.e-switch-active .e-switch-on {
+        background-color: #28A745;
+    }
+
+</style>
