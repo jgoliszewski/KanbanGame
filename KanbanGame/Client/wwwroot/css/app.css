@@ -155,7 +155,7 @@ a, .btn-link {
     display: grid;
     gap: 10px 10px;
     grid-template-columns: 1fr 1fr 1fr;
-    max-width: 1860px;
+    width: 1860px;
     grid-auto-flow: row;
     grid-template-areas:
         "c h a"
