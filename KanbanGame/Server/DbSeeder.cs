@@ -136,9 +136,9 @@ public class DbSeeder
                 CurrentRole = Role.EmployeeRole.HighLevelAnalyzer1,
                 PreviousRole = Role.EmployeeRole.HighLevelAnalyzer1,
                 IsHighLevelAnalyzer = true,
-                IsAnalyzer = true,
+                IsAnalyzer = null,
                 IsDeveloper = null,
-                IsTester = false
+                IsTester = null
             }
         },
         new Employee()

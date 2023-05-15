@@ -46,6 +46,8 @@ public class EmployeeService : IEmployeeService
             dbEmployee.Name = employee.Name;
             dbEmployee.Roles = employee.Roles;
             dbEmployee.Productivity = employee.Productivity;
+            dbEmployee.Team = employee.Team;
+            dbEmployee.AvatarPath = employee.AvatarPath;
         }
         return dbEmployee;
     }
