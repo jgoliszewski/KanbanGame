@@ -19,7 +19,7 @@
             <li>Effort left: @feature.EffortLeft</li>
             <li>Ass. Id: @(feature.Assignee is null ? "-" : feature.Assignee.Id)</li>
             <li>Assignee: @(feature.Assignee == null ? "-" : feature.Assignee.Name)</li>
-            <img src=@(feature.Assignee == null ? "Avatars/Default.png" : feature.Assignee.AvatarPath) style="width:32px; float:right;" alt="logo" />
+            <img src=@(feature.Assignee == null ? "Avatars/Default.png" : feature.Assignee.AvatarPath) style="width:48px; float:right;" alt="logo" />
         </Content>
     </DialogTemplates>
     <DialogEvents OnOverlayModalClick="@OverlayClick"></DialogEvents>

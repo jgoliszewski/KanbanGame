@@ -19,7 +19,7 @@
             <li>Assignee: @(kanbanTask.Assignee == null ? "-" : kanbanTask.Assignee.Name)</li>
             <li>Depends on: <b>@(kanbanTask.DependencyTask == null ? "-" : kanbanTask.DependencyTask.Title)</b></li>
             <li>DT. Status: @(kanbanTask.DependencyTask == null ? "-" : kanbanTask.DependencyTask.Status)</li>
-            <img src=@(kanbanTask.Assignee == null ? "Avatars/Default.png" : kanbanTask.Assignee.AvatarPath) style="width:32px; float:right;" alt="logo" /> 
+            <img src=@(kanbanTask.Assignee == null ? "Avatars/Default.png" : kanbanTask.Assignee.AvatarPath) style="width:48px; float:right;" alt="logo" /> 
         </Content>
     </DialogTemplates>
     <DialogEvents OnOverlayModalClick="@OverlayClick"></DialogEvents>

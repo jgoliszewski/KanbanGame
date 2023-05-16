@@ -347,3 +347,20 @@ a, .btn-link {
     border-radius: 4px;
     flex: 1 0 0;
 }
+
+/* -----------------------------------Syncfusion Modal------––––––––––––––––––––––––------- */
+
+.e-dialog {
+    width: auto !important;
+}
+
+.e-dialog .e-dlg-header {
+    font-size: 36px !important;
+}
+
+.e-dialog .e-dlg-content {
+    font-size: 24px !important;
+    padding: 20px !important;
+    padding-left: 30px !important;
+    padding-right: 30px !important;
+}
