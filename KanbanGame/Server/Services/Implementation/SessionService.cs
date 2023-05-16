@@ -73,7 +73,14 @@ public class SessionService : ISessionService
                 e.Roles.TransitioningDaysLeft--;
                 if (e.Roles.TransitioningDaysLeft <= 0)
                 {
-                    e.Roles.Status = Role.EmployeeStatus.Working;
+                    if (e.Roles.LearningDaysLeft > 0)
+                    {   
+                        e.Roles.Status = Role.EmployeeStatus.Learning;
+                    }
+                    else
+                    {
+                        e.Roles.Status = Role.EmployeeStatus.Working;
+                    }
                 }
             }
             else if (e.Roles.Status == Role.EmployeeStatus.Learning)
