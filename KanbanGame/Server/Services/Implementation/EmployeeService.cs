@@ -19,7 +19,7 @@ public class EmployeeService : IEmployeeService
 
     public async Task<List<Employee>?> GetEmployeesByTeamId(int teamId)
     {
-        var dbEmployees = Employees.FindAll(t => (int)t.Team == teamId);
+        var dbEmployees = Employees.FindAll(t => (int)t.Roles.Team == teamId);
         return dbEmployees;
     }
 
@@ -46,7 +46,6 @@ public class EmployeeService : IEmployeeService
             dbEmployee.Name = employee.Name;
             dbEmployee.Roles = employee.Roles;
             dbEmployee.Productivity = employee.Productivity;
-            dbEmployee.Team = employee.Team;
             dbEmployee.AvatarPath = employee.AvatarPath;
         }
         return dbEmployee;

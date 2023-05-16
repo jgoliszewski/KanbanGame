@@ -66,7 +66,17 @@ public class SessionService : ISessionService
         foreach (var e in EmployeesToUpdate)
         {
             e.Roles.PreviousRole = e.Roles.CurrentRole;
-            if (e.Roles.Status == Role.EmployeeStatus.Learning)
+            e.Roles.PreviousTeam = e.Roles.Team;
+
+            if (e.Roles.Status == Role.EmployeeStatus.Transitioning)
+            {
+                e.Roles.TransitioningDaysLeft--;
+                if (e.Roles.TransitioningDaysLeft <= 0)
+                {
+                    e.Roles.Status = Role.EmployeeStatus.Working;
+                }
+            }
+            else if (e.Roles.Status == Role.EmployeeStatus.Learning)
             {
                 e.Roles.LearningDaysLeft--;
                 if (e.Roles.LearningDaysLeft <= 0)
@@ -88,15 +98,6 @@ public class SessionService : ISessionService
                             e.Roles.IsHighLevelAnalyzer = true;
                             break;
                     }
-                }
-            }
-
-            if (e.Roles.Status == Role.EmployeeStatus.Transitioning)
-            {
-                e.Roles.TransitioningDaysLeft--;
-                if (e.Roles.TransitioningDaysLeft <= 0)
-                {
-                    e.Roles.Status = Role.EmployeeStatus.Working;
                 }
             }
         }

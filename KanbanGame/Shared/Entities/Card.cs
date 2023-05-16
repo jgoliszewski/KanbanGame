@@ -13,7 +13,7 @@ public class Card
         {
             if (Employee is not null)
             {
-                return Employee.Team;
+                return Employee.Roles.Team;
             }
             else if (KanbanTask is not null)
             {
@@ -29,7 +29,7 @@ public class Card
         {
             if (Employee is not null)
             {
-                Employee.Team = value;
+                Employee.Roles.Team = value;
             }
             else if (KanbanTask is not null)
             {

@@ -16,6 +16,7 @@ public class Role
     public EmployeeRole CurrentRole { get; set; }
     public EmployeeRole PreviousRole { get; set; }
     public Team.TeamName Team { get; set; }
+    public Team.TeamName PreviousTeam { get; set; }
     public string AvatarPath { get; set; } = "Avatars/Default.png";
 
     //todo: refactor this monster
@@ -23,10 +24,8 @@ public class Role
     {
         switch (column.ToLower())
         {
-            case "backlog":
-                return CurrentRole;
             case "analysisdoing":
-                if (IsAnalyzer is not null && CurrentRole != EmployeeRole.Analyzer)
+                if (IsAnalyzer.HasValue && CurrentRole != EmployeeRole.Analyzer)
                 {
                     if (!IsAnalyzer.Value)
                     {
@@ -48,9 +47,9 @@ public class Role
                 }
                 else
                     return CurrentRole;
-            case "developmentwaiting":
+
             case "developmentdoing":
-                if (IsDeveloper is not null && CurrentRole != EmployeeRole.Developer)
+                if (IsDeveloper.HasValue && CurrentRole != EmployeeRole.Developer)
                 {
                     if (!IsDeveloper.Value)
                     {
@@ -72,9 +71,9 @@ public class Role
                 }
                 else
                     return CurrentRole;
-            case "testwaiting":
+
             case "testdoing":
-                if (IsTester is not null && CurrentRole != EmployeeRole.Tester)
+                if (IsTester.HasValue && CurrentRole != EmployeeRole.Tester)
                 {
                     if (!IsTester.Value)
                     {
@@ -97,10 +96,7 @@ public class Role
                 else
                     return CurrentRole;
             case "doing1":
-                if (
-                    IsHighLevelAnalyzer is not null
-                    && CurrentRole != EmployeeRole.HighLevelAnalyzer1
-                )
+                if (IsHighLevelAnalyzer.HasValue && CurrentRole != EmployeeRole.HighLevelAnalyzer1)
                 {
                     if (!IsHighLevelAnalyzer.Value)
                     {
@@ -122,12 +118,9 @@ public class Role
                 }
                 else
                     return CurrentRole;
-            case "doing2waiting":
+
             case "doing2":
-                if (
-                    IsHighLevelAnalyzer is not null
-                    && CurrentRole != EmployeeRole.HighLevelAnalyzer2
-                )
+                if (IsHighLevelAnalyzer.HasValue && CurrentRole != EmployeeRole.HighLevelAnalyzer2)
                 {
                     if (!IsHighLevelAnalyzer.Value)
                     {

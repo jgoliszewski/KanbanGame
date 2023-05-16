@@ -26,13 +26,14 @@ public class DbSeeder
         {
             Name = "Tom",
             Productivity = 0.6,
-            Team = Team.TeamName.BackEnd,
             AvatarPath = "Avatars/Cthulhu.png",
             Roles = new Role()
             {
                 Seniority = Role.EmployeeSeniority.Mid,
                 CurrentRole = Role.EmployeeRole.Analyzer,
                 PreviousRole = Role.EmployeeRole.Analyzer,
+                Team = Team.TeamName.BackEnd,
+                PreviousTeam = Team.TeamName.BackEnd,
                 IsHighLevelAnalyzer = true,
                 IsAnalyzer = true,
                 IsDeveloper = null,
@@ -43,13 +44,14 @@ public class DbSeeder
         {
             Name = "Olivia",
             Productivity = 0.9,
-            Team = Team.TeamName.BackEnd,
             AvatarPath = "Avatars/Witch.png",
             Roles = new Role()
             {
                 Seniority = Role.EmployeeSeniority.Senior,
                 CurrentRole = Role.EmployeeRole.Developer,
                 PreviousRole = Role.EmployeeRole.Developer,
+                Team = Team.TeamName.BackEnd,
+                PreviousTeam = Team.TeamName.BackEnd,
                 IsHighLevelAnalyzer = false,
                 IsAnalyzer = false,
                 IsDeveloper = true,
@@ -60,13 +62,14 @@ public class DbSeeder
         {
             Name = "John",
             Productivity = 0.25,
-            Team = Team.TeamName.BackEnd,
             AvatarPath = "Avatars/Yeti.png",
             Roles = new Role()
             {
                 Seniority = Role.EmployeeSeniority.Junior,
                 CurrentRole = Role.EmployeeRole.Tester,
                 PreviousRole = Role.EmployeeRole.Tester,
+                Team = Team.TeamName.BackEnd,
+                PreviousTeam = Team.TeamName.BackEnd,
                 IsHighLevelAnalyzer = null,
                 IsAnalyzer = null,
                 IsDeveloper = false,
@@ -77,13 +80,14 @@ public class DbSeeder
         {
             Name = "Emma",
             Productivity = 0.65,
-            Team = Team.TeamName.FrontEnd,
             AvatarPath = "Avatars/Medusa.png",
             Roles = new Role()
             {
                 Seniority = Role.EmployeeSeniority.Mid,
                 CurrentRole = Role.EmployeeRole.Analyzer,
                 PreviousRole = Role.EmployeeRole.Analyzer,
+                Team = Team.TeamName.FrontEnd,
+                PreviousTeam = Team.TeamName.FrontEnd,
                 IsHighLevelAnalyzer = true,
                 IsAnalyzer = true,
                 IsDeveloper = null,
@@ -94,13 +98,14 @@ public class DbSeeder
         {
             Name = "Arthur",
             Productivity = 0.95,
-            Team = Team.TeamName.FrontEnd,
             AvatarPath = "Avatars/Mummy.png",
             Roles = new Role()
             {
                 Seniority = Role.EmployeeSeniority.Senior,
                 CurrentRole = Role.EmployeeRole.Developer,
                 PreviousRole = Role.EmployeeRole.Developer,
+                Team = Team.TeamName.FrontEnd,
+                PreviousTeam = Team.TeamName.FrontEnd,
                 IsHighLevelAnalyzer = false,
                 IsAnalyzer = false,
                 IsDeveloper = true,
@@ -111,13 +116,14 @@ public class DbSeeder
         {
             Name = "Sarah",
             Productivity = 0.25,
-            Team = Team.TeamName.FrontEnd,
             AvatarPath = "Avatars/Wednesday.png",
             Roles = new Role()
             {
                 Seniority = Role.EmployeeSeniority.Junior,
                 CurrentRole = Role.EmployeeRole.Tester,
                 PreviousRole = Role.EmployeeRole.Tester,
+                Team = Team.TeamName.FrontEnd,
+                PreviousTeam = Team.TeamName.FrontEnd,
                 IsHighLevelAnalyzer = null,
                 IsAnalyzer = null,
                 IsDeveloper = false,
@@ -128,13 +134,14 @@ public class DbSeeder
         {
             Name = "Andy",
             Productivity = 0.65,
-            Team = Team.TeamName.HighLevelAnalysis,
             AvatarPath = "Avatars/Reaper.png",
             Roles = new Role()
             {
                 Seniority = Role.EmployeeSeniority.Mid,
                 CurrentRole = Role.EmployeeRole.HighLevelAnalyzer1,
                 PreviousRole = Role.EmployeeRole.HighLevelAnalyzer1,
+                Team = Team.TeamName.HighLevelAnalysis,
+                PreviousTeam = Team.TeamName.HighLevelAnalysis,
                 IsHighLevelAnalyzer = true,
                 IsAnalyzer = null,
                 IsDeveloper = null,
@@ -145,13 +152,14 @@ public class DbSeeder
         {
             Name = "Hannah",
             Productivity = 0.60,
-            Team = Team.TeamName.HighLevelAnalysis,
             AvatarPath = "Avatars/Devil.png",
             Roles = new Role()
             {
                 Seniority = Role.EmployeeSeniority.Mid,
                 CurrentRole = Role.EmployeeRole.HighLevelAnalyzer2,
                 PreviousRole = Role.EmployeeRole.HighLevelAnalyzer2,
+                Team = Team.TeamName.HighLevelAnalysis,
+                PreviousTeam = Team.TeamName.HighLevelAnalysis,
                 IsHighLevelAnalyzer = true,
                 IsAnalyzer = true,
                 IsDeveloper = false,
