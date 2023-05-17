@@ -81,6 +81,14 @@
     async Task DragStartHandler(DragEventArgs<Card> args)
     {
         columnBeforeDrag = args.Data[0].Column;
+        Card draggedCard = args.Data[0];
+        if (draggedCard.Employee is not null)
+        {
+            if (draggedCard.Employee.Roles.IsBlocked)
+            {
+                args.Cancel = true;
+            }
+        }
     }
 
     async Task DragStopHandler(DragEventArgs<Card> args)

@@ -67,46 +67,6 @@ public class SessionService : ISessionService
         {
             e.Roles.PreviousRole = e.Roles.CurrentRole;
             e.Roles.PreviousTeam = e.Roles.Team;
-
-            if (e.Roles.Status == Role.EmployeeStatus.Transitioning)
-            {
-                e.Roles.TransitioningDaysLeft--;
-                if (e.Roles.TransitioningDaysLeft <= 0)
-                {
-                    if (e.Roles.LearningDaysLeft > 0)
-                    {   
-                        e.Roles.Status = Role.EmployeeStatus.Learning;
-                    }
-                    else
-                    {
-                        e.Roles.Status = Role.EmployeeStatus.Working;
-                    }
-                }
-            }
-            else if (e.Roles.Status == Role.EmployeeStatus.Learning)
-            {
-                e.Roles.LearningDaysLeft--;
-                if (e.Roles.LearningDaysLeft <= 0)
-                {
-                    e.Roles.Status = Role.EmployeeStatus.Working;
-                    switch (e.Roles.CurrentRole)
-                    {
-                        case Role.EmployeeRole.Analyzer:
-                            e.Roles.IsAnalyzer = true;
-                            break;
-                        case Role.EmployeeRole.Developer:
-                            e.Roles.IsDeveloper = true;
-                            break;
-                        case Role.EmployeeRole.Tester:
-                            e.Roles.IsTester = true;
-                            break;
-                        case Role.EmployeeRole.HighLevelAnalyzer1:
-                        case Role.EmployeeRole.HighLevelAnalyzer2:
-                            e.Roles.IsHighLevelAnalyzer = true;
-                            break;
-                    }
-                }
-            }
         }
     }
 

@@ -86,6 +86,13 @@
                 args.Cancel = true;
             }
         }
+        else if (draggedCard.Employee is not null)
+        {
+            if (draggedCard.Employee.Roles.IsBlocked)
+            {
+                args.Cancel = true;
+            }
+        }
     }
 
     async Task DragStopHandler(DragEventArgs<Card> args)

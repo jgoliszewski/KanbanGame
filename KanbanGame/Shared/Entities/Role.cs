@@ -5,6 +5,7 @@ public class Role
 {
     public int LearningDaysLeft { get; set; } = 0;
     public int TransitioningDaysLeft { get; set; } = 0;
+    public bool IsBlocked { get; set; } = false;
 
     public bool? IsHighLevelAnalyzer { get; set; } = false;
     public bool? IsAnalyzer { get; set; } = false;
@@ -27,15 +28,6 @@ public class Role
             case "analysisdoing":
                 if (IsAnalyzer.HasValue)
                 {
-                    if (!IsAnalyzer.Value)
-                    {
-                        Status = Status == EmployeeStatus.Transitioning ? Status : EmployeeStatus.Learning;
-                        LearningDaysLeft = 4;
-                    }
-                    else 
-                    {
-                        TransitionEmployee();
-                    }
                     CurrentRole = EmployeeRole.Analyzer;
                 }
                 break;
@@ -43,31 +35,13 @@ public class Role
             case "developmentdoing":
                 if (IsDeveloper.HasValue)
                 {
-                    if (!IsDeveloper.Value)
-                    {
-                        Status = Status == EmployeeStatus.Transitioning ? Status : EmployeeStatus.Learning;
-                        LearningDaysLeft = 4;
-                    }
-                    else 
-                    {
-                        TransitionEmployee();
-                    }
                     CurrentRole = EmployeeRole.Developer;
                 }
                 break;
-            
+
             case "testdoing":
                 if (IsTester.HasValue)
                 {
-                    if (!IsTester.Value)
-                    {
-                        Status = Status == EmployeeStatus.Transitioning ? Status : EmployeeStatus.Learning;
-                        LearningDaysLeft = 4;
-                    }
-                    else 
-                    {
-                        TransitionEmployee();
-                    }
                     CurrentRole = EmployeeRole.Tester;
                 }
                 break;
@@ -75,15 +49,6 @@ public class Role
             case "doing1":
                 if (IsHighLevelAnalyzer.HasValue)
                 {
-                    if (!IsHighLevelAnalyzer.Value)
-                    {
-                        Status = Status == EmployeeStatus.Transitioning ? Status : EmployeeStatus.Learning;
-                        LearningDaysLeft = 4;
-                    }
-                    else 
-                    {
-                        TransitionEmployee();
-                }
                     CurrentRole = EmployeeRole.HighLevelAnalyzer1;
                 }
                 break;
@@ -91,41 +56,37 @@ public class Role
             case "doing2":
                 if (IsHighLevelAnalyzer.HasValue)
                 {
-                    if (!IsHighLevelAnalyzer.Value)
-                    {
-                        Status = Status == EmployeeStatus.Transitioning ? Status : EmployeeStatus.Learning;
-                        LearningDaysLeft = 4;
-                    }
-                    else 
-                    {
-                        TransitionEmployee();
-                    }
                     CurrentRole = EmployeeRole.HighLevelAnalyzer2;
                 }
                 break;
-
-        }   
+        }
     }
 
-    private void TransitionEmployee()
+    public void ChangeTeam(Team.TeamName team)
     {
-        if (CurrentRole != PreviousRole)
-        {
-            Status = EmployeeStatus.Transitioning;
-            TransitioningDaysLeft = 3;
-        }
-        if (Team != PreviousTeam)
-        {
-            Status = EmployeeStatus.Transitioning;
-            TransitioningDaysLeft = 6;
-        }
-        else 
-        {
-            Status = EmployeeStatus.Working;
-            TransitioningDaysLeft = 0;
-            LearningDaysLeft = 0;
-        }
+        Team = team;
 
+        if (Team == PreviousTeam)
+        {
+            CurrentRole = PreviousRole;
+        }
+        else if (Team == KanbanGame.Shared.Team.TeamName.HighLevelAnalysis)
+        {
+            CurrentRole = EmployeeRole.HighLevelAnalyzer1;
+        }
+        else if (PreviousTeam == KanbanGame.Shared.Team.TeamName.HighLevelAnalysis)
+        {
+            if (IsDeveloper.HasValue)
+                CurrentRole = EmployeeRole.Developer;
+            else if (IsAnalyzer.HasValue)
+                CurrentRole = EmployeeRole.Analyzer;
+            else if (IsTester.HasValue)
+                CurrentRole = EmployeeRole.Tester;
+        }
+        else
+        {
+            CurrentRole = PreviousRole;
+        }
     }
 
     public static String RoleToColumn(EmployeeRole role)

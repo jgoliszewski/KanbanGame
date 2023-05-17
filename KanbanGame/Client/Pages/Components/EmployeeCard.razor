@@ -139,26 +139,8 @@
 
     private async Task SendEmployeeToTeam(Team.TeamName team)
     {
-        employee.Roles.Team = team;
         await BoardService.UpdateColumn(employee.SF_Column);
-        switch(team)
-        {
-            case Team.TeamName.HighLevelAnalysis:
-                employee.Roles.CurrentRole = Role.EmployeeRole.HighLevelAnalyzer1;
-                break;
-            case Team.TeamName.FrontEnd:
-            case Team.TeamName.BackEnd:
-                if (employee.Roles.Team == Team.TeamName.HighLevelAnalysis)
-                {
-                    if (employee.Roles.IsDeveloper.HasValue)
-                        employee.Roles.CurrentRole = Role.EmployeeRole.Developer;
-                    else if (employee.Roles.IsAnalyzer.HasValue)
-                        employee.Roles.CurrentRole = Role.EmployeeRole.Analyzer;
-                    else if (employee.Roles.IsTester.HasValue)
-                        employee.Roles.CurrentRole = Role.EmployeeRole.Tester;
-                }
-                break;
-        }
+        employee.Roles.ChangeTeam(team);
         @* await BoardService.UpdateColumn(employee.SF_Column); *@ 
         await EmployeeService.UpdateEmployee(employee.Id, employee);
         this.IsShowCardDetailsVisible = false;
