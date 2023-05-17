@@ -10,6 +10,6 @@ public class Employee
     public string SF_Column
     {
         get => Role.RoleToColumn(Roles.CurrentRole);
-        set => Roles.CurrentRole = Roles.ColumnToRole(value);
+        set => Roles.ColumnToRole(value);
     } // for Syncfunction D&D
 }

@@ -77,19 +77,19 @@
         <img class="notifier" src=@(!employee.Roles.IsTester.HasValue ? "Icons/roles/letter_t_crossed.png" : employee.Roles.IsTester.Value == true ? "Icons/roles/letter_t_filled.png" : "Icons/roles/letter_t_filled_light.png") />
     </div>
     @{
-        if (employee.Roles.Status == Role.EmployeeStatus.Learning)
-        {
-            <div class="employee-l">
-                <img class="notifier" src="Icons/block.png" style="float:left"/>
-                <div>@employee.Roles.LearningDaysLeft Days Left</div>
-                <img class="notifier" src="Icons/block.png" style="float:left"/>
-            </div>
-        }
         if (employee.Roles.Status == Role.EmployeeStatus.Transitioning)
         {
             <div class="employee-l">
                 <img class="notifier" src="Icons/block.png" style="float:left"/>
-                <div>@employee.Roles.TransitioningDaysLeft Days Left</div>
+                <div>T. @employee.Roles.TransitioningDaysLeft Days Left</div>
+                <img class="notifier" src="Icons/block.png" style="float:left"/>
+            </div>
+        }
+        else if (employee.Roles.Status == Role.EmployeeStatus.Learning)
+        {
+            <div class="employee-l">
+                <img class="notifier" src="Icons/block.png" style="float:left"/>
+                <div>L. @employee.Roles.LearningDaysLeft Days Left</div>
                 <img class="notifier" src="Icons/block.png" style="float:left"/>
             </div>
         }
@@ -140,8 +140,6 @@
     private async Task SendEmployeeToTeam(Team.TeamName team)
     {
         employee.Roles.Team = team;
-        employee.Roles.TransitioningDaysLeft = 5;
-        employee.Roles.Status = Role.EmployeeStatus.Transitioning;
         await BoardService.UpdateColumn(employee.SF_Column);
         switch(team)
         {
@@ -150,16 +148,20 @@
                 break;
             case Team.TeamName.FrontEnd:
             case Team.TeamName.BackEnd:
-                if (employee.Roles.IsDeveloper.HasValue)
-                    employee.Roles.CurrentRole = Role.EmployeeRole.Developer;
-                else if (employee.Roles.IsAnalyzer.HasValue)
-                    employee.Roles.CurrentRole = Role.EmployeeRole.Analyzer;
-                else if (employee.Roles.IsTester.HasValue)
-                    employee.Roles.CurrentRole = Role.EmployeeRole.Tester;
+                if (employee.Roles.Team == Team.TeamName.HighLevelAnalysis)
+                {
+                    if (employee.Roles.IsDeveloper.HasValue)
+                        employee.Roles.CurrentRole = Role.EmployeeRole.Developer;
+                    else if (employee.Roles.IsAnalyzer.HasValue)
+                        employee.Roles.CurrentRole = Role.EmployeeRole.Analyzer;
+                    else if (employee.Roles.IsTester.HasValue)
+                        employee.Roles.CurrentRole = Role.EmployeeRole.Tester;
+                }
                 break;
         }
         @* await BoardService.UpdateColumn(employee.SF_Column); *@ 
         await EmployeeService.UpdateEmployee(employee.Id, employee);
+        this.IsShowCardDetailsVisible = false;
         await OnEmployeeChangedHandler();
     }
 }
