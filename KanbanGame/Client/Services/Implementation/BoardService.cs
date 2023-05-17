@@ -41,6 +41,7 @@ public class BoardService : IBoardService
     private Dictionary<Employee, Feature?> FeatureBoardDict;
     private List<KanbanTask> TempTasks;
     private List<Feature> TempFeatures;
+    private List<Employee> TempEmployees;
 
     public async Task GetCardsByTeamId(int teamId)
     {
@@ -63,7 +64,11 @@ public class BoardService : IBoardService
     {
         foreach (var e in _employeeService.Employees)
         {
-            DevBoardDict.Add(e, null);
+            if (e.Roles.Status == Role.EmployeeStatus.Working)
+                DevBoardDict.Add(e, null);
+            else
+                TempEmployees.Add(e);
+
             ColumnMaxCount[e.SF_Column] += 2;
         }
 
@@ -107,13 +112,22 @@ public class BoardService : IBoardService
             Cards.Add(card);
             ColumnCount[t.SF_Column] += 2;
         }
+        foreach (var e in TempEmployees)
+        {
+            Cards.Add(EmployeeToCard(e, ColumnCount[e.SF_Column]));
+            ColumnCount[e.SF_Column] += 2;
+        }
     }
 
     private async Task BuildFeatureBoard()
     {
         foreach (var e in _employeeService.Employees)
         {
-            FeatureBoardDict.Add(e, null);
+            if (e.Roles.Status == Role.EmployeeStatus.Working)
+                FeatureBoardDict.Add(e, null);
+            else
+                TempEmployees.Add(e);
+
             ColumnMaxCount[e.SF_Column] += 2;
         }
 
@@ -160,6 +174,12 @@ public class BoardService : IBoardService
             }
             Cards.Add(card);
             ColumnCount[f.SF_Column] += 2;
+        }
+
+        foreach (var e in TempEmployees)
+        {
+            Cards.Add(EmployeeToCard(e, ColumnCount[e.SF_Column]));
+            ColumnCount[e.SF_Column] += 2;
         }
     }
 
@@ -310,5 +330,6 @@ public class BoardService : IBoardService
         FeatureBoardDict = new Dictionary<Employee, Feature?>();
         TempTasks = new List<KanbanTask>();
         TempFeatures = new List<Feature>();
+        TempEmployees = new List<Employee>();
     }
 }
