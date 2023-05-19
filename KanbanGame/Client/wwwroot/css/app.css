@@ -127,6 +127,13 @@ a, .btn-link {
     content: var(--blazor-load-percentage-text, "Loading");
 }
 
+.icon{
+    width: 32px;
+    margin-left: 5px;
+    margin-right: 5px;
+    pointer-events: none;
+}
+
 .notifier{
     width: 32px;
     margin-left: 5px;

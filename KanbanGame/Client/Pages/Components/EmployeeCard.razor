@@ -30,7 +30,7 @@
                     }
                     else
                     {
-                        <img class="notifier" src="Icons/block.png" style="float:right"/>
+                        <img class="icon" src="Icons/block.png" style="float:right"/>
                     }
                 </div>
                 <div>
@@ -41,7 +41,7 @@
                     }
                     else
                     {
-                        <img class="notifier" src="Icons/block.png" style="float:right"/>
+                        <img class="icon" src="Icons/block.png" style="float:right"/>
                     }
                 </div>
                 <div>
@@ -52,7 +52,7 @@
                     }
                     else
                     {
-                        <img class="notifier" src="Icons/block.png" style="float:right"/>
+                        <img class="icon" src="Icons/block.png" style="float:right"/>
                     }
                 </div>
             }
@@ -78,15 +78,15 @@
     </div>
     <div class="employee-f">
 
-        <img class="notifier" src=@(!employee.Roles.IsHighLevelAnalyzer.HasValue ? "Icons/roles/letter_h_crossed.png" : employee.Roles.IsHighLevelAnalyzer.Value == true ? "Icons/roles/letter_h_filled.png" : "Icons/roles/letter_h_filled_light.png") />
-        <img class="notifier" src=@(!employee.Roles.IsAnalyzer.HasValue ? "Icons/roles/letter_a_crossed.png" : employee.Roles.IsAnalyzer.Value == true ? "Icons/roles/letter_a_filled.png" : "Icons/roles/letter_a_filled_light.png") />
-        <img class="notifier" src=@(!employee.Roles.IsDeveloper.HasValue ? "Icons/roles/letter_d_crossed.png" : employee.Roles.IsDeveloper.Value == true ? "Icons/roles/letter_d_filled.png" : "Icons/roles/letter_d_filled_light.png") />
-        <img class="notifier" src=@(!employee.Roles.IsTester.HasValue ? "Icons/roles/letter_t_crossed.png" : employee.Roles.IsTester.Value == true ? "Icons/roles/letter_t_filled.png" : "Icons/roles/letter_t_filled_light.png") />
+        <img class="icon" src=@(!employee.Roles.IsHighLevelAnalyzer.HasValue ? "Icons/roles/letter_h_crossed.png" : employee.Roles.IsHighLevelAnalyzer.Value == true ? "Icons/roles/letter_h_filled.png" : "Icons/roles/letter_h_filled_light.png") />
+        <img class="icon" src=@(!employee.Roles.IsAnalyzer.HasValue ? "Icons/roles/letter_a_crossed.png" : employee.Roles.IsAnalyzer.Value == true ? "Icons/roles/letter_a_filled.png" : "Icons/roles/letter_a_filled_light.png") />
+        <img class="icon" src=@(!employee.Roles.IsDeveloper.HasValue ? "Icons/roles/letter_d_crossed.png" : employee.Roles.IsDeveloper.Value == true ? "Icons/roles/letter_d_filled.png" : "Icons/roles/letter_d_filled_light.png") />
+        <img class="icon" src=@(!employee.Roles.IsTester.HasValue ? "Icons/roles/letter_t_crossed.png" : employee.Roles.IsTester.Value == true ? "Icons/roles/letter_t_filled.png" : "Icons/roles/letter_t_filled_light.png") />
     </div>
     @if (employee.Roles.Status != Role.EmployeeStatus.Working)
     {
         <div class="employee-l">
-            <img class="notifier" src="Icons/block.png" style="float:left"/>
+            <img class="icon" src="Icons/block.png" style="float:left"/>
                 @if (employee.Roles.Status == Role.EmployeeStatus.Transitioning)
                 {
                     @if(employee.Roles.LearningDaysLeft > 0)
@@ -103,7 +103,7 @@
                 {
                     <span>@employee.Roles.LearningDaysLeft Days</span>
                 }
-            <img class="notifier" src="Icons/block.png" style="float:left"/>
+            <img class="icon" src="Icons/block.png" style="float:left"/>
         </div>
     }
     
