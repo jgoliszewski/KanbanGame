@@ -1,11 +1,12 @@
 .feature-tasks-card {  
     display: grid;
-    grid-template-columns: 1fr 2fr;
+    grid-template-columns: 1fr 5fr;
     gap: 10px 10px;
     grid-auto-flow: row;
     grid-template-areas:
         "h h"
-        "t t";
+        "e e"
+        "T t";
     padding-top: 10px;
     padding-bottom: 10px;
     padding-left: 10px;
@@ -20,7 +21,31 @@
     font-size: 20px;
 }
 
+.feature-tasks-e { 
+    grid-area: e;
+    display: flex;
+    justify-content: center;
+    align-items: center; 
+    line-height: 2ch;
+    background-color: var(--gray-light);
+    border-radius: 5px;
+}
+
 .feature-tasks-t { 
     grid-area: t;
-    line-height: 2ch;
+    display: flex;
+    flex-direction: column;
+    line-height: 3ch;
+    font-size: 14px;
+}
+
+.feature-tasks-T { 
+    grid-area: T;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center; 
+    line-height: 3ch;
+    border-right: 2px solid var(--gray-dark);
+    font-size: 14px;
 }

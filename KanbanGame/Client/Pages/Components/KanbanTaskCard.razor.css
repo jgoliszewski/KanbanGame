@@ -1,13 +1,13 @@
 .task-card {  
     display: grid;
     grid-template-columns: 1fr;
-    grid-template-rows: 1fr 1fr 1fr;
     gap: 10px 10px;
     grid-auto-flow: row;
     grid-template-areas:
         "h"
-        "d"
-        "f";
+        "a"
+        "f"
+        "d";
     padding-top: 10px;
     padding-bottom: 10px;
     padding-left: 10px;
@@ -20,11 +20,29 @@
     justify-content: space-between;
     font-weight: bold;
     font-size: 20px;
+    border-bottom: 2px solid var(--gray-dark);
+}
+
+.task-a { 
+    grid-area: a; 
+    text-align: center;
+    flex-direction: column;
+    justify-content: space-between;
+    font-size: 16px;
+    line-height: 2ch;
+    background-color: var(--gray-light);
+    border-radius: 5px;
 }
 
 .task-d { 
     grid-area: d; 
+    text-align: center;
+    flex-direction: column;
+    justify-content: space-between;
+    font-size: 16px;
     line-height: 2ch;
+    background-color: var(--red-light);
+    border-radius: 5px;
 }
 
 .task-f { 

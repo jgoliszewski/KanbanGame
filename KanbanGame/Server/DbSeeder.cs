@@ -175,21 +175,27 @@ public class DbSeeder
             Title = "A1",
             Effort = 0.5,
             Description = "Task description",
-            Type = KanbanTask.TaskType.BackEnd
+            Type = KanbanTask.TaskType.BackEnd,
+            Team = Team.TeamName.BackEnd,
+            Status = KanbanTask.TaskStatus.Backlog
         },
         new KanbanTask
         {
             Title = "A2",
             Effort = 0.5,
             Description = "Task description",
-            Type = KanbanTask.TaskType.FrontEnd
+            Type = KanbanTask.TaskType.FrontEnd,
+            Team = Team.TeamName.FrontEnd,
+            Status = KanbanTask.TaskStatus.Backlog
         },
         new KanbanTask
         {
             Title = "A3",
             Effort = 0.6,
             Description = "Task description",
-            Type = KanbanTask.TaskType.FrontEnd
+            Type = KanbanTask.TaskType.FrontEnd,
+            Team = Team.TeamName.FrontEnd,
+            Status = KanbanTask.TaskStatus.Backlog
         },
         new KanbanTask
         {
@@ -229,6 +235,8 @@ public class DbSeeder
             Description = "Cool Feature about sth",
             EstimatedMinEarnings = 12,
             EstimatedMaxEarnings = 18,
+            Status = Feature.FeatureStatus.UnderDevelopment,
+            Team = Team.TeamName.None
         },
         new Feature
         {

@@ -5,7 +5,7 @@
 <SfDialog Width="300px" ShowCloseIcon="true" IsModal="true" @bind-Visible="@IsShowCardDetailsVisible">
     <DialogTemplates>
         <Header> 
-            <h2>Task: @feature.Title</h2>
+            Feature: @feature.Title
         </Header>
         <Content>
             <h5>Feature Info:</h5>
@@ -19,6 +19,14 @@
             <li>Effort left: @feature.EffortLeft</li>
             <li>Ass. Id: @(feature.Assignee is null ? "-" : feature.Assignee.Id)</li>
             <li>Assignee: @(feature.Assignee == null ? "-" : feature.Assignee.Name)</li>
+            @if (feature.Status == Feature.FeatureStatus.ReadyForDevelopment)
+            {
+                <div>Tasks: @feature.KanbanTasks.Count</div>
+                foreach (var t in feature.KanbanTasks)
+                {
+                    <li>@t.Title - @t.Type</li>
+                }
+            }
             <img src=@(feature.Assignee == null ? "Avatars/Default.png" : feature.Assignee.AvatarPath) style="width:48px; float:right;" alt="logo" />
         </Content>
     </DialogTemplates>
@@ -35,42 +43,41 @@
                 }
             }
             <b>@feature.Title</b>
-            <img class="notifier" src="Icons/info.png" @onclick='(() => ShowCardDetails())' style="float:right"/>
+            <img class="info-icon" src="Icons/info.png" @onclick='(() => ShowCardDetails())' style="float:right"/>
         </div>
     </div>
     <div class="feature-d">
         @{
             if (feature.Status == Feature.FeatureStatus.ReadyForDevelopment)
             {
-                <b>@($"Est. $: {feature.EstimatedMinEarnings}K-{feature.EstimatedMaxEarnings}K")</b>
-                <div>Tasks:</div>
-                foreach (var t in feature.KanbanTasks)
-                {
-                    <li>@t.Title - @t.Type</li>
-                }
+                <b>@($"{feature.EstimatedMinEarnings}K-{feature.EstimatedMaxEarnings}K $")</b>
+                <b>Tasks: @feature.KanbanTasks.Count</b>
             }
             else
             {
-                <div>Desc.: @feature.Description</div>
+                <div>@feature.Description</div>
             }
         }
     </div>
     <div class="feature-f">
         @{
-            <img class="notifier" src=@(feature.Star ? "Icons/star_filled.png" : "Icons/star.png") @onclick='(() => ChangeIconState("star"))'/>
-            <img class="notifier" src=@(feature.Warning ? "Icons/warning_filled.png" : "Icons/warning.png") @onclick='(() => ChangeIconState("warning"))'/>
-            <img class="notifier" src=@(feature.Pause ? "Icons/pause_filled.png" : "Icons/pause.png") @onclick='(() => ChangeIconState("pause"))'/>
-        }
-    </div>
-    @{
-        if (feature.Status == Feature.FeatureStatus.ReadyForDevelopment)
-        {
-            <div class="feature-b">
+            if (feature.Status == Feature.FeatureStatus.ReadyForDevelopment)
+            {
                 <img class="notifier" src="Icons/trash.png" @onclick='(() => DeleteFeature())' style="float:left"/>
+                <img class="notifier" src=@(feature.Star ? "Icons/star_filled.png" : "Icons/star.png") @onclick='(() => ChangeIconState("star"))'/>
+                <img class="notifier" src=@(feature.Warning ? "Icons/warning_filled.png" : "Icons/warning.png") @onclick='(() => ChangeIconState("warning"))'/>
+                <img class="notifier" src=@(feature.Pause ? "Icons/pause_filled.png" : "Icons/pause.png") @onclick='(() => ChangeIconState("pause"))'/>
                 <img class="notifier" src="Icons/arrow_right.png" @onclick='(() => SendFeatureTasksToTeams())' style="float:right"/>
-            </div>
+            }
+            else 
+            {
+                <img class="notifier" src=@(feature.Star ? "Icons/star_filled.png" : "Icons/star.png") @onclick='(() => ChangeIconState("star"))'/>
+                <img class="notifier" src=@(feature.Warning ? "Icons/warning_filled.png" : "Icons/warning.png") @onclick='(() => ChangeIconState("warning"))'/>
+                <img class="notifier" src=@(feature.Pause ? "Icons/pause_filled.png" : "Icons/pause.png") @onclick='(() => ChangeIconState("pause"))'/>
+            }
         }
-    }
+
+    </div>
 </div>
                 
 @code {

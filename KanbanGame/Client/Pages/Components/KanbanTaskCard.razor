@@ -4,7 +4,7 @@
 <SfDialog Width="300px" ShowCloseIcon="true" IsModal="true" @bind-Visible="@IsShowCardDetailsVisible">
     <DialogTemplates>
         <Header> 
-            <h2>Task: @kanbanTask.Title</h2>
+            Task: @kanbanTask.Title
         </Header>
         <Content>
             <h5>Task Info:</h5>
@@ -27,27 +27,22 @@
 
 <div class="task-card">
     <div class="task-h">
-    @{
-        if (kanbanTask.Status != KanbanTask.TaskStatus.Delivered)
+        @if (kanbanTask.Status != KanbanTask.TaskStatus.Delivered)
         {
-            if (kanbanTask.DependencyTask is not null && kanbanTask.DependencyTask.Status != KanbanTask.TaskStatus.Delivered)
-            {
-                <img class="notifier" src="Icons/block.png" style="float:left"/>
-            }
-            else
-            {
-                <img src=@(kanbanTask.Assignee == null ? "Avatars/Default.png" : kanbanTask.Assignee.AvatarPath) style="width:32px; float:left; pointer-events: none;" alt="avatar" />
-            }
+            <img src=@(kanbanTask.Assignee == null ? "Avatars/Default.png" : kanbanTask.Assignee.AvatarPath) style="width:32px; float:left; pointer-events: none;" alt="avatar" />
         }
-    }
-
         <b>@kanbanTask.Title</b>
         <img class="notifier" src="Icons/info.png" @onclick='(() => ShowCardDetails())' style="float:right"/>
     </div>
-    <div class="task-d">
-        <div>Age: @kanbanTask.Age</div>
-        <div>Depends on: <b>@(kanbanTask.DependencyTask == null ? "-" : kanbanTask.DependencyTask.Title)</b></div>
+    <div class="task-a">
+        <div>Task open for @kanbanTask.Age Days</div>
     </div>
+    @if(kanbanTask.DependencyTask is not null && kanbanTask.DependencyTask.Status != KanbanTask.TaskStatus.Delivered)
+    {
+        <div class="task-d">
+            Depends on: <b>@kanbanTask.DependencyTask.Title</b> from <b>@kanbanTask.DependencyTask.Team</b>
+        </div>
+    }
     @{
         if (kanbanTask.Status != KanbanTask.TaskStatus.Delivered)
         {

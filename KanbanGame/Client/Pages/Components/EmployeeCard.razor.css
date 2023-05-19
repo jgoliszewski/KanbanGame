@@ -7,7 +7,7 @@
     grid-template-areas:
         "a h"
         "a d"
-        "f f"
+        "a f"
         "l l";
     padding-top: 10px;
     padding-bottom: 10px;
@@ -25,13 +25,19 @@
 .employee-a { 
     grid-area: a;
     display: flex;
+    flex-wrap: wrap;
     justify-content: center;
-    align-items: center;   
+    align-items: center;  
+    line-height: 0;
+    font-size: 16px;
+    font-weight: bold;
 }
 
 .employee-d { 
     grid-area: d; 
-    line-height: 120%;
+    text-align: center;
+    font-weight: bold;
+    font-size: 16px;
 }
 .employee-f { 
     grid-area: f; 

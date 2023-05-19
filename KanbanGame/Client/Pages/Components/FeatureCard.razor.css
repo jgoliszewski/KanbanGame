@@ -6,8 +6,7 @@
     grid-template-areas:
         "h"
         "d"
-        "f"
-        "b";
+        "f";
     padding-top: 10px;
     padding-bottom: 10px;
     padding-left: 10px;
@@ -20,11 +19,20 @@
     justify-content: space-between;
     font-weight: bold;
     font-size: 20px;
+    border-bottom: 2px solid var(--gray-dark);
 }
 
 .feature-d { 
     grid-area: d;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;  
+    padding-left: 10px;
+    padding-right: 10px;
     line-height: 2ch;
+    background-color: var(--gray-light);
+    border-radius: 5px;
 }
 
 .feature-f { 
@@ -33,12 +41,4 @@
     justify-content: center;
     align-items: center;  
 }
-
-.feature-b {
-    grid-area: b;
-    display: flex;
-    justify-content: space-between;
-    align-items: center; 
-    padding-top: 5px;
-    border-top: 2px solid var(--gray-dark);
-}
+ 

@@ -129,9 +129,19 @@ a, .btn-link {
 
 .icon{
     width: 32px;
+    margin-left: 2px;
+    margin-right: 2px;
+    pointer-events: none;
+}
+
+.info-icon{
+    width: 24px;
     margin-left: 5px;
     margin-right: 5px;
-    pointer-events: none;
+}
+
+.info-icon:hover{
+    transform: scale(1.2);
 }
 
 .notifier{
@@ -139,6 +149,7 @@ a, .btn-link {
     margin-left: 5px;
     margin-right: 5px;
 }
+
 
 .notifier:hover{
     transform: scale(1.2);

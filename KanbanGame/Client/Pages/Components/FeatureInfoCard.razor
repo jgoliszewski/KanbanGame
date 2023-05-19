@@ -5,7 +5,7 @@
 <SfDialog Width="300px" ShowCloseIcon="true" IsModal="true" @bind-Visible="@IsShowCardDetailsVisible">
     <DialogTemplates>
         <Header> 
-            <h2>Feature: @feature.Title</h2>
+            Feature: @feature.Title
         </Header>
         <Content> 
             <h5>Feature Info:</h5>
@@ -26,27 +26,73 @@
     <div class="feature-tasks-card">
         <div class="feature-tasks-h">
             @feature.Title
-            <img class="notifier" src="Icons/info.png" @onclick='(() => ShowCardDetails())' style="float:right"/>
+            <img class="info-icon" src="Icons/info.png" @onclick='(() => ShowCardDetails())' style="float:right"/>
+        </div>
+        <div class="feature-tasks-e">
+            <div>@($"Earnings: {feature.EstimatedMinEarnings}K-{feature.EstimatedMaxEarnings}K $")</div>
+        </div>
+        <div class="feature-tasks-T">
+            <b>B</b>
+            <b>F</b>
         </div>
         <div class="feature-tasks-t">
-            <div>@($"Est. $: {feature.EstimatedMinEarnings}K-{feature.EstimatedMaxEarnings}K")</div>
-            @* <div>Id: @feature.Id</div> *@
-            @* <div>Desc: @feature.Description</div> *@    
-            @* <div>Task count: @feature.KanbanTasks.Count</div> *@
-            <div>Tasks(@(feature.KanbanTasks.Count)):</div>
-            @{
-                foreach (var t in feature.KanbanTasks)
-                {
-                    if(t.Status == KanbanTask.TaskStatus.Delivered)
+                <div>
+                    @foreach (var t in feature.KanbanTasks)
                     {
-                        <li><s>@t.Title</s></li>
+                        if (t.Team == Team.TeamName.BackEnd)
+                        {
+                            if (t.Status == KanbanTask.TaskStatus.Delivered)
+                            {
+                                <s>@($"{t.Title}")</s>
+                            }
+                            else
+                            {
+                                @($"{t.Title}")
+                            }
+
+                            if (t.DependencyTask is not null)
+                            {
+                                if (t.DependencyTask.Status == KanbanTask.TaskStatus.Delivered)
+                                {
+                                    <s>@($"({t.DependencyTask.Title})")</s>
+                                }
+                                else
+                                {
+                                    @($"({t.DependencyTask.Title})")
+                                }
+                            }
+                        }
+                        @("  ")
                     }
-                    else
+                </div>
+                <div>
+                    @foreach (var t in feature.KanbanTasks)
                     {
-                        <li>@t.Title</li>
+                        if (t.Team == Team.TeamName.FrontEnd)
+                        {
+                            if (t.Status == KanbanTask.TaskStatus.Delivered)
+                            {
+                                <s>@($"{t.Title}")</s>
+                            }
+                            else
+                            {
+                                @($"{t.Title}")
+                            }
+                        }
+                        if (t.DependencyTask is not null)
+                            {
+                                if (t.DependencyTask.Status == KanbanTask.TaskStatus.Delivered)
+                                {
+                                    <s>@($"({t.DependencyTask.Title})")</s>
+                                }
+                                else
+                                {
+                                    @($"({t.DependencyTask.Title})")
+                                }
+                            }
+                        @("  ")
                     }
-                }
-            }
+                </div>
         </div>
     </div>  
 }
