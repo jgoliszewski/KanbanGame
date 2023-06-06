@@ -1,20 +1,18 @@
 <Project Sdk="Microsoft.NET.Sdk.BlazorWebAssembly">
-
   <PropertyGroup>
     <TargetFramework>net7.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    <UserSecretsId>94160e69-b340-4bce-832f-73d07ed1a959</UserSecretsId>
   </PropertyGroup>
-
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="7.0.3" />
-    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="7.0.3" PrivateAssets="all" />
-    <PackageReference Include="Microsoft.AspNetCore.SignalR.Client" Version="8.0.0-preview.2.23153.2" />
-    <PackageReference Include="Syncfusion.Blazor.Kanban" Version="21.1.37" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="7.0.3"/>
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="7.0.3" PrivateAssets="all"/>
+    <PackageReference Include="Microsoft.AspNetCore.SignalR.Client" Version="8.0.0-preview.2.23153.2"/>
+    <PackageReference Include="Syncfusion.Blazor.Kanban" Version="21.1.37"/>
+    <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="7.0.0"/>
   </ItemGroup>
-
   <ItemGroup>
-    <ProjectReference Include="..\Shared\KanbanGame.Shared.csproj" />
+    <ProjectReference Include="..\Shared\KanbanGame.Shared.csproj"/>
   </ItemGroup>
-
 </Project>
