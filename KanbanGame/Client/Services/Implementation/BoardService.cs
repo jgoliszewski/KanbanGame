@@ -41,6 +41,7 @@ public class BoardService : IBoardService
     private Dictionary<Employee, Feature?> FeatureBoardDict;
     private List<KanbanTask> TempTasks;
     private List<Feature> TempFeatures;
+    private List<Employee> TempEmployees;
 
     public async Task GetCardsByTeamId(int teamId)
     {
@@ -63,7 +64,11 @@ public class BoardService : IBoardService
     {
         foreach (var e in _employeeService.Employees)
         {
-            DevBoardDict.Add(e, null);
+            if (e.Roles.Status == Role.EmployeeStatus.Working)
+                DevBoardDict.Add(e, null);
+            else
+                TempEmployees.Add(e);
+
             ColumnMaxCount[e.SF_Column] += 2;
         }
 
@@ -95,12 +100,22 @@ public class BoardService : IBoardService
         {
             var card = TaskToCard(t, ColumnCount[t.SF_Column]);
             var cardAbove = FindCardAbove(card);
-            if (cardAbove is not null && cardAbove.Employee is not null)
+            if (
+                cardAbove is not null
+                && cardAbove.Employee is not null
+                && cardAbove.Employee.Roles.Status == Role.EmployeeStatus.Working
+            )
             {
                 card.KanbanTask.Assignee = cardAbove.Employee;
+                await _kanbanTaskService.UpdateKanbanTask(card.KanbanTask.Id, card.KanbanTask); //todo: can do it better? This solution do not send update to HUB
             }
             Cards.Add(card);
             ColumnCount[t.SF_Column] += 2;
+        }
+        foreach (var e in TempEmployees)
+        {
+            Cards.Add(EmployeeToCard(e, ColumnCount[e.SF_Column]));
+            ColumnCount[e.SF_Column] += 2;
         }
     }
 
@@ -108,7 +123,11 @@ public class BoardService : IBoardService
     {
         foreach (var e in _employeeService.Employees)
         {
-            FeatureBoardDict.Add(e, null);
+            if (e.Roles.Status == Role.EmployeeStatus.Working)
+                FeatureBoardDict.Add(e, null);
+            else
+                TempEmployees.Add(e);
+
             ColumnMaxCount[e.SF_Column] += 2;
         }
 
@@ -144,12 +163,23 @@ public class BoardService : IBoardService
         {
             var card = FeatureToCard(f, ColumnCount[f.SF_Column]);
             var cardAbove = FindCardAbove(card);
-            if (cardAbove is not null && cardAbove.Employee is not null)
+            if (
+                cardAbove is not null
+                && cardAbove.Employee is not null
+                && cardAbove.Employee.Roles.Status == Role.EmployeeStatus.Working
+            )
             {
                 card.Feature.Assignee = cardAbove.Employee;
+                await _featureService.UpdateFeature(card.Feature.Id, card.Feature); //todo: can do it better? This solution do not send update to HUB
             }
             Cards.Add(card);
             ColumnCount[f.SF_Column] += 2;
+        }
+
+        foreach (var e in TempEmployees)
+        {
+            Cards.Add(EmployeeToCard(e, ColumnCount[e.SF_Column]));
+            ColumnCount[e.SF_Column] += 2;
         }
     }
 
@@ -187,49 +217,6 @@ public class BoardService : IBoardService
             Column = employee.SF_Column
         };
         return card;
-    }
-
-    public async Task SimulateBoard()
-    {
-        foreach (var card in Cards)
-        {
-            if (card.KanbanTask is not null && card.KanbanTask.Assignee is not null)
-            {
-                card.KanbanTask.NextTaskStatus();
-                card.KanbanTask.Assignee = null;
-
-                await _kanbanTaskService.UpdateKanbanTask(card.KanbanTask.Id, card.KanbanTask);
-            }
-            if (card.Feature is not null && card.Feature.Assignee is not null)
-            {
-                card.Feature.NextFeatureStatus();
-                card.Feature.Assignee = null;
-
-                await _featureService.UpdateFeature(card.Feature.Id, card.Feature);
-            }
-        }
-    }
-
-    public async Task SendFeatureTasksToTeams(Feature feature)
-    {
-        //todo: maybe it's a FeatureService method?
-        foreach (var t in feature.KanbanTasks)
-        {
-            switch (t.Type)
-            {
-                case KanbanTask.TaskType.FrontEnd:
-                    t.Team = Team.TeamName.FrontEnd;
-                    break;
-                case KanbanTask.TaskType.BackEnd:
-                    t.Team = Team.TeamName.BackEnd;
-                    break;
-            }
-            t.Status = KanbanTask.TaskStatus.Backlog;
-            await _kanbanTaskService.UpdateKanbanTask(t.Id, t);
-        }
-        feature.Team = Team.TeamName.None;
-        feature.Status = Feature.FeatureStatus.UnderDevelopment;
-        await _featureService.UpdateFeature(feature.Id, feature);
     }
 
     public async Task UpdateCard(int cardId, Card card)
@@ -271,8 +258,9 @@ public class BoardService : IBoardService
 
                 if (cardAbove is not null && cardAbove.Employee is not null)
                 {
-                    card.KanbanTask.Assignee = cardAbove.Employee;
                     card.KanbanTask.SF_Column = cardAbove.Employee.SF_Column;
+                    if (cardAbove.Employee.Roles.Status == Role.EmployeeStatus.Working)
+                        card.KanbanTask.Assignee = cardAbove.Employee;
                 }
                 else
                 {
@@ -285,8 +273,9 @@ public class BoardService : IBoardService
 
                 if (cardAbove is not null && cardAbove.Employee is not null)
                 {
-                    card.Feature.Assignee = cardAbove.Employee;
                     card.Feature.SF_Column = cardAbove.Employee.SF_Column;
+                    if (cardAbove.Employee.Roles.Status == Role.EmployeeStatus.Working)
+                        card.Feature.Assignee = cardAbove.Employee;
                 }
                 else
                 {
@@ -331,8 +320,9 @@ public class BoardService : IBoardService
             { "TestWaiting", 1 },
             { "TestDoing", 1 },
             { "Delivered", 1 },
-            { "None", 1},
+            { "None", 1 },
             { "Doing1", 1 },
+            { "Doing2Waiting", 1 },
             { "Doing2", 1 },
             { "ReadyForDevelopment", 1 }
         };
@@ -340,5 +330,6 @@ public class BoardService : IBoardService
         FeatureBoardDict = new Dictionary<Employee, Feature?>();
         TempTasks = new List<KanbanTask>();
         TempFeatures = new List<Feature>();
+        TempEmployees = new List<Employee>();
     }
 }

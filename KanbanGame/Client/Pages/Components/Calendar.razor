@@ -1,0 +1,18 @@
+<div>
+    <div class="center">
+        <h4>Day: @(Session.Day) Week: @(Session.Week)</h4>
+    </div>
+    @{
+        string[] days = new string[5] { "letter_m", "letter_t", "letter_w", "letter_t", "letter_f" };
+        days[(int)Session.Weekday] += "_filled";
+        foreach (var day in days)
+        {
+            <img class="icon" src=@($"Icons/letters/{day}.png")/>
+        }
+    }
+</div>      
+
+@code {
+    [Parameter]
+    public Session Session { get; set; }
+}

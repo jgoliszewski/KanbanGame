@@ -6,6 +6,7 @@ public interface IKanbanTaskService
 {
     List<KanbanTask> KanbanTasks { get; set; }
     Task GetKanbanTasks();
+    Task GetActiveKanbanTasks();
     Task GetKanbanTasksByTeamId(int teamId);
     Task<KanbanTask?> GetKanbanTaskById(int kanbanTaskId);
     Task CreateKanbanTask(KanbanTask kanbanTask);

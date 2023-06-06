@@ -1,0 +1,108 @@
+﻿@page "/"
+@inject ISessionService SessionService
+<PageTitle>Index</PageTitle>
+
+<h1>Kanban methodology game!</h1>
+<hr />
+<h2>Unlocked Features</h2>
+<div class="switch-control">
+    <div>
+        <label style="padding: 10px 10px 10px 0">Feature Board</label>
+        <SfSwitch CssClass="e-big" @bind-Checked="IsFeatureBoardUnlocked" OffLabel="Locked" OnLabel="Unlocked" ValueChange="ChangeFeatureBoard" TChecked="bool?" ></SfSwitch>
+    </div>
+    <div>
+        <label style="padding: 10px 10px 10px 0">Start or Delete analyzed Feature</label>
+        <SfSwitch @bind-Checked="IsFeatureExtraColumnUnlocked" OffLabel="Locked" OnLabel="Unlocked" ValueChange="ChangeFeatureExtraColumn" TChecked="bool?" ></SfSwitch>
+    </div>
+</div>
+<hr />
+<div>
+    <h3>Informations:</h3>
+    <p>Learning new role takes 3-5 days and cost 1k-2k $</p>
+    <p>Transitioning to different team takes 1-3 days</p>
+    <p>During transitioning and learning time Employee <b>doesn't work on Tasks</b></p>
+</div>
+@code
+{
+    private bool? IsFeatureBoardUnlocked = null;
+    private bool? IsFeatureExtraColumnUnlocked;
+    protected override async Task OnInitializedAsync()
+    {
+        await SessionService.GetSessionInfo();
+        IsFeatureBoardUnlocked = SessionService.Session.IsFeatureBoardUnlocked;
+        IsFeatureExtraColumnUnlocked = SessionService.Session.IsFeatureExtraColumnUnlocked;
+    }
+
+    private async Task ChangeFeatureExtraColumn(Syncfusion.Blazor.Buttons.ChangeEventArgs<bool?> args)
+    {
+        IsFeatureExtraColumnUnlocked = args.Checked;
+        SessionService.Session.IsFeatureExtraColumnUnlocked = (bool)IsFeatureExtraColumnUnlocked;
+        await SessionService.UpdateSessionInfo(SessionService.Session);
+    }
+
+
+    private async Task ChangeFeatureBoard(Syncfusion.Blazor.Buttons.ChangeEventArgs<bool?> args)
+    {
+        IsFeatureBoardUnlocked = args.Checked;
+        SessionService.Session.IsFeatureBoardUnlocked = (bool)IsFeatureBoardUnlocked;
+        await SessionService.UpdateSessionInfo(SessionService.Session);
+    }
+}
+<style>
+    .switch-control .heading {
+        text-indent: 15px;
+        padding: 15px 0;
+    }
+    .switch-control div {
+        display: flex;
+        align-items: center;
+    }
+
+    .switch-control label {
+        -webkit-tap-highlight-color: transparent;
+        cursor: pointer;
+        user-select: none;
+        font-weight: 400;
+        font-size: 24px;
+    }
+    .switch-control .e-disabled {
+        pointer-events: none;
+    }
+
+    .e-switch-wrapper, .e-css.e-switch-wrapper {
+        height: 30px;
+        width: 80px
+    }
+
+    .e-switch-wrapper .e-switch-inner,
+    .e-switch-wrapper .e-switch-handle {
+        border-radius: 5px;
+    }
+
+    .e-switch-wrapper .e-switch-on, .e-css.e-switch-wrapper .e-switch-on {
+        background-color: #28A745;
+        color: white;
+        border-radius: 0%;
+    }
+
+    .e-switch-wrapper .e-switch-off, .e-css.e-switch-wrapper .e-switch-of {
+        background-color: #dc3545;
+        color: white;
+        border-radius: 0%;
+    }
+
+    .e-switch-wrapper .e-switch-inner.e-switch-active, .e-css.e-switch-wrapper .e-switch-inner.e-switch-active,
+    .e-switch-wrapper:hover .e-switch-inner.e-switch-active, .e-css.e-switch-wrapper .e-switch-inner.e-switch-active {
+        border-color: #28A745;
+    }
+
+    .e-switch-wrapper .e-switch-inner, .e-switch-wrapper .e-switch-handle,
+    .e-switch-wrapper:hover .e-switch-inner, .e-switch-wrapper .e-switch-handle {
+        border-color: #dc3545;
+    }
+
+    .e-switch-wrapper:hover .e-switch-inner.e-switch-active .e-switch-on {
+        background-color: #28A745;
+    }
+
+</style>

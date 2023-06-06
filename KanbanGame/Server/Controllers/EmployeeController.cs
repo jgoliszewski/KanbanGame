@@ -21,6 +21,12 @@ public class EmployeeController : ControllerBase
         return await _EmployeeService.GetEmployees();
     }
 
+    [HttpGet("active")]
+    public async Task<List<Employee>> GetActiveEmployees()
+    {
+        return await _EmployeeService.GetActiveEmployees();
+    }
+
     [HttpGet("team/{id}")]
     public async Task<List<Employee>?> GetEmployeesByTeamId(int id)
     {

@@ -1,0 +1,127 @@
+@inject IFeatureService FeatureService
+@inject IBoardService BoardService
+@inject NavigationManager NavigationManager
+
+<SfDialog Width="300px" ShowCloseIcon="true" IsModal="true" @bind-Visible="@IsShowCardDetailsVisible">
+    <DialogTemplates>
+        <Header> 
+            Feature: @feature.Title
+        </Header>
+        <Content> 
+            <h5>Feature Info:</h5>
+            <li>Id: @feature.Id</li>
+            <li>Title: @feature.Title</li>
+            <li>Description: @feature.Description</li>
+            <li>Status: @feature.Status</li>
+            <li>Number of tasks: @feature.KanbanTasks.Count</li>
+            <li>Est. earnings: @($"{feature.EstimatedMinEarnings}K-{feature.EstimatedMaxEarnings}K $")</li>
+            <li>Delivered: @(Math.Round(feature.DeliveredTaskPercentage*100, 1)) %</li>
+        </Content>
+    </DialogTemplates>
+    <DialogEvents OnOverlayModalClick="@OverlayClick"></DialogEvents>
+</SfDialog>
+
+@if(feature.Status == Feature.FeatureStatus.ReadyForDevelopment || feature.Status == Feature.FeatureStatus.UnderDevelopment)
+{
+    <div class="feature-tasks-card">
+        <div class="feature-tasks-h">
+            @feature.Title
+            <img class="info-icon" src="Icons/info.png" @onclick='(() => ShowCardDetails())' style="float:right"/>
+        </div>
+        <div class="feature-tasks-e">
+            <div>@($"Earnings: {feature.EstimatedMinEarnings}K-{feature.EstimatedMaxEarnings}K $")</div>
+        </div>
+        <div class="feature-tasks-T">
+            <b>B</b>
+            <b>F</b>
+        </div>
+        <div class="feature-tasks-t">
+                <div>
+                    @foreach (var t in feature.KanbanTasks)
+                    {
+                        if (t.Team == Team.TeamName.BackEnd)
+                        {
+                            if (t.Status == KanbanTask.TaskStatus.Delivered)
+                            {
+                                <s>@($"{t.Title}")</s>
+                            }
+                            else
+                            {
+                                @($"{t.Title}")
+                            }
+
+                            if (t.DependencyTask is not null)
+                            {
+                                if (t.DependencyTask.Status == KanbanTask.TaskStatus.Delivered)
+                                {
+                                    <s>@($"({t.DependencyTask.Title})")</s>
+                                }
+                                else
+                                {
+                                    @($"({t.DependencyTask.Title})")
+                                }
+                            }
+                        }
+                        @("  ")
+                    }
+                </div>
+                <div>
+                    @foreach (var t in feature.KanbanTasks)
+                    {
+                        if (t.Team == Team.TeamName.FrontEnd)
+                        {
+                            if (t.Status == KanbanTask.TaskStatus.Delivered)
+                            {
+                                <s>@($"{t.Title}")</s>
+                            }
+                            else
+                            {
+                                @($"{t.Title}")
+                            }
+                        }
+                        if (t.DependencyTask is not null)
+                            {
+                                if (t.DependencyTask.Status == KanbanTask.TaskStatus.Delivered)
+                                {
+                                    <s>@($"({t.DependencyTask.Title})")</s>
+                                }
+                                else
+                                {
+                                    @($"({t.DependencyTask.Title})")
+                                }
+                            }
+                        @("  ")
+                    }
+                </div>
+        </div>
+    </div>  
+}
+else
+{
+    <div class="feature-tasks-card">
+        <div class="feature-tasks-h">@feature.Title</div>
+        <div class="feature-tasks-t">
+            @* <div>Id: @feature.Id</div> *@
+            <div>Desc: @feature.Description</div>    
+        </div>
+
+</div>
+}
+                
+@code {
+    private bool IsShowCardDetailsVisible { get; set; } = false;
+    [Parameter]
+    public Feature feature { get; set; }
+    [Parameter]
+    public EventCallback OnFeatureChanged { get; set; }
+
+    private void ShowCardDetails()
+    {
+        this.IsShowCardDetailsVisible = true;
+    }
+
+    private void OverlayClick(OverlayModalClickEventArgs args)
+    {
+        this.IsShowCardDetailsVisible = false;
+    }
+}

@@ -1,6 +1,7 @@
 using KanbanGame.Shared;
 
 namespace KanbanGame.Client.Services;
+
 public interface IFeatureService
 {
     List<Feature> Features { get; set; }
@@ -11,5 +12,5 @@ public interface IFeatureService
     Task CreateFeature(Feature Feature);
     Task UpdateFeature(int FeatureId, Feature Feature);
     Task DeleteFeature(int FeatureId);
+    Task SendFeatureTasksToTeams(int FeatureId);
 }
-

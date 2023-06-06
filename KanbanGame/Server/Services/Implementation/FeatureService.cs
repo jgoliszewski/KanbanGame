@@ -20,6 +20,14 @@ public class FeatureService : IFeatureService
         return Features;
     }
 
+    public async Task<List<Feature>> GetActiveFeatures()
+    {
+        return Features.FindAll(
+            f => f.Status != Feature.FeatureStatus.None
+        // && f.Status != Feature.FeatureStatus.Delivered //For FeatureBoard
+        );
+    }
+
     public async Task<List<Feature>?> GetFeaturesByTeamId(int teamId)
     {
         var dbFeatures = Features.FindAll(f => (int)f.Team == teamId);
@@ -57,7 +65,15 @@ public class FeatureService : IFeatureService
             dbFeature.Team = Feature.Team;
             dbFeature.EstimatedMinEarnings = Feature.EstimatedMinEarnings;
             dbFeature.EstimatedMaxEarnings = Feature.EstimatedMaxEarnings;
-            // dbFeature.KanbanTasks = Feature.KanbanTasks;
+            dbFeature.Effort = Feature.Effort;
+            dbFeature.EffortLeft = Feature.EffortLeft;
+            dbFeature.Star = Feature.Star;
+            dbFeature.Warning = Feature.Warning;
+            dbFeature.Pause = Feature.Pause;
+            foreach (var t in Feature.KanbanTasks)
+            {
+                await _kanbanTaskService.UpdateKanbanTask(t.Id, t);
+            }
         }
         return dbFeature;
     }
@@ -67,9 +83,37 @@ public class FeatureService : IFeatureService
         var dbFeature = Features.Where(t => t.Id == FeatureId).FirstOrDefault();
         if (dbFeature is not null)
         {
+            foreach (var t in dbFeature.KanbanTasks)
+            {
+                await _kanbanTaskService.DeleteKanbanTask(t.Id);
+            }
             Features.Remove(dbFeature);
             return true;
         }
         return false;
+    }
+
+    public async Task SendFeatureTasksToTeams(int FeatureId)
+    {
+        var dbFeature = Features.Where(t => t.Id == FeatureId).FirstOrDefault();
+        if (dbFeature is not null)
+        {
+            foreach (var t in dbFeature.KanbanTasks)
+            {
+                switch (t.Type)
+                {
+                    case KanbanTask.TaskType.FrontEnd:
+                        t.Team = Team.TeamName.FrontEnd;
+                        break;
+                    case KanbanTask.TaskType.BackEnd:
+                        t.Team = Team.TeamName.BackEnd;
+                        break;
+                }
+                t.Status = KanbanTask.TaskStatus.Backlog;
+                await _kanbanTaskService.UpdateKanbanTask(t.Id, t);
+            }
+            dbFeature.Team = Team.TeamName.None;
+            dbFeature.Status = Feature.FeatureStatus.UnderDevelopment;
+        }
     }
 }

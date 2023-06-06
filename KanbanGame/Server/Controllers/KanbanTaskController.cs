@@ -21,6 +21,12 @@ public class KanbanTaskController : ControllerBase
         return await _TaskService.GetKanbanTasks();
     }
 
+    [HttpGet("active")]
+    public async Task<List<KanbanTask>> GetActiveTasks()
+    {
+        return await _TaskService.GetActiveKanbanTasks();
+    }
+
     [HttpGet("team/{id}")]
     public async Task<List<KanbanTask>?> GetTasksByTeamId(int id)
     {

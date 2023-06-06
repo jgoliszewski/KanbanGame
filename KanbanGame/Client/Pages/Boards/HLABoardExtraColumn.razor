@@ -1,0 +1,260 @@
+@page "/HighLevelAnalysisboardExtraColumn"
+@inject ISessionService SessionService
+@inject IBoardService BoardService
+@inject IFeatureService FeatureService
+@inject NavigationManager NavigationManager
+@implements IAsyncDisposable
+@using Components
+
+<div class="center">
+<div class="board-page">
+    <div class="board-page-h">
+        <h1>High Level Analysis Team</h1>
+    </div>
+    <div class="board-page-c">
+        <KanbanGame.Client.Pages.Components.Calendar Session=SessionService.Session/>
+    </div>
+    <div class="board-page-a">
+        <KanbanGame.Client.Pages.Components.SimulationButtons @ref="SimulationButtons" IsUpdateDisabled="isUpdateDisabled" ReadyUserCount="readyUserCount" ConnectedUserCount="connectedUserCount" OnSimulateDay="SimulateDay" OnStateReady="StateReady" OnStateNotReady="StateNotReady"/>
+    </div>
+
+    <div class="board-page-b">
+        <div class="stacked-header" style="width: 1528px">
+            <div class="stacked-header-title" style="flex-grow: 245;background:var(--gray-dark)"><span>FeaturePool</span></div>
+            <div class="stacked-header-title" style="flex-grow: 245;background:var(--gray-dark)"><span>Backlog</span></div>
+            <div class="stacked-header-title" style="flex-grow: 750;background:var(--yellow)">High Level Analysis</div>
+            <div class="stacked-header-title" style="flex-grow: 245;background:var(--gray-darker)">ReadyForDevelopment</div>
+        </div>
+        <SfKanban TValue="Card" KeyField="Column" DataSource="BoardService.Cards" Width="1540px">
+        <KanbanColumns>
+            <KanbanColumn HeaderText="" KeyField="@(new List<string>() {"None"})" TransitionColumns="@(new List<string>() {"Backlog"})" AllowAdding="true"></KanbanColumn>
+            <KanbanColumn HeaderText="" KeyField="@(new List<string>() {"Backlog"})" TransitionColumns="@(new List<string>() {"Doing1", "None"})"></KanbanColumn>
+            <KanbanColumn HeaderText="Doing1" MaxCount="@BoardService.ColumnMaxCount["Doing1"]" KeyField="@(new List<string>() {"Doing1"})" TransitionColumns="@(new List<string>() {"Backlog", "Doing2"})"></KanbanColumn>
+            <KanbanColumn HeaderText="Waiting" KeyField="@(new List<string>() {"Doing2Waiting"})" TransitionColumns="@(new List<string>() {"Doing2Waiting", "Doing2"})"></KanbanColumn>
+            <KanbanColumn HeaderText="Doing2" MaxCount="@BoardService.ColumnMaxCount["Doing2"]" KeyField="@(new List<string>() {"Doing2"})" TransitionColumns="@(new List<string>() {"Doing1", "Doing2Waiting"})"></KanbanColumn>
+            <KanbanColumn HeaderText="" KeyField="@(new List<string>() {"ReadyForDevelopment"})" TransitionColumns="@(new List<string>() {"ReadyForDevelopment"})" AllowDrag="false"></KanbanColumn>
+        </KanbanColumns>
+        <KanbanSortSettings SortBy="SortOrderBy.Index" Field="RankId"></KanbanSortSettings>
+        <KanbanEvents TValue="Card" DragStart="@DragStartHandler" DragStop="@DragStopHandler" CardDoubleClick="@CardDoubleClickHandler"></KanbanEvents>
+        <KanbanCardSettings HeaderField="Id">
+            <Template>
+            @{
+                Card card = (Card)context;
+
+                if (card.Employee is not null)
+                {
+                    <KanbanGame.Client.Pages.Components.EmployeeCard employee=card.Employee OnEmployeeChanged="UpdateBoard"/>
+                }
+                else if (card.Feature is not null)
+                {
+                    <KanbanGame.Client.Pages.Components.FeatureCard feature=card.Feature OnFeatureChanged="UpdateBoard"/>
+                }
+            }
+            </Template>
+        </KanbanCardSettings>
+    </SfKanban>
+    </div>
+    
+    
+</div>
+</div>
+
+
+@code {
+    private int BoardId = (int)Team.TeamName.HighLevelAnalysis;
+    private SimulationButtons SimulationButtons;
+    protected override async Task OnInitializedAsync()
+    {
+        await BoardService.GetCardsByTeamId(BoardId);
+        await SessionService.GetSessionInfo();
+        if (!SessionService.Session.IsFeatureExtraColumnUnlocked)
+            NavigationManager.NavigateTo("/HighLevelAnalysisboard");
+
+        await Connect();
+    }
+
+    private string? columnBeforeDrag;
+    private string? columnAfterDrag;
+    private string[] featureForbiddenSwap = { "Doing1", "Doing2" };
+    private string[] employeeForbidenColumn = { "Backlog" };
+
+    async Task DragStartHandler(DragEventArgs<Card> args)
+    {
+        columnBeforeDrag = args.Data[0].Column;
+        Card draggedCard = args.Data[0];
+        if (draggedCard.Employee is not null)
+        {
+            if (draggedCard.Employee.Roles.IsBlocked)
+            {
+                args.Cancel = true;
+            }
+        }
+    }
+
+    async Task DragStopHandler(DragEventArgs<Card> args)
+    {
+
+        Card draggedCard = args.Data[0];
+        columnAfterDrag = draggedCard.Column;
+
+        if (draggedCard.Feature is not null)
+
+        {
+            if (columnBeforeDrag != draggedCard.Column && featureForbiddenSwap.Contains(columnBeforeDrag) && featureForbiddenSwap.Contains(draggedCard.Column))
+            {
+                args.Cancel = true;
+            }
+            else
+            {
+                await BoardService.UpdateCardLocal(draggedCard.Id, draggedCard);
+                await BoardService.UpdateColumn(columnBeforeDrag);
+                if (columnBeforeDrag != columnAfterDrag)
+                {
+                    await BoardService.UpdateColumn(columnAfterDrag);
+                }
+                if (hubConnection is not null)
+                {
+                    await hubConnection.SendAsync("UpdateBoard", 0);
+                }
+            }
+        }
+        else if (draggedCard.Employee is not null)
+        {
+            if (employeeForbidenColumn.Contains(columnAfterDrag))
+            {
+                args.Cancel = true;
+            }
+            else
+            {
+                await BoardService.UpdateCardLocal(draggedCard.Id, draggedCard);
+                await BoardService.UpdateColumn(columnBeforeDrag);
+                await BoardService.UpdateColumn(columnAfterDrag);
+
+                if (hubConnection is not null)
+                {
+                    await hubConnection.SendAsync("UpdateBoard", 0);
+                }
+            }
+        }
+    }
+
+    public void CardDoubleClickHandler(CardClickEventArgs<Card> args)
+    {
+        args.Cancel = true;
+    }
+
+    async Task SimulateDay()
+    {
+        await SessionService.SimulateDay();
+        if (hubConnection is not null)
+        {
+            await hubConnection.SendAsync("UpdateBoard", 0);
+            await hubConnection.SendAsync("ClearReadyUsers", 0);
+        }
+    }
+
+    async Task DeleteFeature(Feature feature)
+    {
+        await FeatureService.DeleteFeature(feature.Id);
+        if (hubConnection is not null)
+        {
+            await hubConnection.SendAsync("UpdateBoard", 0);
+        }
+    }
+
+    async Task ChangeIconState(Feature feature, string icon)
+    {
+        switch(icon){
+            case "star":
+                feature.Star = !(feature.Star);
+                break;
+            case "warning":
+                feature.Warning = !(feature.Warning);
+                break;
+            case "pause":
+                feature.Pause = !(feature.Pause);
+                break;
+        }
+        await FeatureService.UpdateFeature(feature.Id, feature);
+        if (hubConnection is not null)
+        {
+            await hubConnection.SendAsync("UpdateBoard", 0);
+        }
+    }
+
+    @* -------------------- Hub -------------------- *@
+    private HubConnection? hubConnection;
+    private int connectedUserCount = 0;
+    private int readyUserCount = 0;
+    protected bool isUpdateDisabled = true;
+    private async Task Connect()
+    {
+        hubConnection = new HubConnectionBuilder()
+                .WithUrl(NavigationManager.ToAbsoluteUri("/BoardHub"))
+                .Build();
+
+        await hubConnection.StartAsync();
+
+        hubConnection.On<int>("BoardUpdated", async (_) =>
+                {
+                    await BoardService.GetCardsByTeamId(BoardId);
+                    await SessionService.GetSessionInfo();
+                    StateHasChanged();
+                });
+        hubConnection.On<int>("StateReady", async (numberOfReadyClients) =>
+                {
+                    readyUserCount = numberOfReadyClients;
+                    isUpdateDisabled = readyUserCount == connectedUserCount ? false : true;
+                    StateHasChanged();
+                });
+        hubConnection.On<int>("StateNotReady", async (numberOfReadyClients) =>
+                {
+                    readyUserCount = numberOfReadyClients;
+                    isUpdateDisabled = readyUserCount == connectedUserCount ? false : true;
+                    StateHasChanged();
+                });
+        hubConnection.On<int>("ClearReadyUsers", async (numberOfReadyClients) =>
+                {
+                    readyUserCount = numberOfReadyClients;
+                    SimulationButtons.ResetReadiness();
+                    isUpdateDisabled = readyUserCount == connectedUserCount ? false : true;
+                    StateHasChanged();
+                });
+        hubConnection.On<int>("UserCount", async (numberOfConnectedClients) =>
+                {
+                    connectedUserCount = numberOfConnectedClients;
+                    isUpdateDisabled = readyUserCount == connectedUserCount ? false : true;
+                    StateHasChanged();
+                });
+    }
+
+    async Task UpdateBoard()
+    {
+        if (hubConnection is not null)
+        {
+            await hubConnection.SendAsync("UpdateBoard", 0);
+        }
+    }
+
+    async Task StateReady()
+    {
+        if (hubConnection is not null)
+        {
+            await hubConnection.SendAsync("StateReady", 0);
+        }
+    }
+    async Task StateNotReady()
+    {
+        if (hubConnection is not null)
+        {
+            await hubConnection.SendAsync("StateNotReady", 0);
+        }
+    }
+    public async ValueTask DisposeAsync()
+    {
+        if (hubConnection != null)
+        {
+            await hubConnection.DisposeAsync();
+        }
+    }
+}

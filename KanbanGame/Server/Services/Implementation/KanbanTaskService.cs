@@ -14,6 +14,16 @@ public class KanbanTaskService : IKanbanTaskService
         return KanbanTasks;
     }
 
+    public async Task<List<KanbanTask>> GetActiveKanbanTasks()
+    {
+        return KanbanTasks.FindAll(
+            t =>
+                t.Status != KanbanTask.TaskStatus.Delivered
+                && t.Status != KanbanTask.TaskStatus.None
+                && t.Status != KanbanTask.TaskStatus.ReadyForDevelopment
+        );
+    }
+
     public async Task<List<KanbanTask>?> GetKanbanTasksByTeamId(int teamId)
     {
         var dbTask = KanbanTasks.FindAll(t => (int)t.Team == teamId);
@@ -46,6 +56,16 @@ public class KanbanTaskService : IKanbanTaskService
             dbTask.Status = kanbanTask.Status;
             dbTask.Assignee = kanbanTask.Assignee;
             dbTask.Team = kanbanTask.Team;
+            dbTask.Age = kanbanTask.Age;
+            dbTask.Effort = kanbanTask.Effort;
+            dbTask.EffortLeft = kanbanTask.EffortLeft;
+            dbTask.Star = kanbanTask.Star;
+            dbTask.Warning = kanbanTask.Warning;
+            dbTask.Pause = kanbanTask.Pause;
+            if (kanbanTask.DependencyTask is not null)
+            {
+                // await UpdateKanbanTask(kanbanTask.DependencyTask.Id, kanbanTask.DependencyTask);
+            }
         }
         return dbTask;
     }

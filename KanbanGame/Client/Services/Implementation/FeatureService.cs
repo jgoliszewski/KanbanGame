@@ -8,12 +8,18 @@ namespace KanbanGame.Client.Services;
 public class FeatureService : IFeatureService
 {
     private readonly HttpClient _http;
+    private readonly IKanbanTaskService _kanbanTaskService;
     private readonly NavigationManager _navigationManger;
 
-    public FeatureService(HttpClient http, NavigationManager navigationManger)
+    public FeatureService(
+        HttpClient http,
+        IKanbanTaskService kanbanTaskService,
+        NavigationManager navigationManger
+    )
     {
         _http = http;
         _navigationManger = navigationManger;
+        _kanbanTaskService = kanbanTaskService;
     }
 
     public List<Feature> Features { get; set; } = new List<Feature>();
@@ -24,14 +30,13 @@ public class FeatureService : IFeatureService
         if (result is not null)
             Features = result;
     }
-    
+
     public async Task GetActiveFeatures() // Features at least in Backlog
     {
-        var result = await _http.GetFromJsonAsync<List<Feature>>("api/Feature");
+        var result = await _http.GetFromJsonAsync<List<Feature>>("api/Feature/active");
         if (result is not null)
         {
-
-            Features = result.FindAll(f => f.Status != Feature.FeatureStatus.None);
+            Features = result;
         }
     }
 
@@ -66,6 +71,10 @@ public class FeatureService : IFeatureService
     public async Task DeleteFeature(int FeatureId)
     {
         var result = await _http.DeleteAsync($"api/Feature/{FeatureId}");
-        _navigationManger.NavigateTo("Features");
+    }
+
+    public async Task SendFeatureTasksToTeams(int FeatureId)
+    {
+        await _http.PutAsync($"api/Feature/sendFeatureTasksToTeams/{FeatureId}", null);
     }
 }

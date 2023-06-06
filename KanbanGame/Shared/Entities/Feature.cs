@@ -5,8 +5,13 @@ public class Feature
     public int Id { get; set; }
     public string Title { get; set; } = "Title";
     public string? Description { get; set; }
+    public double Effort { get; set; } = 1;
+    public double EffortLeft { get; set; } = 1;
     public int? EstimatedMinEarnings { get; set; }
     public int? EstimatedMaxEarnings { get; set; }
+    public bool Star { get; set; } = false;
+    public bool Warning { get; set; } = false;
+    public bool Pause { get; set; } = false;
     public List<KanbanTask> KanbanTasks { get; set; } = new List<KanbanTask>();
     public Employee? Assignee { get; set; }
     public FeatureStatus Status { get; set; } = FeatureStatus.None;
@@ -23,9 +28,11 @@ public class Feature
             return (deliveredTasksCount / tasksCount);
         }
     }
-    public DeliveredPercentage DeliveredTaskPercentageStatus { get => PercentageToStatus(DeliveredTaskPercentage); }
-            
-    
+    public DeliveredPercentage DeliveredTaskPercentageStatus
+    {
+        get => PercentageToStatus(DeliveredTaskPercentage);
+    }
+
     public string SF_PercentageColumn
     {
         get => DeliveredTaskPercentageStatus.ToString();
@@ -41,6 +48,7 @@ public class Feature
         None,
         Backlog,
         Doing1,
+        Doing2Waiting,
         Doing2,
         ReadyForDevelopment,
         UnderDevelopment,
@@ -63,7 +71,7 @@ public class Feature
         switch (Status)
         {
             case FeatureStatus.Doing1:
-                Status = FeatureStatus.Doing2;
+                Status = FeatureStatus.Doing2Waiting;
                 break;
             case FeatureStatus.Doing2:
                 Status = FeatureStatus.ReadyForDevelopment;
@@ -97,10 +105,10 @@ public class Feature
             case < 1:
                 return DeliveredPercentage.Eighty_Hundred;
             case 1:
+                Status = FeatureStatus.Delivered;
                 return DeliveredPercentage.Hundred;
             default:
                 return DeliveredPercentage.None;
         }
-
     }
 }

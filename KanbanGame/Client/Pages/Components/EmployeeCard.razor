@@ -1,0 +1,155 @@
+@inject IEmployeeService EmployeeService
+@inject IBoardService BoardService
+
+<SfDialog Width="300px" ShowCloseIcon="true" IsModal="true" @bind-Visible="@IsShowCardDetailsVisible">
+    <DialogTemplates>
+        <Header> 
+            @employee.Name
+            <img src=@(employee.AvatarPath == null ? "Avatars/Default.png" : employee.AvatarPath) style="width:48px;float:right;" alt="logo" />
+        </Header>
+        <Content> 
+            <h3>Employee Info:</h3>
+            <li>Id: @employee.Id</li>
+            <li>Name: @employee.Name</li>
+            <li>Seniority: @employee.Roles.Seniority</li>
+            <li>Productivity: @employee.Productivity</li>
+            <li>Status: @employee.Roles.Status</li>
+            <li>Team: @employee.Roles.Team</li>
+            <li>Role: @employee.Roles.CurrentRole</li>
+            <li>P. Role: @employee.Roles.PreviousRole</li>
+            <li>Role learning days left: @employee.Roles.LearningDaysLeft Days</li>
+            <li>Transitioning days left: @employee.Roles.TransitioningDaysLeft Days</li>
+            <h3>Send to team:</h3>
+            @if (!employee.Roles.IsBlocked)
+            {
+                <div>
+                    <span>High Level Analysis</span>
+                    @if(!SendToHLADisabled)
+                    {
+                        <img class="notifier" src="Icons/arrow_right.png" @onclick='(() => SendEmployeeToTeam(Team.TeamName.HighLevelAnalysis))' style="float:right"/>
+                    }
+                    else
+                    {
+                        <img class="icon" src="Icons/block.png" style="float:right"/>
+                    }
+                </div>
+                <div>
+                    <span>BackEnd</span>
+                    @if(!SendToBEDisabled)
+                    {
+                        <img class="notifier" src="Icons/arrow_right.png" @onclick='(() => SendEmployeeToTeam(Team.TeamName.BackEnd))' style="float:right"/>
+                    }
+                    else
+                    {
+                        <img class="icon" src="Icons/block.png" style="float:right"/>
+                    }
+                </div>
+                <div>
+                    <span>FrontEnd</span>
+                    @if(!SendToFEDisabled)
+                    {
+                        <img class="notifier" src="Icons/arrow_right.png" @onclick='(() => SendEmployeeToTeam(Team.TeamName.FrontEnd))' style="float:right"/>
+                    }
+                    else
+                    {
+                        <img class="icon" src="Icons/block.png" style="float:right"/>
+                    }
+                </div>
+            }
+            else 
+            {
+                <span style="color: red;">Cannot change Team at the moment</span>
+            }
+        </Content>
+    </DialogTemplates>
+    <DialogEvents OnOverlayModalClick="@OverlayClick"></DialogEvents>
+</SfDialog>
+
+<div class="employee-card">
+    <div class="employee-h">
+        @employee.Name
+        <img class="info-icon" src="Icons/info.png" @onclick='(() => ShowCardDetails())' style="float:right"/>
+    </div>
+    <div class="employee-a">
+        <img src=@(employee.AvatarPath == null ? "Avatars/Default.png" : employee.AvatarPath) style="width:48px; pointer-events: none;" alt="logo" />
+        @employee.Roles.Seniority
+    </div>
+    <div class="employee-d">
+        
+    </div>
+    <div class="employee-f">
+
+        <img class="icon" src=@(!employee.Roles.IsHighLevelAnalyzer.HasValue ? "Icons/roles/letter_h_crossed.png" : employee.Roles.IsHighLevelAnalyzer.Value == true ? "Icons/roles/letter_h_filled.png" : "Icons/roles/letter_h_filled_light.png") />
+        <img class="icon" src=@(!employee.Roles.IsAnalyzer.HasValue ? "Icons/roles/letter_a_crossed.png" : employee.Roles.IsAnalyzer.Value == true ? "Icons/roles/letter_a_filled.png" : "Icons/roles/letter_a_filled_light.png") />
+        <img class="icon" src=@(!employee.Roles.IsDeveloper.HasValue ? "Icons/roles/letter_d_crossed.png" : employee.Roles.IsDeveloper.Value == true ? "Icons/roles/letter_d_filled.png" : "Icons/roles/letter_d_filled_light.png") />
+        <img class="icon" src=@(!employee.Roles.IsTester.HasValue ? "Icons/roles/letter_t_crossed.png" : employee.Roles.IsTester.Value == true ? "Icons/roles/letter_t_filled.png" : "Icons/roles/letter_t_filled_light.png") />
+    </div>
+    @if (employee.Roles.Status != Role.EmployeeStatus.Working)
+    {
+        <div class="employee-l">
+            <img class="icon" src="Icons/block.png" style="float:left"/>
+                @if (employee.Roles.Status == Role.EmployeeStatus.Transitioning)
+                {
+                    <span>Transitioning</span>
+                }
+                @if (employee.Roles.Status == Role.EmployeeStatus.Learning)
+                {
+                    <span> Learning role</span>
+                }
+            <img class="icon" src="Icons/block.png" style="float:left"/>
+        </div>
+    }
+    
+</div>
+
+@code {
+    private bool IsShowCardDetailsVisible { get; set; } = false;
+    private bool SendToHLADisabled { get; set; } = true;
+    private bool SendToFEDisabled { get; set; } = true;
+    private bool SendToBEDisabled { get; set; } = true;
+
+    [Parameter]
+    public Employee employee { get; set; }
+    [Parameter]
+    public EventCallback OnEmployeeChanged { get; set; }
+
+    protected override void OnInitialized()
+    {
+        if (employee.Roles.Team != Team.TeamName.HighLevelAnalysis && employee.Roles.IsHighLevelAnalyzer.HasValue)
+        {
+            SendToHLADisabled = false;
+        }
+        if (employee.Roles.IsDeveloper.HasValue || employee.Roles.IsAnalyzer.HasValue || employee.Roles.IsTester.HasValue)
+        {
+            if (employee.Roles.Team != Team.TeamName.FrontEnd) 
+                SendToFEDisabled = false;
+            if (employee.Roles.Team != Team.TeamName.BackEnd) 
+                SendToBEDisabled = false;
+        }
+    }
+    
+    protected async Task OnEmployeeChangedHandler()
+    {
+        await OnEmployeeChanged.InvokeAsync();
+    }
+
+    private void ShowCardDetails()
+    {
+        this.IsShowCardDetailsVisible = true;
+    }
+
+    private void OverlayClick(OverlayModalClickEventArgs args)
+    {
+        this.IsShowCardDetailsVisible = false;
+    }
+
+    private async Task SendEmployeeToTeam(Team.TeamName team)
+    {
+        await BoardService.UpdateColumn(employee.SF_Column);
+        employee.Roles.ChangeTeam(team);
+        @* await BoardService.UpdateColumn(employee.SF_Column); *@ 
+        await EmployeeService.UpdateEmployee(employee.Id, employee);
+        this.IsShowCardDetailsVisible = false;
+        await OnEmployeeChangedHandler();
+    }
+}

@@ -1,0 +1,119 @@
+@inject IFeatureService FeatureService
+@inject IBoardService BoardService
+@inject NavigationManager NavigationManager
+
+
+<div>
+    <div class="center">
+        <h4 style="center">Users ready: @ReadyUserCount / @ConnectedUserCount</h4>
+    </div>
+    <div class="center">
+        <button disabled="@IsUpdateDisabled" class="btn btn-warning" @onclick="(() => OnSimulateDayHandler())">
+            Update <i class="oi oi-sun"></i>
+        </button>
+
+        <SfSwitch CssClass="e-big" @bind-Checked="IsReadySelected" OffLabel="Not Ready" OnLabel="Ready!" ValueChange="ChangeReadiness" TChecked="bool?" ></SfSwitch>
+
+        <button class="btn btn-primary" @onclick="(() => OnSimulateDayHandler())">
+                Force Update
+        </button>
+    </div>
+</div>
+
+
+@code {
+    private bool? IsReadySelected = false;
+    [Parameter]
+    public bool IsUpdateDisabled { get; set; }
+    [Parameter]
+    public int ReadyUserCount { get; set; }
+    [Parameter]
+    public int ConnectedUserCount { get; set; }
+
+    [Parameter]
+    public EventCallback OnSimulateDay { get; set; }
+    [Parameter]
+    public EventCallback OnStateReady { get; set; }
+    [Parameter]
+    public EventCallback OnStateNotReady { get; set; }
+
+    protected async Task OnSimulateDayHandler()
+    {
+        await OnSimulateDay.InvokeAsync();
+    }
+ 
+    protected async Task OnStateReadyHandler()
+    {
+        await OnStateReady.InvokeAsync();
+    }
+
+    protected async Task OnStateReadyNotHandler()
+    {
+        await OnStateNotReady.InvokeAsync();
+    }
+
+    public void ResetReadiness()
+    {
+        IsReadySelected = false;
+    }
+
+    private async Task ChangeReadiness(Syncfusion.Blazor.Buttons.ChangeEventArgs<bool?> args)
+    {
+        IsReadySelected = (bool)args.Checked;
+        if (IsReadySelected.HasValue)
+        {
+            if(IsReadySelected.Value)
+            {
+                await OnStateReadyHandler();
+            }
+            else
+            {
+                await OnStateReadyNotHandler();
+            }
+        }
+        
+    }
+}
+
+<style>
+    .e-switch-wrapper, .e-css.e-switch-wrapper {
+        height: 38px;
+        width: 120px
+    }
+    .e-switch-wrapper .e-switch-on, .e-css.e-switch-wrapper .e-switch-on,
+    .e-switch-wrapper .e-switch-off, .e-css.e-switch-wrapper .e-switch-of {
+        font-size: 16px;
+    }
+
+    .e-switch-wrapper .e-switch-inner,
+    .e-switch-wrapper .e-switch-handle {
+        border-radius: 5px;
+    }
+
+    .e-switch-wrapper .e-switch-on, .e-css.e-switch-wrapper .e-switch-on {
+        background-color: #28A745;
+        color: white;
+        border-radius: 0%;
+    }
+
+    .e-switch-wrapper .e-switch-off, .e-css.e-switch-wrapper .e-switch-of {
+        background-color: #dc3545;
+        color: white;
+        border-radius: 0%;
+    }
+
+    .e-switch-wrapper .e-switch-inner.e-switch-active, .e-css.e-switch-wrapper .e-switch-inner.e-switch-active,
+    .e-switch-wrapper:hover .e-switch-inner.e-switch-active, .e-css.e-switch-wrapper .e-switch-inner.e-switch-active {
+        border-color: #28A745;
+    }
+    
+    .e-switch-wrapper .e-switch-inner, .e-switch-wrapper .e-switch-handle,
+    .e-switch-wrapper:hover .e-switch-inner, .e-switch-wrapper .e-switch-handle {
+        border-color: #dc3545;
+    }
+
+    .e-switch-wrapper:hover .e-switch-inner.e-switch-active .e-switch-on {
+        background-color: #28A745;
+    }
+
+</style>

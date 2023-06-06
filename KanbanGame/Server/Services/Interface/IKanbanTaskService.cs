@@ -5,6 +5,7 @@ namespace KanbanGame.Server.Services;
 public interface IKanbanTaskService
 {
     Task<List<KanbanTask>> GetKanbanTasks();
+    Task<List<KanbanTask>> GetActiveKanbanTasks();
     Task<List<KanbanTask>?> GetKanbanTasksByTeamId(int teamId);
     Task<KanbanTask?> GetKanbanTaskById(int kanbanTaskId);
     Task<KanbanTask> CreateKanbanTask(KanbanTask kanbanTask);

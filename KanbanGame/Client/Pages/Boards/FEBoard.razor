@@ -1,98 +1,66 @@
 @page "/FrontEndBoard"
+@inject ISessionService SessionService
 @inject IKanbanTaskService KanbanTaskService
 @inject IEmployeeService EmployeeService
 @inject IBoardService BoardService
 @inject NavigationManager NavigationManager
 @implements IAsyncDisposable
+@using Components
 
 <div class="center">
-    <h3>FrontEnd Team</h3>
-</div>
-<div class="center">
-    @* <button disabled="@IsForceUpdateDisabled" class="btn btn-outline-warning" @onclick="(() => SimulateBoard())">
-            Force Update <i class="oi oi-sun"></i>
-    </button> *@
-    <button class="btn btn-outline-warning" @onclick="(() => SimulateBoard())">
-            Force Update <i class="oi oi-sun"></i>
-    </button>
+<div class="board-page">
+    <div class="board-page-h">
+        <h1>FrontEnd Team</h1>
+    </div>
+    <div class="board-page-c">
+        <KanbanGame.Client.Pages.Components.Calendar Session=SessionService.Session/>
+    </div>
+    <div class="board-page-a">
+        <KanbanGame.Client.Pages.Components.SimulationButtons @ref="SimulationButtons" IsUpdateDisabled="isUpdateDisabled" ReadyUserCount="readyUserCount" ConnectedUserCount="connectedUserCount" OnSimulateDay="SimulateDay" OnStateReady="StateReady" OnStateNotReady="StateNotReady"/>
+    </div>
+    <div class="board-page-b">
+        <div class="stacked-header" style="width: 1788px">
+            <div class="stacked-header-title" style="flex-grow: 245;background:var(--gray-dark)">Backlog</div>
+            <div class="stacked-header-title" style="flex-grow: 245;background:var(--green)">Analysis</div>
+            <div class="stacked-header-title" style="flex-grow: 500;background:var(--blue)">Development</div>
+            <div class="stacked-header-title" style="flex-grow: 498;background:var(--red)">Test</div>
+            <div class="stacked-header-title" style="flex-grow: 245;background:var(--gray-darker)">Delivered</div>
+        </div>
+        <SfKanban TValue="Card" KeyField="Column" DataSource="BoardService.Cards" Width="1800px">
+        <KanbanColumns>
+            <KanbanColumn HeaderText="" KeyField="@(new List<string>() {"Backlog"})" TransitionColumns="@(new List<string>() {"AnalysisDoing"})"></KanbanColumn>
+            <KanbanColumn HeaderText="Doing" MaxCount="@BoardService.ColumnMaxCount["AnalysisDoing"]" KeyField="@(new List<string>() {"AnalysisDoing"})" TransitionColumns="@(new List<string>() {"Backlog", "AnalysisDoing", "DevelopmentDoing", "TestDoing"})"></KanbanColumn>
+            <KanbanColumn HeaderText="Waiting" KeyField="@(new List<string>() {"DevelopmentWaiting"})" TransitionColumns="@(new List<string>() {"DevelopmentDoing"})"></KanbanColumn>
+            <KanbanColumn HeaderText="Doing" MaxCount="@BoardService.ColumnMaxCount["DevelopmentDoing"]" KeyField="@(new List<string>() {"DevelopmentDoing"})" TransitionColumns="@(new List<string>() {"DevelopmentWaiting", "AnalysisDoing", "DevelopmentDoing", "TestDoing"})"></KanbanColumn>
+            <KanbanColumn HeaderText="Waiting" KeyField="@(new List<string>() {"TestWaiting"})" TransitionColumns="@(new List<string>() {"TestDoing"})"></KanbanColumn>
+            <KanbanColumn HeaderText="Doing" MaxCount="@BoardService.ColumnMaxCount["TestDoing"]" KeyField="@(new List<string>() {"TestDoing"})" TransitionColumns="@(new List<string>() {"TestWaiting", "AnalysisDoing", "DevelopmentDoing", "TestDoing"})"></KanbanColumn>
+            <KanbanColumn HeaderText="" KeyField="@(new List<string>() {"Delivered"})" AllowDrag="false"></KanbanColumn>
+        </KanbanColumns>
+        <KanbanSortSettings SortBy="SortOrderBy.Index" Field="RankId"></KanbanSortSettings>
+        <KanbanEvents TValue="Card" DragStart="@DragStartHandler" DragStop="@DragStopHandler" CardDoubleClick="@CardDoubleClickHandler"></KanbanEvents>
+        <KanbanCardSettings HeaderField="Id">
+            <Template>
+            @{
+                Card card = (Card)context;
 
-    <input type="radio" class="btn-check" name="options-outlined" id="danger-outlined" checked="@IsReadySelected">
-    <label class="btn btn-outline-danger" for="danger-outlined" @onclick="(() => StateNotReady())">Not Ready</label>
-
-    <input type="radio" class="btn-check" name="options-outlined" id="success-outlined" checked="@IsNotReadySelected" onchange="@(() => SetReady())">
-    <label class="btn btn-outline-success" for="success-outlined" @onclick="(() => StateReady())">Ready</label>
-
-    <div style="margin:10px;font-size: large;">Users ready: @readyUserCount / @connectedUserCount</div>
-
-</div>
-<div class="center">
-<SfKanban TValue="Card" KeyField="Column" DataSource="BoardService.Cards" Width="1800px">
-    <KanbanColumns>
-        <KanbanColumn HeaderText="" KeyField="@(new List<string>() {"Backlog"})" TransitionColumns="@(new List<string>() {"AnalysisDoing"})"></KanbanColumn>
-        <KanbanColumn HeaderText="Doing" MaxCount="@BoardService.ColumnMaxCount["AnalysisDoing"]" KeyField="@(new List<string>() {"AnalysisDoing"})" TransitionColumns="@(new List<string>() {"Backlog", "AnalysisDoing", "DevelopmentDoing", "TestDoing"})"></KanbanColumn>
-        <KanbanColumn HeaderText="Waiting" KeyField="@(new List<string>() {"DevelopmentWaiting"})" TransitionColumns="@(new List<string>() {"DevelopmentDoing"})"></KanbanColumn>
-        <KanbanColumn HeaderText="Doing" MaxCount="@BoardService.ColumnMaxCount["DevelopmentDoing"]" KeyField="@(new List<string>() {"DevelopmentDoing"})" TransitionColumns="@(new List<string>() {"DevelopmentWaiting", "AnalysisDoing", "DevelopmentDoing", "TestDoing"})"></KanbanColumn>
-        <KanbanColumn HeaderText="Waiting" KeyField="@(new List<string>() {"TestWaiting"})" TransitionColumns="@(new List<string>() {"TestDoing"})"></KanbanColumn>
-        <KanbanColumn HeaderText="Doing" MaxCount="@BoardService.ColumnMaxCount["TestDoing"]" KeyField="@(new List<string>() {"TestDoing"})" TransitionColumns="@(new List<string>() {"TestWaiting", "AnalysisDoing", "DevelopmentDoing", "TestDoing"})"></KanbanColumn>
-        <KanbanColumn HeaderText="" KeyField="@(new List<string>() {"Delivered"})" AllowDrag="false"></KanbanColumn>
-    </KanbanColumns>
-    <KanbanStackedHeaders>
-        <KanbanStackedHeader Text="Backlog" KeyFields="@(new List<string>() {"Backlog"})"></KanbanStackedHeader>
-        <KanbanStackedHeader Text="Analysis" KeyFields="@(new List<string>() {"AnalysisDoing"})"></KanbanStackedHeader>
-        <KanbanStackedHeader Text="Development" KeyFields="@(new List<string>() {"DevelopmentWaiting", "DevelopmentDoing"})"></KanbanStackedHeader>
-        <KanbanStackedHeader Text="Test" KeyFields="@(new List<string>() {"TestWaiting", "TestDoing"})"></KanbanStackedHeader>
-        <KanbanStackedHeader Text="Delivered" KeyFields="@(new List<string>() {"Delivered"})"></KanbanStackedHeader>
-    </KanbanStackedHeaders>
-    <KanbanSortSettings SortBy="SortOrderBy.Index" Field="RankId"></KanbanSortSettings>
-    <KanbanEvents TValue="Card" DragStart="@DragStartHandler" DragStop="@DragStopHandler"></KanbanEvents>
-    <KanbanCardSettings HeaderField="Id">
-        <Template>
-        @{
-            Card card = (Card)context;
-
-            if (card.KanbanTask is null && card.Employee is not null)
-            {
-                Employee employee = card.Employee;
-
-                <div class="employee-card">
-                    <div class="employee-h">@employee.Name</div>
-                    <div class="employee-a"><img src=@(employee.AvatarPath == null ? "Avatars/Default.png" : employee.AvatarPath) style="width:48px" alt="logo" /></div>
-                    <div class="employee-d">
-                        @* <div>Card Id: @card.Id</div> *@
-                        @* <div>Id: @employee.Id</div> *@
-                        <div>Seniority: @employee.Seniority</div>
-                        <div>Status: @employee.Status</div>
-                        <div>Role: @employee.CurrentRole</div>
-                        @* <div>Column: @employee.SF_Column</div> *@
-                        @* <div>RankId: @card.RankId</div> *@
-                    </div>
-                </div>
+                if (card.Employee is not null)
+                {
+                    <KanbanGame.Client.Pages.Components.EmployeeCard employee=card.Employee OnEmployeeChanged="UpdateBoard"/>
+                }
+                else if (card.KanbanTask is not null)
+                {
+                    <KanbanGame.Client.Pages.Components.KanbanTaskCard kanbanTask=card.KanbanTask OnTaskChanged="UpdateBoard"/>
+                }
             }
-            else if (card.Employee is null && card.KanbanTask is not null)
-            {
-                KanbanTask kanbanTask = card.KanbanTask;
-
-                <div class="task-card">
-                    <div class="task-h">@kanbanTask.Title</div>
-                    <div class="task-d">
-                        @* <div>Card Id: @card.Id</div> *@
-                        @* <div>Id: @kanbanTask.Id</div> *@
-                        <div>Desc: @kanbanTask.Description</div>
-                        @* <div>Ass. Id: @(kanbanTask.Assignee is null ? "-" : kanbanTask.Assignee.Id)</div> *@
-                        <div>Assignee.: @(kanbanTask.Assignee == null ? "-" : kanbanTask.Assignee.Name)</div>
-                    </div>
-                    @* <div class="task-f">Status: @kanbanTask.SF_Column</div> *@
-                    @* <div class="task-f">RankId: @card.RankId <img src=@(kanbanTask.Assignee == null ? "Avatars/Default.png" : kanbanTask.Assignee.AvatarPath) style="width:32px; float:right;" alt="logo" /></div> *@
-                    <div class="task-f"><img src=@(kanbanTask.Assignee == null ? "Avatars/Default.png" : kanbanTask.Assignee.AvatarPath) style="width:32px; float:right;" alt="logo" /></div>
-                </div>
-            }
-        }
-        </Template>
-    </KanbanCardSettings>
-</SfKanban>
+            </Template>
+        </KanbanCardSettings>
+        </SfKanban>
+    </div>
+</div>
 </div>
 @code {
     private int BoardId = (int) Team.TeamName.FrontEnd;
+    private SimulationButtons SimulationButtons;
 
     protected override async Task OnInitializedAsync()
     {
@@ -108,6 +76,21 @@
     async Task DragStartHandler(DragEventArgs<Card> args)
     {
         columnBeforeDrag = args.Data[0].Column;
+        Card draggedCard = args.Data[0];
+        if (draggedCard.KanbanTask is not null){
+            if (draggedCard.KanbanTask.DependencyTask is not null && draggedCard.KanbanTask.DependencyTask.Status != KanbanTask.TaskStatus.Delivered)
+            {
+                Console.WriteLine("dupa");
+                args.Cancel = true;
+            }
+        }
+        else if (draggedCard.Employee is not null)
+        {
+            if (draggedCard.Employee.Roles.IsBlocked)
+            {
+                args.Cancel = true;
+            }
+        }
     }
 
     async Task DragStopHandler(DragEventArgs<Card> args)
@@ -117,8 +100,11 @@
         columnAfterDrag = draggedCard.Column;
 
         if (draggedCard.KanbanTask is not null)
-
         {
+            if (draggedCard.KanbanTask.DependencyTask is not null && draggedCard.KanbanTask.DependencyTask.Status != KanbanTask.TaskStatus.Delivered)
+            {
+                args.Cancel = true;
+            }
             if (columnBeforeDrag != draggedCard.Column && taskForbiddenSwap.Contains(columnBeforeDrag) && taskForbiddenSwap.Contains(draggedCard.Column))
             {
                 args.Cancel = true;
@@ -155,9 +141,14 @@
         }
     }
 
-    async Task SimulateBoard()
+    public void CardDoubleClickHandler(CardClickEventArgs<Card> args)
     {
-        await BoardService.SimulateBoard();
+        args.Cancel = true;
+    }
+
+    async Task SimulateDay()
+    {
+        await SessionService.SimulateDay();
         if (hubConnection is not null)
         {
             await hubConnection.SendAsync("UpdateBoard", 0);
@@ -165,13 +156,31 @@
         }
     }
 
+    async Task ChangeIconState(KanbanTask kanbanTask, string icon)
+    {
+        switch(icon){
+            case "star":
+                kanbanTask.Star = !(kanbanTask.Star);
+                break;
+            case "warning":
+                kanbanTask.Warning = !(kanbanTask.Warning);
+                break;
+            case "pause":
+                kanbanTask.Pause = !(kanbanTask.Pause);
+                break;
+        }
+        await KanbanTaskService.UpdateKanbanTask(kanbanTask.Id, kanbanTask);
+        if (hubConnection is not null)
+        {
+            await hubConnection.SendAsync("UpdateBoard", 0);
+        }
+    }
+
     @* -------------------- Hub -------------------- *@
     private HubConnection? hubConnection;
     private int connectedUserCount = 0;
     private int readyUserCount = 0;
-    protected bool IsForceUpdateDisabled = true;
-    private bool IsReadySelected = true;
-    private bool IsNotReadySelected = false;
+    protected bool isUpdateDisabled = true;
     private async Task Connect()
     {
         hubConnection = new HubConnectionBuilder()
@@ -183,44 +192,44 @@
         hubConnection.On<int>("BoardUpdated", async (_) =>
                 {
                     await BoardService.GetCardsByTeamId(BoardId);
+                    await SessionService.GetSessionInfo();
                     StateHasChanged();
                 });
         hubConnection.On<int>("StateReady", async (numberOfReadyClients) =>
                 {
                     readyUserCount = numberOfReadyClients;
-                    IsForceUpdateDisabled = readyUserCount == connectedUserCount ? false : true;
+                    isUpdateDisabled = readyUserCount == connectedUserCount ? false : true;
                     StateHasChanged();
                 });
         hubConnection.On<int>("StateNotReady", async (numberOfReadyClients) =>
                 {
                     readyUserCount = numberOfReadyClients;
-                    IsForceUpdateDisabled = readyUserCount == connectedUserCount ? false : true;
+                    isUpdateDisabled = readyUserCount == connectedUserCount ? false : true;
                     StateHasChanged();
                 });
         hubConnection.On<int>("ClearReadyUsers", async (numberOfReadyClients) =>
                 {
                     readyUserCount = numberOfReadyClients;
-                    ResetReadiness();
-                    IsForceUpdateDisabled = readyUserCount == connectedUserCount ? false : true;
+                    SimulationButtons.ResetReadiness();
+                    isUpdateDisabled = readyUserCount == connectedUserCount ? false : true;
                     StateHasChanged();
                 });
         hubConnection.On<int>("UserCount", async (numberOfConnectedClients) =>
                 {
                     connectedUserCount = numberOfConnectedClients;
-                    IsForceUpdateDisabled = readyUserCount == connectedUserCount ? false : true;
+                    isUpdateDisabled = readyUserCount == connectedUserCount ? false : true;
                     StateHasChanged();
                 });
     }
-    private void SetReady()
+
+    async Task UpdateBoard()
     {
-        IsReadySelected = false;
-        IsNotReadySelected = true;
+        if (hubConnection is not null)
+        {
+            await hubConnection.SendAsync("UpdateBoard", 0);
+        }
     }
-    private void ResetReadiness()
-    {
-        IsReadySelected = true;
-        IsNotReadySelected = false;
-    }
+
     async Task StateReady()
     {
         if (hubConnection is not null)

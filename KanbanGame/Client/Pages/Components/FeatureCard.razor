@@ -1,0 +1,132 @@
+@inject IFeatureService FeatureService
+@inject IBoardService BoardService
+@inject NavigationManager NavigationManager
+
+<SfDialog Width="300px" ShowCloseIcon="true" IsModal="true" @bind-Visible="@IsShowCardDetailsVisible">
+    <DialogTemplates>
+        <Header> 
+            Feature: @feature.Title
+        </Header>
+        <Content>
+            <h5>Feature Info:</h5>
+            <li>Id: @feature.Id</li>
+            <li>Title: @feature.Title</li>
+            <li>Description: @feature.Description</li>
+            <li>Status: @feature.Status</li>
+            <li>Number of tasks: @feature.KanbanTasks.Count</li>
+            <li>Est. earnings: @($"{feature.EstimatedMinEarnings}K-{feature.EstimatedMaxEarnings}K $")</li>
+            <li>Base effort: @feature.Effort</li>
+            <li>Effort left: @feature.EffortLeft</li>
+            <li>Ass. Id: @(feature.Assignee is null ? "-" : feature.Assignee.Id)</li>
+            <li>Assignee: @(feature.Assignee == null ? "-" : feature.Assignee.Name)</li>
+            @if (feature.Status == Feature.FeatureStatus.ReadyForDevelopment)
+            {
+                <div>Tasks: @feature.KanbanTasks.Count</div>
+                foreach (var t in feature.KanbanTasks)
+                {
+                    <li>@t.Title - @t.Type</li>
+                }
+            }
+            <img src=@(feature.Assignee == null ? "Avatars/Default.png" : feature.Assignee.AvatarPath) style="width:48px; float:right;" alt="logo" />
+        </Content>
+    </DialogTemplates>
+    <DialogEvents OnOverlayModalClick="@OverlayClick"></DialogEvents>
+</SfDialog>
+
+<div class="feature-card">
+    <div class="feature-h">
+        <div>
+            @{
+                if(feature.Status != Feature.FeatureStatus.ReadyForDevelopment && feature.Status != Feature.FeatureStatus.None)
+                {
+                    <img src=@(feature.Assignee == null ? "Avatars/Default.png" : feature.Assignee.AvatarPath) style="width:32px; float:left; pointer-events: none;" alt="avatar" />
+                }
+            }
+            <b>@feature.Title</b>
+            <img class="info-icon" src="Icons/info.png" @onclick='(() => ShowCardDetails())' style="float:right"/>
+        </div>
+    </div>
+    <div class="feature-d">
+        @{
+            if (feature.Status == Feature.FeatureStatus.ReadyForDevelopment)
+            {
+                <b>@($"{feature.EstimatedMinEarnings}K-{feature.EstimatedMaxEarnings}K $")</b>
+                <b>Tasks: @feature.KanbanTasks.Count</b>
+            }
+            else
+            {
+                <div>@feature.Description</div>
+            }
+        }
+    </div>
+    <div class="feature-f">
+        @{
+            if (feature.Status == Feature.FeatureStatus.ReadyForDevelopment)
+            {
+                <img class="notifier" src="Icons/trash.png" @onclick='(() => DeleteFeature())' style="float:left"/>
+                <img class="notifier" src=@(feature.Star ? "Icons/star_filled.png" : "Icons/star.png") @onclick='(() => ChangeIconState("star"))'/>
+                <img class="notifier" src=@(feature.Warning ? "Icons/warning_filled.png" : "Icons/warning.png") @onclick='(() => ChangeIconState("warning"))'/>
+                <img class="notifier" src=@(feature.Pause ? "Icons/pause_filled.png" : "Icons/pause.png") @onclick='(() => ChangeIconState("pause"))'/>
+                <img class="notifier" src="Icons/arrow_right.png" @onclick='(() => SendFeatureTasksToTeams())' style="float:right"/>
+            }
+            else 
+            {
+                <img class="notifier" src=@(feature.Star ? "Icons/star_filled.png" : "Icons/star.png") @onclick='(() => ChangeIconState("star"))'/>
+                <img class="notifier" src=@(feature.Warning ? "Icons/warning_filled.png" : "Icons/warning.png") @onclick='(() => ChangeIconState("warning"))'/>
+                <img class="notifier" src=@(feature.Pause ? "Icons/pause_filled.png" : "Icons/pause.png") @onclick='(() => ChangeIconState("pause"))'/>
+            }
+        }
+
+    </div>
+</div>
+                
+@code {
+    private bool IsShowCardDetailsVisible { get; set; } = false;
+    [Parameter]
+    public Feature feature { get; set; }
+    [Parameter]
+    public EventCallback OnFeatureChanged { get; set; }
+    protected async Task OnFeatureChangedHandler()
+    {
+        await OnFeatureChanged.InvokeAsync();
+    }
+    private void ShowCardDetails()
+    {
+        this.IsShowCardDetailsVisible = true;
+    }
+
+    private void OverlayClick(OverlayModalClickEventArgs args)
+    {
+        this.IsShowCardDetailsVisible = false;
+    }
+
+
+    async Task ChangeIconState(string icon)
+    {
+        switch (icon)
+        {
+            case "star":
+                feature.Star = !(feature.Star);
+                break;
+            case "warning":
+                feature.Warning = !(feature.Warning);
+                break;
+            case "pause":
+                feature.Pause = !(feature.Pause);
+                break;
+        }
+        await FeatureService.UpdateFeature(feature.Id, feature);
+        await OnFeatureChangedHandler();
+    }
+    async Task DeleteFeature()
+    {
+        await FeatureService.DeleteFeature(feature.Id);
+        await OnFeatureChangedHandler();
+    }
+
+    async Task SendFeatureTasksToTeams()
+    {
+        await FeatureService.SendFeatureTasksToTeams(feature.Id);
+        await OnFeatureChangedHandler();
+    }
+}

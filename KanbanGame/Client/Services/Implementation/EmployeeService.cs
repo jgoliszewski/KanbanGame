@@ -25,6 +25,13 @@ public class EmployeeService : IEmployeeService
             Employees = result;
     }
 
+    public async Task GetActiveEmployees()
+    {
+        var result = await _http.GetFromJsonAsync<List<Employee>>("api/employee/active");
+        if (result is not null)
+            Employees = result;
+    }
+
     public async Task GetEmployeesByTeamId(int teamId)
     {
         var result = await _http.GetFromJsonAsync<List<Employee>>($"api/employee/team/{teamId}");

@@ -12,9 +12,14 @@ public class EmployeeService : IEmployeeService
         return Employees;
     }
 
+    public async Task<List<Employee>> GetActiveEmployees()
+    {
+        return Employees.FindAll(e => e.Roles.Status != Role.EmployeeStatus.NotWorking);
+    }
+
     public async Task<List<Employee>?> GetEmployeesByTeamId(int teamId)
     {
-        var dbEmployees = Employees.FindAll(t => (int)t.Team == teamId);
+        var dbEmployees = Employees.FindAll(t => (int)t.Roles.Team == teamId);
         return dbEmployees;
     }
 
@@ -39,9 +44,9 @@ public class EmployeeService : IEmployeeService
         {
             //ToDo: change to copy function
             dbEmployee.Name = employee.Name;
-            dbEmployee.Seniority = employee.Seniority;
-            dbEmployee.Status = employee.Status;
-            dbEmployee.CurrentRole = employee.CurrentRole;
+            dbEmployee.Roles = employee.Roles;
+            dbEmployee.Productivity = employee.Productivity;
+            dbEmployee.AvatarPath = employee.AvatarPath;
         }
         return dbEmployee;
     }

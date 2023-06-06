@@ -21,8 +21,8 @@ else
     </div>
     <div>
         <label for="CurrentRole">Current Role</label>
-        <InputSelect id="currentRole" @bind-Value="employee.CurrentRole" class="form-control">
-            @foreach (var role in Enum.GetValues(typeof(KanbanGame.Shared.Employee.Role)))
+        <InputSelect id="currentRole" @bind-Value="employee.Roles.CurrentRole" class="form-control">
+            @foreach (var role in Enum.GetValues(typeof(KanbanGame.Shared.Role.EmployeeRole)))
             {
                 <option value="@role">@role</option>
             }
@@ -30,8 +30,8 @@ else
     </div>
     <div>
         <label for="seniority">Seniority</label>
-        <InputSelect id="seniority" @bind-Value="employee.Seniority" class="form-control">
-            @foreach (var seniority in Enum.GetValues(typeof(KanbanGame.Shared.Employee.EmployeeSeniority)))
+        <InputSelect id="seniority" @bind-Value="employee.Roles.Seniority" class="form-control">
+            @foreach (var seniority in Enum.GetValues(typeof(KanbanGame.Shared.Role.EmployeeSeniority)))
             {
                 <option value="@seniority">@seniority</option>
             }
@@ -39,8 +39,8 @@ else
     </div>
     <div>
         <label for="status">Status</label>
-        <InputSelect id="status" @bind-Value="employee.Status" class="form-control">
-            @foreach (var status in Enum.GetValues(typeof(KanbanGame.Shared.Employee.EmployeeStatus)))
+        <InputSelect id="status" @bind-Value="employee.Roles.Status" class="form-control">
+            @foreach (var status in Enum.GetValues(typeof(KanbanGame.Shared.Role.EmployeeStatus)))
             {
                 <option value="@status">@status</option>
             }
@@ -65,8 +65,10 @@ else
         new KanbanGame.Shared.Employee{
             Id = 0,
             Name = "Name",
-            Seniority = KanbanGame.Shared.Employee.EmployeeSeniority.Junior, 
-            Status = KanbanGame.Shared.Employee.EmployeeStatus.Working
+            Roles = new Role(){
+                Seniority = KanbanGame.Shared.Role.EmployeeSeniority.Junior, 
+                Status = KanbanGame.Shared.Role.EmployeeStatus.Working
+            },
         };
 
     protected override async Task OnInitializedAsync()

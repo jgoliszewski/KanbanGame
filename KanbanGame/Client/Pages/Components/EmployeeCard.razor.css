@@ -1,0 +1,57 @@
+.employee-card {  
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    grid-template-rows: min-content 1fr; /* adjustment */
+    gap: 5px 5px;
+    grid-auto-flow: row;
+    grid-template-areas:
+        "a h"
+        "a d"
+        "a f"
+        "l l";
+    padding-top: 10px;
+    padding-bottom: 10px;
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+.employee-h { 
+    grid-area: h;
+    text-align: center;
+    font-weight: bold;
+    font-size: 20px;
+}
+
+.employee-a { 
+    grid-area: a;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;  
+    line-height: 0;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.employee-d { 
+    grid-area: d; 
+    text-align: center;
+    font-weight: bold;
+    font-size: 16px;
+}
+.employee-f { 
+    grid-area: f; 
+    display: flex;
+    justify-content: center;
+    align-items: center;    
+}
+
+.employee-l {
+    grid-area: l;
+    display: flex;
+    justify-content: center;
+    align-items: center; 
+    font-weight: bold;
+    font-size: 20px;
+    border-top: 2px solid var(--gray-dark);
+}

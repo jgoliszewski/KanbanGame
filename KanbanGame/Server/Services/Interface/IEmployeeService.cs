@@ -5,6 +5,7 @@ namespace KanbanGame.Server.Services;
 public interface IEmployeeService
 {
     Task<List<Employee>> GetEmployees();
+    Task<List<Employee>> GetActiveEmployees();
     Task<List<Employee>?> GetEmployeesByTeamId(int teamId);
     Task<Employee?> GetEmployeeById(int employeeId);
     Task<Employee> CreateEmployee(Employee employee);

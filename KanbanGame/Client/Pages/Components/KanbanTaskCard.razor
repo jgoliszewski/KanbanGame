@@ -1,0 +1,97 @@
+@inject IKanbanTaskService KanbanTaskService
+@inject NavigationManager NavigationManager
+
+<SfDialog Width="300px" ShowCloseIcon="true" IsModal="true" @bind-Visible="@IsShowCardDetailsVisible">
+    <DialogTemplates>
+        <Header> 
+            Task: @kanbanTask.Title
+        </Header>
+        <Content>
+            <h5>Task Info:</h5>
+            <li>Id: @kanbanTask.Id</li>
+            <li>Title: @kanbanTask.Title</li>
+            <li>Description: @kanbanTask.Description</li>
+            <li>Status: @kanbanTask.Status</li>
+            <li>Age: @kanbanTask.Age</li>
+            <li>Base effort: @kanbanTask.Effort</li>
+            <li>Effort left: @kanbanTask.EffortLeft</li>
+            <li>Ass. Id: @(kanbanTask.Assignee is null ? "-" : kanbanTask.Assignee.Id)</li>
+            <li>Assignee: @(kanbanTask.Assignee == null ? "-" : kanbanTask.Assignee.Name)</li>
+            <li>Depends on: <b>@(kanbanTask.DependencyTask == null ? "-" : kanbanTask.DependencyTask.Title)</b></li>
+            <li>DT. Status: @(kanbanTask.DependencyTask == null ? "-" : kanbanTask.DependencyTask.Status)</li>
+            <img src=@(kanbanTask.Assignee == null ? "Avatars/Default.png" : kanbanTask.Assignee.AvatarPath) style="width:48px; float:right;" alt="logo" /> 
+        </Content>
+    </DialogTemplates>
+    <DialogEvents OnOverlayModalClick="@OverlayClick"></DialogEvents>
+</SfDialog>
+
+<div class="task-card">
+    <div class="task-h">
+        @if (kanbanTask.Status != KanbanTask.TaskStatus.Delivered)
+        {
+            <img src=@(kanbanTask.Assignee == null ? "Avatars/Default.png" : kanbanTask.Assignee.AvatarPath) style="width:32px; float:left; pointer-events: none;" alt="avatar" />
+        }
+        <b>@kanbanTask.Title</b>
+        <img class="notifier" src="Icons/info.png" @onclick='(() => ShowCardDetails())' style="float:right"/>
+    </div>
+    <div class="task-a">
+        <div>Task open for @kanbanTask.Age Days</div>
+    </div>
+    @if(kanbanTask.DependencyTask is not null && kanbanTask.DependencyTask.Status != KanbanTask.TaskStatus.Delivered)
+    {
+        <div class="task-d">
+            Depends on: <b>@kanbanTask.DependencyTask.Title</b> from <b>@kanbanTask.DependencyTask.Team</b>
+        </div>
+    }
+    @{
+        if (kanbanTask.Status != KanbanTask.TaskStatus.Delivered)
+        {
+            <div class="task-f">
+                <img class="notifier" src=@(kanbanTask.Star ? "Icons/star_filled.png" : "Icons/star.png") @onclick='(() => ChangeIconState("star"))'/>
+                <img class="notifier" src=@(kanbanTask.Warning ? "Icons/warning_filled.png" : "Icons/warning.png") @onclick='(() => ChangeIconState("warning"))'/>
+                <img class="notifier" src=@(kanbanTask.Pause ? "Icons/pause_filled.png" : "Icons/pause.png") @onclick='(() => ChangeIconState("pause"))'/>
+            </div>
+        }
+    }
+</div>
+                
+@code {
+    
+    private bool IsShowCardDetailsVisible { get; set; } = false;
+    [Parameter]
+    public KanbanTask kanbanTask { get; set; }
+    [Parameter]
+    public EventCallback OnTaskChanged { get; set; }
+    protected async Task OnTaskChangedHandler()
+    {
+        await OnTaskChanged.InvokeAsync();
+    }
+
+    private void ShowCardDetails()
+    {
+        this.IsShowCardDetailsVisible = true;
+    }
+
+    private void OverlayClick(OverlayModalClickEventArgs args)
+    {
+        this.IsShowCardDetailsVisible = false;
+    }
+
+    async Task ChangeIconState(string icon)
+    {
+        switch (icon)
+        {
+            case "star":
+                kanbanTask.Star = !(kanbanTask.Star);
+                break;
+            case "warning":
+                kanbanTask.Warning = !(kanbanTask.Warning);
+                break;
+            case "pause":
+                kanbanTask.Pause = !(kanbanTask.Pause);
+                break;
+        }
+        await KanbanTaskService.UpdateKanbanTask(kanbanTask.Id, kanbanTask);
+        await OnTaskChangedHandler();
+    }
+}
